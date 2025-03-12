@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { BlockEditorProvider, BlockCanvas } from "@wordpress/block-editor";
 
 // Base styles for the content within the block canvas iframe.
@@ -63,7 +63,7 @@ const resumeTemplate = [
         name: "core/paragraph",
         isValid: true,
         attributes: { 
-          content: "Email: your.email@example.com | Phone: (123) 456-7890 | Location: City, State | LinkedIn: linkedin.com/in/yourname",
+          content: "<a href=\"mailto:your.email@example.com\">your.email@example.com</a> | (123) 456-7890 | City, State | <a href=\"https://linkedin.com/in/yourname\" target=\"_blank\">linkedin.com/in/yourname</a>",
           align: "center",
           fontSize: "small"
         },
@@ -555,6 +555,19 @@ const contentStyles = [
         margin-bottom: 1em;
       }
       
+      /* Custom link styling */
+      a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        padding-bottom: 1px;
+        transition: border-color 0.2s ease;
+      }
+      
+      a:hover {
+        border-bottom-color: rgba(0, 0, 0, 0.6);
+      }
+      
       /* Hide UI elements during PDF export */
       .pdf-export-mode .block-editor-writing-flow__click-redirect,
       .pdf-export-mode .block-editor-block-list__insertion-point,
@@ -715,9 +728,9 @@ export default function Editor() {
   const [hasRedo, setHasRedo] = useState(false);            // Whether redo is available
 
   // Update blocks without tracking history (for undo/redo operations)
-  const updateBlocksNoHistory = (newBlocks) => {
+  const updateBlocksNoHistory = useCallback((newBlocks) => {
     setBlocks(newBlocks);
-  };
+  }, []);
 
   // Add current state to history when blocks change
   const updateHistoryOnBlocksChange = (newBlocks) => {
@@ -750,7 +763,7 @@ export default function Editor() {
   };
   
   // Function to handle undo
-  const handleUndo = () => {
+  const handleUndo = useCallback(() => {
     if (historyIndex > 0) {
       const newIndex = historyIndex - 1;
       setHistoryIndex(newIndex);
@@ -760,10 +773,10 @@ export default function Editor() {
       setHasUndo(newIndex > 0);
       setHasRedo(true);
     }
-  };
+  }, [historyIndex, history, updateBlocksNoHistory, setHistoryIndex, setHasUndo, setHasRedo]);
   
   // Function to handle redo
-  const handleRedo = () => {
+  const handleRedo = useCallback(() => {
     if (historyIndex < history.length - 1) {
       const newIndex = historyIndex + 1;
       setHistoryIndex(newIndex);
@@ -773,7 +786,7 @@ export default function Editor() {
       setHasUndo(true);
       setHasRedo(newIndex < history.length - 1);
     }
-  };
+  }, [historyIndex, history, updateBlocksNoHistory, setHistoryIndex, setHasUndo, setHasRedo]);
   
   // Add styles to html and body to remove any gaps
   useEffect(() => {
