@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BlockEditorProvider, BlockCanvas } from "@wordpress/block-editor";
+import html2pdf from 'html2pdf.js';
 // import { createBlock } from "@wordpress/blocks";
 
 // Base styles for the content within the block canvas iframe.
@@ -555,6 +556,16 @@ const contentStyles = [
       p {
         margin-bottom: 1em;
       }
+      
+      /* Hide UI elements during PDF export */
+      .pdf-export-mode .block-editor-writing-flow__click-redirect,
+      .pdf-export-mode .block-editor-block-list__insertion-point,
+      .pdf-export-mode .block-editor-block-list__block-selection-button,
+      .pdf-export-mode .block-editor-block-list__breadcrumb,
+      .pdf-export-mode .block-editor-block-toolbar,
+      .pdf-export-mode .block-editor-block-contextual-toolbar {
+        display: none !important;
+      }
     `,
   },
 ];
@@ -577,12 +588,36 @@ const appStyles = {
   editorContainer: {
     width: '100%',
     height: '100%',
+    position: 'relative'
+  },
+  buttonContainer: {
+    position: 'fixed',
+    top: '20px',
+    right: '20px',
+    zIndex: 1000
+  },
+  saveButton: {
+    backgroundColor: '#2c3e50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '10px 15px',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    transition: 'background-color 0.3s, transform 0.2s',
+    outline: 'none',
   }
 };
 
 export default function Editor() {
   // Initialize with resume template
   const [blocks, setBlocks] = useState(resumeTemplate);
+  const [isExporting, setIsExporting] = useState(false);
+  const editorIframeRef = useRef(null);
 
   // Add styles to html and body to remove any gaps
   useEffect(() => {
@@ -597,10 +632,90 @@ export default function Editor() {
     document.body.style.height = '100%';
     document.body.style.overflow = 'hidden';
   }, []);
+  
+  // Handle saving to PDF
+  const handleSaveToPDF = () => {
+    try {
+      setIsExporting(true);
+      
+      // Get iframe document
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (!editorIframe) {
+        console.error('Editor iframe not found');
+        setIsExporting(false);
+        return;
+      }
+      
+      // Access the iframe document
+      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
+      
+      // Get editor content
+      const contentElement = iframeDocument.querySelector('.editor-styles-wrapper');
+      if (!contentElement) {
+        console.error('Editor content element not found');
+        setIsExporting(false);
+        return;
+      }
+      
+      // Clone content to avoid modifying the original
+      const contentClone = contentElement.cloneNode(true);
+      
+      // Remove any editor UI elements from the clone
+      const uiElements = contentClone.querySelectorAll(
+        '.block-editor-block-list__insertion-point, ' +
+        '.block-editor-writing-flow__click-redirect, ' +
+        '.block-editor-block-list__block-selection-button, ' +
+        '.block-editor-block-list__breadcrumb, ' +
+        '.block-editor-block-toolbar, ' +
+        '.block-editor-block-contextual-toolbar'
+      );
+      
+      uiElements.forEach(el => el.remove());
+      
+      // PDF export options
+      const opt = {
+        margin: [0, 0],
+        filename: 'resume.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait'
+        }
+      };
+      
+      // Generate and download PDF
+      html2pdf().from(contentClone).set(opt).save().then(() => {
+        setIsExporting(false);
+      }).catch(err => {
+        console.error('PDF generation error:', err);
+        setIsExporting(false);
+      });
+    } catch (error) {
+      console.error('PDF export error:', error);
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div style={appStyles.container}>
       <div style={appStyles.editorContainer}>
+        {/* Save to PDF Button */}
+        <div style={appStyles.buttonContainer}>
+          <button 
+            style={appStyles.saveButton}
+            onClick={handleSaveToPDF}
+            disabled={isExporting}
+          >
+            {isExporting ? 'Generating PDF...' : 'Save to PDF'}
+          </button>
+        </div>
+        
         <BlockEditorProvider
           value={blocks}
           onChange={setBlocks}
@@ -609,7 +724,8 @@ export default function Editor() {
           <BlockCanvas 
             height="100vh" 
             width="100%"
-            styles={contentStyles} 
+            styles={contentStyles}
+            ref={editorIframeRef}
           />
         </BlockEditorProvider>
       </div>
