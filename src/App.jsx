@@ -7,6 +7,9 @@ import blockEditorContentStyles from "@wordpress/block-editor/build-style/conten
 import blocksStyles from "@wordpress/block-library/build-style/style.css?raw";
 import blocksEditorStyles from "@wordpress/block-library/build-style/editor.css?raw";
 
+// Local styles
+import "./iframe-styles.scss";
+
 // Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [
   // Header section
@@ -1176,11 +1179,7 @@ export default function Editor() {
           onChange={handleBlocksChange}
           onInput={handleBlocksChange}
         >
-          <BlockCanvas
-            height="100%"
-            width="100%"
-            styles={contentStyles}
-          />
+          <BlockCanvas height="100%" width="100%" styles={contentStyles} />
         </BlockEditorProvider>
       </div>
     </div>
