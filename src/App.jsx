@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { BlockEditorProvider, BlockCanvas } from "@wordpress/block-editor";
-import html2pdf from 'html2pdf.js';
-// import { createBlock } from "@wordpress/blocks";
 
 // Base styles for the content within the block canvas iframe.
 import componentsStyles from "@wordpress/components/build-style/style.css?raw";
@@ -594,7 +592,10 @@ const appStyles = {
     position: 'fixed',
     top: '20px',
     right: '20px',
-    zIndex: 1000
+    zIndex: 1000,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px'
   },
   saveButton: {
     backgroundColor: '#2c3e50',
@@ -607,17 +608,53 @@ const appStyles = {
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
+    gap: '8px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-    transition: 'background-color 0.3s, transform 0.2s',
+    transition: 'all 0.2s ease-in-out',
     outline: 'none',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  saveButtonHover: {
+    backgroundColor: '#34495e', 
+    boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+    transform: 'translateY(-2px)'
+  },
+  saveButtonActive: {
+    backgroundColor: '#1a252f',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+    transform: 'translateY(1px)'
+  },
+  buttonIcon: {
+    width: '16px',
+    height: '16px',
+    fill: 'currentColor',
+    transition: 'transform 0.2s ease'
+  },
+  buttonIconHover: {
+    transform: 'translateY(2px)'
+  },
+  warningText: {
+    color: '#d32f2f',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'rgba(211, 47, 47, 0.1)',
+    padding: '6px 12px',
+    borderRadius: '4px',
+    border: '1px solid rgba(211, 47, 47, 0.3)'
   }
 };
 
 export default function Editor() {
   // Initialize with resume template
   const [blocks, setBlocks] = useState(resumeTemplate);
-  const [isExporting, setIsExporting] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [contentOverflow, setContentOverflow] = useState(false);
   const editorIframeRef = useRef(null);
+  const [buttonHover, setButtonHover] = useState(false);
+  const [buttonActive, setButtonActive] = useState(false);
 
   // Add styles to html and body to remove any gaps
   useEffect(() => {
@@ -633,86 +670,141 @@ export default function Editor() {
     document.body.style.overflow = 'hidden';
   }, []);
   
-  // Handle saving to PDF
-  const handleSaveToPDF = () => {
+  // Check for content overflow
+  useEffect(() => {
+    const checkContentOverflow = () => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (!editorIframe) return;
+      
+      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
+      const editorWrapper = iframeDocument.querySelector('.editor-styles-wrapper');
+      const contentContainer = iframeDocument.querySelector('.block-editor-block-list__layout');
+      
+      if (!editorWrapper || !contentContainer) return;
+      
+      // Check if content height exceeds the paper height
+      const isOverflowing = contentContainer.scrollHeight > (editorWrapper.clientHeight - 60); // 60px buffer
+      
+      if (isOverflowing !== contentOverflow) {
+        setContentOverflow(isOverflowing);
+      }
+      
+      // Removed page break guide creation
+    };
+    
+    // Check initially and on window resize
+    const timeoutId = setTimeout(checkContentOverflow, 1000); // Initial delay to ensure iframe is loaded
+    window.addEventListener('resize', checkContentOverflow);
+    
+    // Set up an interval to periodically check (content can change due to editing)
+    const intervalId = setInterval(checkContentOverflow, 2000);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(intervalId);
+      window.removeEventListener('resize', checkContentOverflow);
+    };
+  }, [contentOverflow]);
+  
+  // Handle print functionality
+  const handlePrint = () => {
     try {
-      setIsExporting(true);
+      setIsPrinting(true);
       
       // Get iframe document
       const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
       if (!editorIframe) {
         console.error('Editor iframe not found');
-        setIsExporting(false);
+        setIsPrinting(false);
         return;
       }
       
-      // Access the iframe document
-      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
+      // Access the iframe document and window
+      const iframeWindow = editorIframe.contentWindow;
       
-      // Get editor content
-      const contentElement = iframeDocument.querySelector('.editor-styles-wrapper');
-      if (!contentElement) {
-        console.error('Editor content element not found');
-        setIsExporting(false);
-        return;
-      }
-      
-      // Clone content to avoid modifying the original
-      const contentClone = contentElement.cloneNode(true);
-      
-      // Remove any editor UI elements from the clone
-      const uiElements = contentClone.querySelectorAll(
-        '.block-editor-block-list__insertion-point, ' +
-        '.block-editor-writing-flow__click-redirect, ' +
-        '.block-editor-block-list__block-selection-button, ' +
-        '.block-editor-block-list__breadcrumb, ' +
-        '.block-editor-block-toolbar, ' +
-        '.block-editor-block-contextual-toolbar'
-      );
-      
-      uiElements.forEach(el => el.remove());
-      
-      // PDF export options
-      const opt = {
-        margin: [0, 0],
-        filename: 'resume.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-          scale: 2,
-          useCORS: true,
-          letterRendering: true
-        },
-        jsPDF: { 
-          unit: 'mm', 
-          format: 'a4', 
-          orientation: 'portrait'
+      // Add print-specific stylesheet
+      const styleElement = iframeWindow.document.createElement('style');
+      styleElement.textContent = `
+        @media print {
+          body {
+            margin: 0;
+            padding: 0;
+          }
+          
+          .editor-styles-wrapper {
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 20px !important;
+            width: 100% !important;
+            min-height: auto !important;
+            max-height: none !important;
+          }
+          
+          .block-editor-block-list__insertion-point,
+          .block-editor-writing-flow__click-redirect,
+          .block-editor-block-list__block-selection-button,
+          .block-editor-block-list__breadcrumb,
+          .block-editor-block-toolbar,
+          .block-editor-block-contextual-toolbar {
+            display: none !important;
+          }
         }
-      };
+      `;
+      iframeWindow.document.head.appendChild(styleElement);
       
-      // Generate and download PDF
-      html2pdf().from(contentClone).set(opt).save().then(() => {
-        setIsExporting(false);
-      }).catch(err => {
-        console.error('PDF generation error:', err);
-        setIsExporting(false);
-      });
+      // Open print dialog
+      iframeWindow.print();
+      
+      // Clean up
+      setTimeout(() => {
+        iframeWindow.document.head.removeChild(styleElement);
+        setIsPrinting(false);
+      }, 1000);
+      
     } catch (error) {
-      console.error('PDF export error:', error);
-      setIsExporting(false);
+      console.error('Print error:', error);
+      setIsPrinting(false);
     }
   };
 
   return (
     <div style={appStyles.container}>
       <div style={appStyles.editorContainer}>
-        {/* Save to PDF Button */}
+        {/* Download Button and Warning */}
         <div style={appStyles.buttonContainer}>
+          {contentOverflow && (
+            <div style={appStyles.warningText}>
+              ⚠️ Content exceeds one page
+            </div>
+          )}
           <button 
-            style={appStyles.saveButton}
-            onClick={handleSaveToPDF}
-            disabled={isExporting}
+            style={{
+              ...appStyles.saveButton,
+              ...(buttonHover ? appStyles.saveButtonHover : {}),
+              ...(buttonActive ? appStyles.saveButtonActive : {})
+            }}
+            onClick={handlePrint}
+            disabled={isPrinting}
+            onMouseEnter={() => setButtonHover(true)}
+            onMouseLeave={() => {
+              setButtonHover(false);
+              setButtonActive(false);
+            }}
+            onMouseDown={() => setButtonActive(true)}
+            onMouseUp={() => setButtonActive(false)}
           >
-            {isExporting ? 'Generating PDF...' : 'Save to PDF'}
+            <svg 
+              style={{
+                ...appStyles.buttonIcon,
+                ...(buttonHover ? appStyles.buttonIconHover : {})
+              }}
+              xmlns="http://www.w3.org/2000/svg" 
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+            {isPrinting ? 'Opening...' : 'Download'}
           </button>
         </div>
         
