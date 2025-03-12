@@ -613,10 +613,36 @@ const appStyles = {
     fontSize: '18px',
     color: '#2c3e50'
   },
-  buttonContainer: {
+  navbarActions: {
     display: 'flex',
     alignItems: 'center',
     gap: '10px'
+  },
+  iconButton: {
+    backgroundColor: 'transparent',
+    color: '#2c3e50',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '8px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s ease-in-out',
+    outline: 'none',
+  },
+  iconButtonHover: {
+    backgroundColor: '#f5f5f5',
+    transform: 'translateY(-2px)'
+  },
+  iconButtonActive: {
+    backgroundColor: '#e5e5e5',
+    transform: 'translateY(1px)'
+  },
+  iconButtonDisabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed'
   },
   saveButton: {
     backgroundColor: '#2c3e50',
@@ -669,15 +695,86 @@ const appStyles = {
 };
 
 export default function Editor() {
-  // Initialize with resume template
+  // Initial state
   const [blocks, setBlocks] = useState(resumeTemplate);
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
   const editorIframeRef = useRef(null);
   const [buttonHover, setButtonHover] = useState(false);
   const [buttonActive, setButtonActive] = useState(false);
+  const [undoHover, setUndoHover] = useState(false);
+  const [undoActive, setUndoActive] = useState(false);
+  const [redoHover, setRedoHover] = useState(false);
+  const [redoActive, setRedoActive] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  
+  // History state management
+  const [history, setHistory] = useState([resumeTemplate]); // Stack of previous states
+  const [historyIndex, setHistoryIndex] = useState(0);      // Current position in history
+  const [hasUndo, setHasUndo] = useState(false);            // Whether undo is available
+  const [hasRedo, setHasRedo] = useState(false);            // Whether redo is available
 
+  // Update blocks without tracking history (for undo/redo operations)
+  const updateBlocksNoHistory = (newBlocks) => {
+    setBlocks(newBlocks);
+  };
+
+  // Add current state to history when blocks change
+  const updateHistoryOnBlocksChange = (newBlocks) => {
+    // Skip if this is just an undo/redo navigation (blocks will match history)
+    if (JSON.stringify(newBlocks) === JSON.stringify(history[historyIndex])) {
+      return;
+    }
+    
+    // Add the new state to history, removing any future states if we've gone back in time
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(newBlocks);
+    
+    // Limit history size (optional, to prevent excessive memory usage)
+    if (newHistory.length > 100) {
+      newHistory.shift();
+    }
+    
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+    
+    // Update undo/redo availability
+    setHasUndo(newHistory.length > 1);
+    setHasRedo(false); // We've just added a new state, so there's nothing to redo
+  };
+
+  // Handler for changes from the BlockEditorProvider
+  const handleBlocksChange = (newBlocks) => {
+    setBlocks(newBlocks);
+    updateHistoryOnBlocksChange(newBlocks);
+  };
+  
+  // Function to handle undo
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      updateBlocksNoHistory(history[newIndex]);
+      
+      // Update undo/redo availability
+      setHasUndo(newIndex > 0);
+      setHasRedo(true);
+    }
+  };
+  
+  // Function to handle redo
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      updateBlocksNoHistory(history[newIndex]);
+      
+      // Update undo/redo availability
+      setHasUndo(true);
+      setHasRedo(newIndex < history.length - 1);
+    }
+  };
+  
   // Add styles to html and body to remove any gaps
   useEffect(() => {
     // Add styles to remove gaps in html and body
@@ -732,6 +829,71 @@ export default function Editor() {
     };
   }, []);
   
+  // Set up keyboard shortcuts for undo/redo
+  useEffect(() => {
+    // Handler for keyboard shortcuts
+    const handleKeyDown = (event) => {
+      // Check if we're in an input field or if a modifier other than cmd/ctrl/shift is pressed
+      if (
+        event.target.tagName === 'INPUT' || 
+        event.target.tagName === 'TEXTAREA' || 
+        event.altKey
+      ) {
+        return;
+      }
+
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const isCtrlOrCmd = isMac ? event.metaKey : event.ctrlKey;
+
+      // Undo: Cmd/Ctrl + Z
+      if (isCtrlOrCmd && event.key === 'z' && !event.shiftKey && hasUndo) {
+        event.preventDefault();
+        handleUndo();
+      }
+      
+      // Redo: Cmd/Ctrl + Shift + Z or Ctrl + Y
+      if ((isCtrlOrCmd && event.key === 'z' && event.shiftKey) || 
+          (!isMac && event.ctrlKey && event.key === 'y')) {
+        if (hasRedo) {
+          event.preventDefault();
+          handleRedo();
+        }
+      }
+    };
+
+    // Add event listener to main document
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Function to setup iframe keyboard listeners
+    const setupIframeKeyboardListeners = () => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        // Add event listener to iframe document
+        editorIframe.contentDocument.addEventListener('keydown', handleKeyDown);
+      }
+    };
+
+    // Try to set up iframe listeners
+    const intervalId = setInterval(() => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        setupIframeKeyboardListeners();
+        clearInterval(intervalId);
+      }
+    }, 500);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      clearInterval(intervalId);
+      
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        editorIframe.contentDocument.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+  }, [hasUndo, hasRedo, handleUndo, handleRedo]); // Re-run when these dependencies change
+  
   // Check for content overflow
   useEffect(() => {
     const checkContentOverflow = () => {
@@ -750,8 +912,6 @@ export default function Editor() {
       if (isOverflowing !== contentOverflow) {
         setContentOverflow(isOverflowing);
       }
-      
-      // Removed page break guide creation
     };
     
     // Check initially and on window resize
@@ -767,7 +927,7 @@ export default function Editor() {
       window.removeEventListener('resize', checkContentOverflow);
     };
   }, [contentOverflow]);
-  
+
   // Handle print functionality
   const handlePrint = () => {
     try {
@@ -838,7 +998,75 @@ export default function Editor() {
         ...(scrolled ? appStyles.navbarScrolled : {})
       }}>
         <div style={appStyles.navbarLogo}>
-          Resume Builder
+          Career Vision
+        </div>
+        
+        <div style={appStyles.navbarActions}>
+          {/* Undo Button */}
+          <button 
+            style={{
+              ...appStyles.iconButton,
+              ...(undoHover ? appStyles.iconButtonHover : {}),
+              ...(undoActive ? appStyles.iconButtonActive : {}),
+              ...(!hasUndo ? appStyles.iconButtonDisabled : {})
+            }}
+            onClick={handleUndo}
+            disabled={!hasUndo}
+            onMouseEnter={() => setUndoHover(true)}
+            onMouseLeave={() => {
+              setUndoHover(false);
+              setUndoActive(false);
+            }}
+            onMouseDown={() => setUndoActive(true)}
+            onMouseUp={() => setUndoActive(false)}
+            title="Undo"
+          >
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                d="M12.5 8C9.85 8 7.45 8.99 5.6 10.6L2 7V16H11L7.38 12.38C8.77 11.22 10.54 10.5 12.5 10.5C16.04 10.5 19.05 12.81 20.1 16L22.47 15.22C21.08 11.03 17.15 8 12.5 8Z" 
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+          
+          {/* Redo Button */}
+          <button 
+            style={{
+              ...appStyles.iconButton,
+              ...(redoHover ? appStyles.iconButtonHover : {}),
+              ...(redoActive ? appStyles.iconButtonActive : {}),
+              ...(!hasRedo ? appStyles.iconButtonDisabled : {})
+            }}
+            onClick={handleRedo}
+            disabled={!hasRedo}
+            onMouseEnter={() => setRedoHover(true)}
+            onMouseLeave={() => {
+              setRedoHover(false);
+              setRedoActive(false);
+            }}
+            onMouseDown={() => setRedoActive(true)}
+            onMouseUp={() => setRedoActive(false)}
+            title="Redo"
+          >
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path 
+                d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8C6.85 8 2.92 11.03 1.54 15.22L3.9 16C4.95 12.81 7.95 10.5 11.5 10.5C13.45 10.5 15.23 11.22 16.62 12.38L13 16H22V7L18.4 10.6Z" 
+                fill="currentColor"
+              />
+            </svg>
+          </button>
         </div>
         
         <div style={appStyles.buttonContainer}>
@@ -881,8 +1109,8 @@ export default function Editor() {
       <div style={appStyles.editorContainer}>
         <BlockEditorProvider
           value={blocks}
-          onChange={setBlocks}
-          onInput={setBlocks}
+          onChange={handleBlocksChange}
+          onInput={handleBlocksChange}
         >
           <BlockCanvas 
             height="100%" 
