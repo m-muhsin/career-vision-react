@@ -237,7 +237,6 @@ const resumeTemplate = [
         attributes: {
           content: "Previous Job Title",
           level: 3,
-          textAlign: "center",
           style: {
             typography: {
               fontWeight: "600",
