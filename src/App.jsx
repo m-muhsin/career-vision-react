@@ -581,18 +581,39 @@ const appStyles = {
     height: '100vh',
     padding: 0,
     margin: 0,
-    overflow: 'auto'
+    overflow: 'hidden'
   },
   editorContainer: {
     width: '100%',
-    height: '100%',
-    position: 'relative'
+    height: 'calc(100% - 60px)',
+    position: 'relative',
+    marginTop: '60px',
+    overflow: 'hidden'
+  },
+  navbar: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '60px',
+    backgroundColor: '#fff',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 20px',
+    zIndex: 1000,
+    transition: 'box-shadow 0.3s ease'
+  },
+  navbarScrolled: {
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+  },
+  navbarLogo: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    color: '#2c3e50'
   },
   buttonContainer: {
-    position: 'fixed',
-    top: '20px',
-    right: '20px',
-    zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
     gap: '10px'
@@ -655,6 +676,7 @@ export default function Editor() {
   const editorIframeRef = useRef(null);
   const [buttonHover, setButtonHover] = useState(false);
   const [buttonActive, setButtonActive] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   // Add styles to html and body to remove any gaps
   useEffect(() => {
@@ -668,6 +690,46 @@ export default function Editor() {
     document.body.style.padding = '0';
     document.body.style.height = '100%';
     document.body.style.overflow = 'hidden';
+
+    // Add scroll event listener to detect when the page is scrolled
+    const handleScroll = () => {
+      // Get scroll position from the iframe instead of window
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentWindow) {
+        const scrollY = editorIframe.contentWindow.scrollY;
+        if (scrollY > 10) {
+          setScrolled(true);
+        } else {
+          setScrolled(false);
+        }
+      }
+    };
+
+    // Add event listener to the iframe once it's loaded
+    const setupIframeScroll = () => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentWindow) {
+        editorIframe.contentWindow.addEventListener('scroll', handleScroll);
+      }
+    };
+
+    // Check for iframe and add listener
+    const intervalId = setInterval(() => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentWindow) {
+        setupIframeScroll();
+        clearInterval(intervalId);
+      }
+    }, 500);
+
+    return () => {
+      clearInterval(intervalId);
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentWindow) {
+        editorIframe.contentWindow.removeEventListener('scroll', handleScroll);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
   
   // Check for content overflow
@@ -770,8 +832,15 @@ export default function Editor() {
 
   return (
     <div style={appStyles.container}>
-      <div style={appStyles.editorContainer}>
-        {/* Download Button and Warning */}
+      {/* Navigation Bar */}
+      <div style={{
+        ...appStyles.navbar,
+        ...(scrolled ? appStyles.navbarScrolled : {})
+      }}>
+        <div style={appStyles.navbarLogo}>
+          Resume Builder
+        </div>
+        
         <div style={appStyles.buttonContainer}>
           {contentOverflow && (
             <div style={appStyles.warningText}>
@@ -807,14 +876,16 @@ export default function Editor() {
             {isPrinting ? 'Opening...' : 'Download'}
           </button>
         </div>
-        
+      </div>
+
+      <div style={appStyles.editorContainer}>
         <BlockEditorProvider
           value={blocks}
           onChange={setBlocks}
           onInput={setBlocks}
         >
           <BlockCanvas 
-            height="100vh" 
+            height="100%" 
             width="100%"
             styles={contentStyles}
             ref={editorIframeRef}
