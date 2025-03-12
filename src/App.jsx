@@ -4,6 +4,7 @@ import "./styles/wordpress-fixes.css";
 import "./styles/block-editor-fix.css";
 import "./styles/inline-style-fix.css";
 import "./styles/wordpress-classes.css";
+import "./styles/toolbar-fix.css";
 import "./styles/iframe-styles.scss";
 import { contentStyles } from "./styles/contentStyles.js";
 
@@ -1074,9 +1075,11 @@ export default function Editor() {
         </div>
 
         <div style={appStyles.buttonContainer}>
+          {/* Removing content overflow warning
           {contentOverflow && (
             <div style={appStyles.warningText}>⚠️ Content exceeds one page</div>
           )}
+          */}
           <button
             style={{
               ...appStyles.saveButton,

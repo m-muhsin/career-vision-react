@@ -1,48 +1,12 @@
 /**
  * Additional fixes for WordPress components
+ * Note: Toolbar-specific fixes have been moved to toolbar-fix.css
  */
-
-/* Fix for toolbar layout */
-.block-editor-block-toolbar {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-}
-
-.components-toolbar,
-.components-toolbar-group {
-  display: inline-flex !important;
-  flex-direction: row !important;
-}
-
-.components-dropdown-menu {
-  display: inline-flex !important;
-}
-
-/* Format toolbar fixes */
-.block-editor-format-toolbar {
-  display: flex !important;
-  flex-wrap: wrap !important;
-}
 
 /* Editor content spacing */
 .block-editor-block-list__layout {
   padding-left: 14px !important;
   padding-right: 14px !important;
-}
-
-/* Fix for block controls */
-.block-editor-block-contextual-toolbar {
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: row !important;
-}
-
-/* Button group fixes */
-.components-button-group {
-  display: inline-flex !important;
-  flex-direction: row !important;
 }
 
 /* Panel body fixes */
