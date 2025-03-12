@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { BlockEditorProvider, BlockCanvas } from "@wordpress/block-editor";
 
 // Base styles for the content within the block canvas iframe.
@@ -724,7 +724,6 @@ export default function Editor() {
   const [blocks, setBlocks] = useState(resumeTemplate);
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
-  const editorIframeRef = useRef(null);
   const [buttonHover, setButtonHover] = useState(false);
   const [buttonActive, setButtonActive] = useState(false);
   const [undoHover, setUndoHover] = useState(false);
@@ -770,7 +769,6 @@ export default function Editor() {
 
   // Handler for changes from the BlockEditorProvider
   const handleBlocksChange = (newBlocks) => {
-    console.log("handleBlocksChange", newBlocks);
     setBlocks(newBlocks);
     updateHistoryOnBlocksChange(newBlocks);
   };
@@ -1182,7 +1180,6 @@ export default function Editor() {
             height="100%"
             width="100%"
             styles={contentStyles}
-            ref={editorIframeRef}
           />
         </BlockEditorProvider>
       </div>
