@@ -21,7 +21,7 @@ const resumeTemplate = [
       style: {
         spacing: {
           padding: {
-            bottom: "1em",
+            top: "1em",
           },
         },
       },
