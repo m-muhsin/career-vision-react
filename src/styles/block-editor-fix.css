@@ -1,0 +1,107 @@
+/**
+ * WordPress Block Editor specific fixes
+ * This file targets the WordPress block editor internals that affect
+ * how blocks are rendered and how attributes are applied.
+ */
+
+/* Core block fixes */
+.block-editor-block-list__block[data-align="center"] {
+  text-align: center !important;
+}
+
+.block-editor-block-list__block[data-align="left"] {
+  text-align: left !important;
+}
+
+.block-editor-block-list__block[data-align="right"] {
+  text-align: right !important;
+}
+
+/* Block attribute fixes */
+.block-editor-block-list__block[data-type="core/heading"] h1,
+.block-editor-block-list__block[data-type="core/heading"] h2,
+.block-editor-block-list__block[data-type="core/heading"] h3,
+.block-editor-block-list__block[data-type="core/heading"] h4,
+.block-editor-block-list__block[data-type="core/heading"] h5,
+.block-editor-block-list__block[data-type="core/heading"] h6 {
+  margin: 0;
+}
+
+/* Font size classes */
+[data-type="core/paragraph"].has-small-font-size {
+  font-size: 14px !important;
+}
+
+[data-type="core/paragraph"].has-large-font-size {
+  font-size: 24px !important;
+}
+
+/* Alignment within blocks */
+.block-editor-block-list__block[data-type="core/heading"][data-align="center"] h1,
+.block-editor-block-list__block[data-type="core/heading"][data-align="center"] h2,
+.block-editor-block-list__block[data-type="core/heading"][data-align="center"] h3,
+.block-editor-block-list__block[data-type="core/heading"][data-align="center"] h4,
+.block-editor-block-list__block[data-type="core/heading"][data-align="center"] h5,
+.block-editor-block-list__block[data-type="core/heading"][data-align="center"] h6 {
+  text-align: center !important;
+}
+
+.block-editor-block-list__block[data-type="core/paragraph"][data-align="center"] p {
+  text-align: center !important;
+}
+
+/* Core block: Group */
+.block-editor-block-list__block[data-type="core/group"] {
+  margin-bottom: 1.5em;
+}
+
+/* Core block: Separator */
+.block-editor-block-list__block[data-type="core/separator"] hr {
+  border: none;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 1.5em 0;
+}
+
+/* Core block: List */
+.block-editor-block-list__block[data-type="core/list"] ul {
+  padding-left: 20px;
+}
+
+.block-editor-block-list__block[data-type="core/list"] li {
+  margin-bottom: 0.5em;
+}
+
+/* Style attributes */
+[style*="font-weight: 700"],
+[style*="font-weight:700"],
+[style*="font-weight: bold"],
+[style*="font-weight:bold"] {
+  font-weight: 700 !important;
+}
+
+[style*="text-transform: uppercase"],
+[style*="text-transform:uppercase"] {
+  text-transform: uppercase !important;
+}
+
+[style*="letter-spacing: 1px"],
+[style*="letter-spacing:1px"] {
+  letter-spacing: 1px !important;
+}
+
+[style*="text-align: center"],
+[style*="text-align:center"] {
+  text-align: center !important;
+}
+
+/* Spacing attributes */
+[style*="margin-top: 0"],
+[style*="margin-top:0"] {
+  margin-top: 0 !important;
+}
+
+[style*="margin-bottom: 0.5em"],
+[style*="margin-bottom:0.5em"] {
+  margin-bottom: 0.5em !important;
+} 

@@ -1,0 +1,92 @@
+/**
+ * WordPress-specific CSS classes
+ * These are added dynamically by WordPress and need specific handling
+ */
+
+/* Text alignment classes */
+.has-text-align-center {
+  text-align: center !important;
+}
+
+.has-text-align-left {
+  text-align: left !important;
+}
+
+.has-text-align-right {
+  text-align: right !important;
+}
+
+/* Font size classes */
+.has-small-font-size {
+  font-size: 14px !important;
+}
+
+.has-regular-font-size {
+  font-size: 16px !important;
+}
+
+.has-medium-font-size {
+  font-size: 20px !important;
+}
+
+.has-large-font-size {
+  font-size: 24px !important;
+}
+
+.has-extra-large-font-size {
+  font-size: 36px !important;
+}
+
+/* Block alignment */
+.aligncenter {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+/* Block spacing */
+.wp-block {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.wp-block-group {
+  margin-bottom: 1.5em;
+}
+
+.wp-block-heading {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Typography styles */
+.is-style-uppercase {
+  text-transform: uppercase !important;
+}
+
+.is-style-bold {
+  font-weight: 700 !important;
+}
+
+/* Block specific overrides */
+.wp-block-heading h1,
+.wp-block-heading h2,
+.wp-block-heading h3,
+.wp-block-heading h4,
+.wp-block-heading h5,
+.wp-block-heading h6 {
+  margin: 0;
+}
+
+.wp-block-heading.has-text-align-center h1,
+.wp-block-heading.has-text-align-center h2,
+.wp-block-heading.has-text-align-center h3,
+.wp-block-heading.has-text-align-center h4,
+.wp-block-heading.has-text-align-center h5,
+.wp-block-heading.has-text-align-center h6 {
+  text-align: center !important;
+}
+
+.wp-block-paragraph.has-text-align-center p {
+  text-align: center !important;
+} 

@@ -1,14 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { BlockEditorProvider, BlockCanvas } from "@wordpress/block-editor";
-
-// Base styles for the content within the block canvas iframe.
-import componentsStyles from "@wordpress/components/build-style/style.css?raw";
-import blockEditorContentStyles from "@wordpress/block-editor/build-style/content.css?raw";
-import blocksStyles from "@wordpress/block-library/build-style/style.css?raw";
-import blocksEditorStyles from "@wordpress/block-library/build-style/editor.css?raw";
-
-// Local styles
-import "./iframe-styles.scss";
+import "./styles/wordpress-fixes.css";
+import "./styles/block-editor-fix.css";
+import "./styles/inline-style-fix.css";
+import "./styles/wordpress-classes.css";
+import "./styles/iframe-styles.scss";
+import { contentStyles } from "./styles/contentStyles.js";
 
 // Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [
@@ -533,68 +530,6 @@ const resumeTemplate = [
 
 // A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
 // At 96 DPI, that's approximately 794px × 1123px
-const contentStyles = [
-  { css: componentsStyles },
-  { css: blockEditorContentStyles },
-  { css: blocksStyles },
-  { css: blocksEditorStyles },
-  // Add A4 paper styling and system font stack
-  {
-    css: `
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-        font-size: 16px;
-        line-height: 1.5;
-        background-color: #f0f0f0;
-      }
-      
-      /* A4 paper styling */
-      .wp-block-post-content,
-      .editor-styles-wrapper {
-        background-color: white;
-        width: 794px !important;
-        min-height: 1123px !important;
-        margin: 20px auto;
-        padding: 15px;
-        box-sizing: border-box;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        border: 1px solid #e0e0e0;
-      }
-      
-      /* Block editor container */
-      .block-editor-block-list__layout {
-        max-width: calc(794px - (2 * 15px)) !important; /* Derive max-width from A4 width minus padding */
-      }
-
-      p {
-        margin-bottom: 1em;
-      }
-      
-      /* Custom link styling */
-      a {
-        color: inherit;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-        padding-bottom: 1px;
-        transition: border-color 0.2s ease;
-      }
-      
-      a:hover {
-        border-bottom-color: rgba(0, 0, 0, 0.6);
-      }
-      
-      /* Hide UI elements during PDF export */
-      .pdf-export-mode .block-editor-writing-flow__click-redirect,
-      .pdf-export-mode .block-editor-block-list__insertion-point,
-      .pdf-export-mode .block-editor-block-list__block-selection-button,
-      .pdf-export-mode .block-editor-block-list__breadcrumb,
-      .pdf-export-mode .block-editor-block-toolbar,
-      .pdf-export-mode .block-editor-block-contextual-toolbar {
-        display: none !important;
-      }
-    `,
-  },
-];
 
 // Full screen app styles
 const appStyles = {

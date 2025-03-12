@@ -1,0 +1,115 @@
+/**
+ * CSS fixes for inline style attributes
+ * These selectors target inline style attributes that may not be properly applied
+ */
+
+/* Inline text alignment */
+[style*="text-align: center"] {
+  text-align: center !important;
+}
+
+[style*="text-align: left"] {
+  text-align: left !important;
+}
+
+[style*="text-align: right"] {
+  text-align: right !important;
+}
+
+/* Typography styles */
+[style*="font-weight: 700"],
+[style*="font-weight:700"] {
+  font-weight: 700 !important;
+}
+
+[style*="font-weight: 600"],
+[style*="font-weight:600"] {
+  font-weight: 600 !important;
+}
+
+[style*="font-size: 14px"],
+[style*="font-size:14px"] {
+  font-size: 14px !important;
+}
+
+[style*="font-size: 16px"],
+[style*="font-size:16px"] {
+  font-size: 16px !important;
+}
+
+[style*="font-size: 18px"],
+[style*="font-size:18px"] {
+  font-size: 18px !important;
+}
+
+[style*="font-size: 24px"],
+[style*="font-size:24px"] {
+  font-size: 24px !important;
+}
+
+[style*="text-transform: uppercase"],
+[style*="text-transform:uppercase"] {
+  text-transform: uppercase !important;
+}
+
+[style*="letter-spacing: 1px"],
+[style*="letter-spacing:1px"] {
+  letter-spacing: 1px !important;
+}
+
+/* Colors */
+[style*="color: #2c3e50"],
+[style*="color:#2c3e50"] {
+  color: #2c3e50 !important;
+}
+
+/* Spacing */
+[style*="margin-top: 0"],
+[style*="margin-top:0"] {
+  margin-top: 0 !important;
+}
+
+[style*="margin-bottom: 0.2em"],
+[style*="margin-bottom:0.2em"] {
+  margin-bottom: 0.2em !important;
+}
+
+[style*="margin-bottom: 0.5em"],
+[style*="margin-bottom:0.5em"] {
+  margin-bottom: 0.5em !important;
+}
+
+[style*="margin-bottom: 1em"],
+[style*="margin-bottom:1em"] {
+  margin-bottom: 1em !important;
+}
+
+[style*="margin-bottom: 1.5em"],
+[style*="margin-bottom:1.5em"] {
+  margin-bottom: 1.5em !important;
+}
+
+[style*="margin-top: 1em"],
+[style*="margin-top:1em"] {
+  margin-top: 1em !important;
+}
+
+[style*="margin-top: 1.5em"],
+[style*="margin-top:1.5em"] {
+  margin-top: 1.5em !important;
+}
+
+/* Paragraph styles */
+p[data-align="center"] {
+  text-align: center !important;
+}
+
+/* Heading styles */
+h1[data-align="center"],
+h2[data-align="center"],
+h3[data-align="center"],
+h4[data-align="center"],
+h5[data-align="center"],
+h6[data-align="center"] {
+  text-align: center !important;
+} 

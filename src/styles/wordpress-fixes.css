@@ -1,0 +1,109 @@
+/**
+ * Additional fixes for WordPress components
+ */
+
+/* Fix for toolbar layout */
+.block-editor-block-toolbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+.components-toolbar,
+.components-toolbar-group {
+  display: inline-flex !important;
+  flex-direction: row !important;
+}
+
+.components-dropdown-menu {
+  display: inline-flex !important;
+}
+
+/* Format toolbar fixes */
+.block-editor-format-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+/* Editor content spacing */
+.block-editor-block-list__layout {
+  padding-left: 14px !important;
+  padding-right: 14px !important;
+}
+
+/* Fix for block controls */
+.block-editor-block-contextual-toolbar {
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+/* Button group fixes */
+.components-button-group {
+  display: inline-flex !important;
+  flex-direction: row !important;
+}
+
+/* Panel body fixes */
+.components-panel__body-toggle {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+}
+
+/* Additional resume-specific fixes */
+.wp-block {
+  max-width: 100% !important;
+}
+
+[data-align="center"] {
+  text-align: center !important;
+}
+
+.has-text-align-center {
+  text-align: center !important;
+}
+
+.has-small-font-size {
+  font-size: 14px !important;
+}
+
+.has-large-font-size {
+  font-size: 24px !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+h1 {
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+
+h2 {
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 18px !important;
+  color: #2c3e50 !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+h3 {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin-bottom: 0.2em !important;
+}
+
+ul {
+  padding-left: 20px !important;
+  margin-bottom: 1em !important;
+}
+
+ul li {
+  margin-bottom: 0.5em !important;
+} 

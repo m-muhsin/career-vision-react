@@ -1,0 +1,176 @@
+// Import WordPress styles
+import "@wordpress/components/build-style/style.css";
+import "@wordpress/block-editor/build-style/content.css";
+import "@wordpress/block-library/build-style/style.css";
+import "@wordpress/block-library/build-style/editor.css";
+
+// A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
+// At 96 DPI, that's approximately 794px × 1123px
+export const contentStyles = [
+  // Add A4 paper styling and system font stack
+  {
+    css: `
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        background-color: #f0f0f0;
+      }
+      
+      /* A4 paper styling */
+      .wp-block-post-content,
+      .editor-styles-wrapper {
+        background-color: white;
+        width: 794px !important;
+        min-height: 1123px !important;
+        margin: 20px auto;
+        padding: 15px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1px solid #e0e0e0;
+      }
+      
+      /* Block editor container */
+      .block-editor-block-list__layout {
+        max-width: calc(794px - (2 * 15px)) !important; /* Derive max-width from A4 width minus padding */
+      }
+
+      /* Text styling */
+      p {
+        margin-bottom: 1em;
+      }
+      
+      /* Headings */
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        font-weight: 600;
+      }
+      
+      h1 {
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      
+      h2 {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 18px;
+        color: #2c3e50;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+      }
+      
+      h3 {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 0.2em;
+      }
+      
+      /* Text alignment */
+      .has-text-align-center,
+      [data-align="center"],
+      [style*="text-align: center"] {
+        text-align: center !important;
+      }
+      
+      .has-text-align-left,
+      [data-align="left"],
+      [style*="text-align: left"] {
+        text-align: left !important;
+      }
+      
+      .has-text-align-right,
+      [data-align="right"],
+      [style*="text-align: right"] {
+        text-align: right !important;
+      }
+      
+      /* Font sizes */
+      .has-small-font-size,
+      [data-font-size="small"] {
+        font-size: 14px !important;
+      }
+      
+      .has-large-font-size,
+      [data-font-size="large"] {
+        font-size: 24px !important;
+      }
+      
+      /* Lists */
+      ul {
+        padding-left: 20px;
+        margin-bottom: 1em;
+      }
+      
+      ul li {
+        margin-bottom: 0.5em;
+      }
+      
+      /* Custom link styling */
+      a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        padding-bottom: 1px;
+        transition: border-color 0.2s ease;
+      }
+      
+      a:hover {
+        border-bottom-color: rgba(0, 0, 0, 0.6);
+      }
+      
+      /* Separator */
+      hr {
+        border: none;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.1);
+        margin: 1.5em 0;
+      }
+      
+      /* WordPress toolbar fix */
+      .block-editor-block-toolbar {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+      }
+      
+      .components-toolbar-group,
+      .components-toolbar {
+        display: inline-flex !important;
+        flex-direction: row !important;
+      }
+      
+      .components-dropdown-menu {
+        display: inline-flex !important;
+      }
+      
+      /* Additional styling for block attributes */
+      .block-editor-block-list__block[data-align="center"] > * {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      
+      .block-editor-block-list__block[data-type="core/paragraph"][data-align="center"] > p {
+        text-align: center !important;
+      }
+      
+      .block-editor-block-list__block[data-type="core/heading"][data-align="center"] > h1, 
+      .block-editor-block-list__block[data-type="core/heading"][data-align="center"] > h2,
+      .block-editor-block-list__block[data-type="core/heading"][data-align="center"] > h3 {
+        text-align: center !important;
+      }
+      
+      /* Hide UI elements during PDF export */
+      .pdf-export-mode .block-editor-writing-flow__click-redirect,
+      .pdf-export-mode .block-editor-block-list__insertion-point,
+      .pdf-export-mode .block-editor-block-list__block-selection-button,
+      .pdf-export-mode .block-editor-block-list__breadcrumb,
+      .pdf-export-mode .block-editor-block-toolbar,
+      .pdf-export-mode .block-editor-block-contextual-toolbar {
+        display: none !important;
+      }
+    `,
+  },
+]; 
