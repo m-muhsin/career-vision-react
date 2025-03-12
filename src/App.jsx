@@ -4,9 +4,9 @@ import "./styles/wordpress-fixes.css";
 import "./styles/block-editor-fix.css";
 import "./styles/inline-style-fix.css";
 import "./styles/wordpress-classes.css";
-import "./styles/toolbar-fix.css";
+
 import "./styles/iframe-styles.scss";
-import { contentStyles } from "./styles/contentStyles.js";
+import contentStyles from "./styles/contentStyles";
 
 // Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [

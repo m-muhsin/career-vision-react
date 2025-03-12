@@ -1,12 +1,21 @@
-// Import WordPress styles
-import "@wordpress/components/build-style/style.css";
-import "@wordpress/block-editor/build-style/content.css";
-import "@wordpress/block-library/build-style/style.css";
-import "@wordpress/block-library/build-style/editor.css";
+// Base styles for the content within the block canvas iframe.
+import componentsStyles from "@wordpress/components/build-style/style.css?raw";
+import blockEditorContentStyles from "@wordpress/block-editor/build-style/content.css?raw";
+import blocksStyles from "@wordpress/block-library/build-style/style.css?raw";
+import blocksEditorStyles from "@wordpress/block-library/build-style/editor.css?raw";
 
-// A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
-// At 96 DPI, that's approximately 794px × 1123px
-export const contentStyles = [
+import '@wordpress/components/build-style/style.css';
+import '@wordpress/block-editor/build-style/style.css';
+
+
+const contentStyles = [
+  { css: componentsStyles },
+  { css: blockEditorContentStyles },
+  { css: blocksStyles },
+  { css: blocksEditorStyles },
+
+  // A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
+  // At 96 DPI, that's approximately 794px × 1123px
   // Add A4 paper styling and system font stack
   {
     css: `
@@ -173,4 +182,6 @@ export const contentStyles = [
       }
     `,
   },
-]; 
+];
+
+export default contentStyles;
