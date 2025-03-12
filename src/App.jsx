@@ -10,35 +10,505 @@ import blocksEditorStyles from "@wordpress/block-library/build-style/editor.css?
 
 // Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [
+  // Header section
   {
-    clientId: "e8000a83-72bc-422d-ab92-6fb88e00973a",
+    clientId: "header-section",
     name: "core/group",
     isValid: true,
-    attributes: { tagName: "div", layout: { type: "constrained" } },
+    attributes: {
+      tagName: "div", 
+      layout: { type: "constrained" },
+      style: {
+        spacing: {
+          padding: {
+            bottom: "2em"
+          }
+        },
+        border: {
+          bottom: {
+            color: "#cccccc",
+            width: "1px",
+            style: "solid"
+          }
+        }
+      }
+    },
     innerBlocks: [
       {
-        clientId: "a9b661c8-1c44-4609-bf23-0ce8104e7070",
+        clientId: "name-heading",
         name: "core/heading",
         isValid: true,
-        attributes: { content: "Muhammad Muhsin", level: 2, textAlign: "left" },
+        attributes: { 
+          content: "Your Full Name", 
+          level: 1, 
+          textAlign: "center",
+          fontSize: "large",
+          spacing: {
+            margin: {
+              top: "0",
+              bottom: "0.5em"
+            }
+          },
+          style: {
+            typography: {
+              fontWeight: "700",
+              textTransform: "uppercase",
+              letterSpacing: "1px"
+            }
+          }
+        },
         innerBlocks: [],
       },
       {
-        clientId: "4dc717b7-b077-449f-94ad-af5a062b89c1",
+        clientId: "contact-info",
         name: "core/paragraph",
         isValid: true,
-        attributes: { content: "muhammad.muhseen@gmail.com", dropCap: false },
+        attributes: { 
+          content: "Email: your.email@example.com | Phone: (123) 456-7890 | Location: City, State | LinkedIn: linkedin.com/in/yourname",
+          align: "center",
+          fontSize: "small"
+        },
         innerBlocks: [],
-      },
-      {
-        clientId: "1608dccc-400a-4da3-b67d-6d37ce2f2894",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: { content: "", dropCap: false },
-        innerBlocks: [],
-      },
+      }
     ],
   },
+  
+  // Professional Summary
+  {
+    clientId: "summary-heading",
+    name: "core/heading",
+    isValid: true,
+    attributes: { 
+      content: "Professional Summary", 
+      level: 2,
+      style: {
+        typography: {
+          fontWeight: "600",
+          textTransform: "uppercase",
+          fontSize: "18px"
+        },
+        spacing: {
+          margin: {
+            top: "1.5em",
+            bottom: "0.5em"
+          }
+        },
+        color: {
+          text: "#2c3e50"
+        }
+      }
+    },
+    innerBlocks: [],
+  },
+  {
+    clientId: "summary-content",
+    name: "core/paragraph",
+    isValid: true,
+    attributes: { 
+      content: "Results-driven professional with over [X] years of experience in [industry/field]. Proven track record of [key achievement] and [key skill]. Adept at [skill/responsibility] and [skill/responsibility], with a strong focus on [value proposition]. Seeking to leverage my expertise in [area of expertise] to drive success for [target company/role]."
+    },
+    innerBlocks: [],
+  },
+  
+  // Work Experience
+  {
+    clientId: "experience-heading",
+    name: "core/heading",
+    isValid: true,
+    attributes: { 
+      content: "Work Experience", 
+      level: 2,
+      style: {
+        typography: {
+          fontWeight: "600",
+          textTransform: "uppercase",
+          fontSize: "18px"
+        },
+        spacing: {
+          margin: {
+            top: "1.5em",
+            bottom: "0.5em"
+          }
+        },
+        color: {
+          text: "#2c3e50"
+        }
+      }
+    },
+    innerBlocks: [],
+  },
+  
+  // Job 1
+  {
+    clientId: "job1-group",
+    name: "core/group",
+    isValid: true,
+    attributes: { 
+      tagName: "div",
+      style: {
+        spacing: {
+          margin: {
+            bottom: "1.5em"
+          }
+        }
+      }
+    },
+    innerBlocks: [
+      {
+        clientId: "job1-title",
+        name: "core/heading",
+        isValid: true,
+        attributes: { 
+          content: "Job Title", 
+          level: 3,
+          style: {
+            typography: {
+              fontWeight: "600",
+              fontSize: "16px"
+            },
+            spacing: {
+              margin: {
+                bottom: "0.2em"
+              }
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "job1-company",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: { 
+          content: "<strong>Company Name</strong> | City, State | <em>Month Year - Present</em>",
+          style: {
+            spacing: {
+              margin: {
+                top: "0",
+                bottom: "0.5em"
+              }
+            },
+            typography: {
+              fontSize: "14px"
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "job1-desc",
+        name: "core/list",
+        isValid: true,
+        attributes: {
+          values: "<li>Spearheaded [specific project/initiative] that resulted in [specific, quantifiable result].</li><li>Managed a team of [X] professionals, overseeing [specific responsibility] and driving [specific outcome].</li><li>Implemented [specific strategy/solution] that improved [specific metric] by [X]%.</li><li>Collaborated with cross-functional teams to [specific accomplishment] and [specific result].</li>"
+        },
+        innerBlocks: [],
+      }
+    ],
+  },
+  
+  // Job 2
+  {
+    clientId: "job2-group",
+    name: "core/group",
+    isValid: true,
+    attributes: { 
+      tagName: "div",
+      style: {
+        spacing: {
+          margin: {
+            bottom: "1.5em"
+          }
+        }
+      }
+    },
+    innerBlocks: [
+      {
+        clientId: "job2-title",
+        name: "core/heading",
+        isValid: true,
+        attributes: { 
+          content: "Previous Job Title", 
+          level: 3,
+          style: {
+            typography: {
+              fontWeight: "600",
+              fontSize: "16px"
+            },
+            spacing: {
+              margin: {
+                bottom: "0.2em"
+              }
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "job2-company",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: { 
+          content: "<strong>Previous Company</strong> | City, State | <em>Month Year - Month Year</em>",
+          style: {
+            spacing: {
+              margin: {
+                top: "0",
+                bottom: "0.5em"
+              }
+            },
+            typography: {
+              fontSize: "14px"
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "job2-desc",
+        name: "core/list",
+        isValid: true,
+        attributes: {
+          values: "<li>Led [specific initiative] that [specific achievement].</li><li>Developed and implemented [specific strategy] resulting in [specific outcome].</li><li>Consistently exceeded [specific goals/metrics] by [percentage/amount].</li>"
+        },
+        innerBlocks: [],
+      }
+    ],
+  },
+  
+  // Education
+  {
+    clientId: "education-heading",
+    name: "core/heading",
+    isValid: true,
+    attributes: { 
+      content: "Education", 
+      level: 2,
+      style: {
+        typography: {
+          fontWeight: "600",
+          textTransform: "uppercase",
+          fontSize: "18px"
+        },
+        spacing: {
+          margin: {
+            top: "1.5em",
+            bottom: "0.5em"
+          }
+        },
+        color: {
+          text: "#2c3e50"
+        }
+      }
+    },
+    innerBlocks: [],
+  },
+  
+  // Degree
+  {
+    clientId: "education-group",
+    name: "core/group",
+    isValid: true,
+    attributes: { 
+      tagName: "div"
+    },
+    innerBlocks: [
+      {
+        clientId: "degree-title",
+        name: "core/heading",
+        isValid: true,
+        attributes: { 
+          content: "Degree Name", 
+          level: 3,
+          style: {
+            typography: {
+              fontWeight: "600",
+              fontSize: "16px"
+            },
+            spacing: {
+              margin: {
+                bottom: "0.2em"
+              }
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "institution",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: { 
+          content: "<strong>Institution Name</strong> | City, State | <em>Graduation Year</em>",
+          style: {
+            spacing: {
+              margin: {
+                top: "0",
+                bottom: "0.5em"
+              }
+            },
+            typography: {
+              fontSize: "14px"
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "education-desc",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: { 
+          content: "Relevant coursework: [Course 1], [Course 2], [Course 3]<br>GPA: [X.XX/4.0]<br>Honors/Awards: [Honor/Award], [Honor/Award]",
+          fontSize: "small"
+        },
+        innerBlocks: [],
+      }
+    ],
+  },
+  
+  // Skills
+  {
+    clientId: "skills-heading",
+    name: "core/heading",
+    isValid: true,
+    attributes: { 
+      content: "Skills", 
+      level: 2,
+      style: {
+        typography: {
+          fontWeight: "600",
+          textTransform: "uppercase",
+          fontSize: "18px"
+        },
+        spacing: {
+          margin: {
+            top: "1.5em",
+            bottom: "0.5em"
+          }
+        },
+        color: {
+          text: "#2c3e50"
+        }
+      }
+    },
+    innerBlocks: [],
+  },
+  {
+    clientId: "skills-group",
+    name: "core/group",
+    isValid: true,
+    attributes: { 
+      tagName: "div",
+      style: {
+        spacing: {
+          margin: {
+            bottom: "1.5em"
+          }
+        }
+      }
+    },
+    innerBlocks: [
+      {
+        clientId: "tech-skills",
+        name: "core/heading",
+        isValid: true,
+        attributes: { 
+          content: "Technical Skills", 
+          level: 3,
+          style: {
+            typography: {
+              fontWeight: "600",
+              fontSize: "16px"
+            },
+            spacing: {
+              margin: {
+                bottom: "0.2em"
+              }
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "tech-skills-list",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: { 
+          content: "[Skill 1] • [Skill 2] • [Skill 3] • [Skill 4] • [Skill 5] • [Skill 6]"
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "soft-skills",
+        name: "core/heading",
+        isValid: true,
+        attributes: { 
+          content: "Soft Skills", 
+          level: 3,
+          style: {
+            typography: {
+              fontWeight: "600",
+              fontSize: "16px"
+            },
+            spacing: {
+              margin: {
+                top: "1em",
+                bottom: "0.2em"
+              }
+            }
+          }
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "soft-skills-list",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: { 
+          content: "[Soft Skill 1] • [Soft Skill 2] • [Soft Skill 3] • [Soft Skill 4]"
+        },
+        innerBlocks: [],
+      }
+    ],
+  },
+  
+  // Certifications (Optional)
+  {
+    clientId: "certifications-heading",
+    name: "core/heading",
+    isValid: true,
+    attributes: { 
+      content: "Certifications", 
+      level: 2,
+      style: {
+        typography: {
+          fontWeight: "600",
+          textTransform: "uppercase",
+          fontSize: "18px"
+        },
+        spacing: {
+          margin: {
+            top: "1.5em",
+            bottom: "0.5em"
+          }
+        },
+        color: {
+          text: "#2c3e50"
+        }
+      }
+    },
+    innerBlocks: [],
+  },
+  {
+    clientId: "certifications-list",
+    name: "core/list",
+    isValid: true,
+    attributes: {
+      values: "<li><strong>[Certification Name]</strong> - [Issuing Organization] ([Year])</li><li><strong>[Certification Name]</strong> - [Issuing Organization] ([Year])</li>"
+    },
+    innerBlocks: [],
+  }
 ];
 
 // A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
@@ -65,7 +535,7 @@ const contentStyles = [
         width: 794px !important;
         min-height: 1123px !important;
         margin: 20px auto;
-        padding: 60px;
+        padding: 15px;
         box-sizing: border-box;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         border: 1px solid #e0e0e0;
@@ -73,16 +543,9 @@ const contentStyles = [
       
       /* Block editor container */
       .block-editor-block-list__layout {
-        max-width: 674px !important; /* 794px - 2*60px padding */
+        max-width: calc(794px - (2 * 15px)) !important; /* Derive max-width from A4 width minus padding */
       }
-      
-      /* Improved typography */
-      h1, h2, h3, h4, h5, h6 {
-        font-weight: 600;
-        margin-top: 1.5em;
-        margin-bottom: 0.5em;
-      }
-      
+
       p {
         margin-bottom: 1em;
       }
