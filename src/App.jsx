@@ -80,6 +80,7 @@ const resumeTemplate = [
     isValid: true,
     attributes: { 
       content: "Professional Summary", 
+      textAlign: "center",
       level: 2,
       style: {
         typography: {
@@ -117,6 +118,7 @@ const resumeTemplate = [
     isValid: true,
     attributes: { 
       content: "Work Experience", 
+      textAlign: "center",
       level: 2,
       style: {
         typography: {
@@ -230,6 +232,7 @@ const resumeTemplate = [
         attributes: { 
           content: "Previous Job Title", 
           level: 3,
+          textAlign: "center",
           style: {
             typography: {
               fontWeight: "600",
@@ -284,6 +287,7 @@ const resumeTemplate = [
     attributes: { 
       content: "Education", 
       level: 2,
+      textAlign: "center",
       style: {
         typography: {
           fontWeight: "600",
@@ -375,6 +379,7 @@ const resumeTemplate = [
     attributes: { 
       content: "Skills", 
       level: 2,
+      textAlign: "center",
       style: {
         typography: {
           fontWeight: "600",
@@ -481,6 +486,7 @@ const resumeTemplate = [
     attributes: { 
       content: "Certifications", 
       level: 2,
+      textAlign: "center",
       style: {
         typography: {
           fontWeight: "600",
