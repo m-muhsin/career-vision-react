@@ -41,28 +41,7 @@ async function handler(req, res) {
     // Log some info about the PDF for debugging
     console.log(`Processing PDF: ${pdfPart.filename}, size: ${pdfPart.data.length} bytes`);
 
-    // Try simple text extraction first
-    try {
-      // Convert the PDF buffer to a string
-      const pdfText = pdfPart.data.toString('utf8');
-      
-      // Try to extract text using a simple regex approach
-      // This will only work for basic PDFs with readable text
-      const textMatches = pdfText.match(/[\w\s.,;:'"!?-]+/g) || [];
-      const extractedText = textMatches.join(' ').trim();
-      
-      if (extractedText.length > 100) { // Ensure we got something meaningful
-        console.log('Extracted text using simple approach');
-        return res.status(200).json({ 
-          text: extractedText,
-          method: 'simple'
-        });
-      }
-    } catch (_) {
-      console.log('Simple extraction failed, trying PDF.js approach');
-    }
-
-    // If simple extraction didn't work, try PDF.js
+    // Use PDF.js for all PDF parsing
     try {
       // For Vercel serverless, we need to require PDF.js differently
       const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');

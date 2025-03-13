@@ -128,36 +128,7 @@ router.post(async (req, res) => {
       
       console.log(`Processing PDF file of size: ${req.file.size} bytes`);
       
-      // Simple text extraction using regex
-      // This is a fallback in case PDF.js fails
-      try {
-        // Convert the PDF buffer to a string
-        const pdfText = req.file.buffer.toString('utf8');
-        
-        // Try to extract text using a simple regex approach
-        // This will only work for basic PDFs with readable text
-        const textMatches = pdfText.match(/[\w\s.,;:'"!?-]+/g) || [];
-        const extractedText = textMatches.join(' ').trim();
-        
-        if (extractedText.length > 100) { // Ensure we got something meaningful
-          console.log('Extracted text using simple approach');
-          
-          // Parse resume structure
-          const parsedResume = parseResumeText(extractedText);
-          
-          // Return the parsed content
-          return res.json({
-            success: true,
-            text: extractedText,
-            structured: parsedResume.structured || null,
-            method: 'simple'
-          });
-        }
-      } catch (_) {
-        console.log('Simple extraction failed, trying PDF.js approach');
-      }
-      
-      // Try the PDF.js approach if simple extraction wasn't successful
+      // Use the PDF.js approach for all PDF parsing
       try {
         // For Vercel serverless, we need to require PDF.js differently
         const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
