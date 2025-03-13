@@ -5,10 +5,12 @@ const PdfUploader = ({ onParsed }) => {
   const [error, setError] = useState(null);
   const [debug, setDebug] = useState(null);
   const [fileName, setFileName] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const handleFileChange = async (event) => {
     setError(null);
     setDebug(null);
+    setRetryCount(0);
     const file = event.target.files[0];
 
     if (!file) {
@@ -21,16 +23,31 @@ const PdfUploader = ({ onParsed }) => {
     }
 
     setFileName(file.name);
+    await processPdf(file);
+  };
+
+  const processPdf = async (file, isRetry = false) => {
     setLoading(true);
-    setDebug(`File selected: ${file.name} (${Math.round(file.size / 1024)} KB)`);
+    
+    if (!isRetry) {
+      setDebug(`File selected: ${file.name} (${Math.round(file.size / 1024)} KB)`);
+    } else {
+      setDebug(prev => `${prev}\nRetrying... (Attempt ${retryCount + 1})`);
+    }
 
     const formData = new FormData();
     formData.append('pdfFile', file);
 
     try {
-      setDebug(prev => `${prev}\nSending request to server...`);
+      // Try both endpoints, starting with parse-resume
+      const endpoints = ['/api/parse-resume', '/api/parse-pdf'];
       
-      const response = await fetch('/api/parse-pdf', {
+      // Use the retryCount to determine which endpoint to try
+      const endpoint = endpoints[retryCount % endpoints.length];
+      
+      setDebug(prev => `${prev}\nSending request to ${endpoint}...`);
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
       });
@@ -52,8 +69,18 @@ const PdfUploader = ({ onParsed }) => {
       
       if (errorMessage.includes('no text') || errorMessage.includes('text extracted')) {
         errorMessage = 'No text could be extracted from this PDF. It may be image-based or secured.';
-      } else if (errorMessage.includes('parse')) {
+      } else if (errorMessage.includes('parse') || errorMessage.includes('module')) {
         errorMessage = 'Error parsing the PDF. Please try a different PDF file.';
+        
+        // If there's a module error, we can try the other endpoint
+        if (errorMessage.includes('module') && retryCount < 2) {
+          setRetryCount(retryCount + 1);
+          setDebug(prev => `${prev}\nError: ${err.toString()}\nWill retry with different endpoint...`);
+          setError(null);
+          setLoading(false);
+          await processPdf(file, true);
+          return;
+        }
       }
       
       setError(errorMessage);
@@ -82,7 +109,7 @@ const PdfUploader = ({ onParsed }) => {
       {loading && (
         <div className="loading-indicator">
           <div className="spinner"></div>
-          <p>Parsing PDF on server...</p>
+          <p>Parsing PDF on server{retryCount > 0 ? ` (Retry ${retryCount})` : ''}...</p>
         </div>
       )}
       

@@ -130,12 +130,43 @@ router.post(async (req, res) => {
       
       // Use the PDF.js approach for all PDF parsing
       try {
-        // For Vercel serverless, we need to require PDF.js differently
-        const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+        // Try to load PDF.js with more robust error handling
+        let pdfjsLib, pdfjsWorker;
         
-        // Set up the worker
-        const pdfjsWorker = require('pdfjs-dist/legacy/build/pdf.worker.js');
-        pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
+        try {
+          // First try the legacy path
+          pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+          pdfjsWorker = require('pdfjs-dist/legacy/build/pdf.worker.js');
+          console.log('Successfully loaded PDF.js from legacy path');
+        } catch (importError) {
+          console.log('Could not load PDF.js from legacy path, trying alternative paths:', importError.message);
+          
+          try {
+            // Try without the legacy path
+            pdfjsLib = require('pdfjs-dist/build/pdf.js');
+            pdfjsWorker = require('pdfjs-dist/build/pdf.worker.js');
+            console.log('Successfully loaded PDF.js from standard path');
+          } catch (importError2) {
+            console.log('Could not load PDF.js from standard path, trying es5 path');
+            
+            try {
+              // Try the ES5 path as last resort
+              pdfjsLib = require('pdfjs-dist/es5/build/pdf.js');
+              pdfjsWorker = require('pdfjs-dist/es5/build/pdf.worker.js');
+              console.log('Successfully loaded PDF.js from ES5 path');
+            } catch (importError3) {
+              console.error('All PDF.js import attempts failed');
+              throw new Error(`Could not load PDF.js: ${importError3.message}. Please make sure pdfjs-dist is installed.`);
+            }
+          }
+        }
+        
+        // Set up the worker if we have one
+        if (pdfjsWorker && pdfjsWorker.PDFWorker) {
+          pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
+        } else {
+          console.log('PDF.js worker not found, using default worker');
+        }
         
         // Convert Buffer to Uint8Array as required by PDF.js
         const uint8Array = new Uint8Array(req.file.buffer);
