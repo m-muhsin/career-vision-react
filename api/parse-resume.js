@@ -132,6 +132,7 @@ router.post(async (req, res) => {
       try {
         // Try to load PDF.js with more robust error handling
         let pdfjsLib, pdfjsWorker;
+        let useDirectParser = false;
         
         try {
           // First try the legacy path
@@ -156,41 +157,107 @@ router.post(async (req, res) => {
               console.log('Successfully loaded PDF.js from ES5 path');
             } catch (importError3) {
               console.error('All PDF.js import attempts failed');
-              throw new Error(`Could not load PDF.js: ${importError3.message}. Please make sure pdfjs-dist is installed.`);
+              console.log('Falling back to direct text extraction method');
+              useDirectParser = true;
             }
           }
         }
         
-        // Set up the worker if we have one
-        if (pdfjsWorker && pdfjsWorker.PDFWorker) {
-          pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
-        } else {
-          console.log('PDF.js worker not found, using default worker');
-        }
-        
-        // Convert Buffer to Uint8Array as required by PDF.js
-        const uint8Array = new Uint8Array(req.file.buffer);
-        
-        // Load and parse the PDF
-        const pdfDoc = await pdfjsLib.getDocument({
-          data: uint8Array,
-          disableRange: true,
-          disableStream: true,
-          disableAutoFetch: true,
-          isEvalSupported: false
-        }).promise;
-        
-        console.log(`PDF loaded successfully. Pages: ${pdfDoc.numPages}`);
-        
-        // Extract text from all pages
+        // Extract text from PDF
         let fullText = '';
-        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-          const page = await pdfDoc.getPage(pageNum);
-          const textContent = await page.getTextContent();
-          const pageText = textContent.items.map(item => item.str).join(' ');
-          fullText += pageText + '\n\n';
+        
+        if (useDirectParser) {
+          // Direct text extraction method for when PDF.js is not available
+          console.log('Using direct text extraction method');
           
-          console.log(`Processed page ${pageNum}/${pdfDoc.numPages}`);
+          try {
+            // Try to extract text directly from the PDF buffer
+            // This is a simple method that works for basic PDFs
+            const pdfString = req.file.buffer.toString('binary');
+            
+            // Basic regex to find text objects in the PDF
+            // This is not a comprehensive PDF parser, but can extract basic text
+            const textMarkers = /\/(T[a-zA-Z]*|W|Tf|Tj|TJ|Td|TD|Tm)\s*(\(|\[)/g;
+            const textChunks = [];
+            let match;
+            
+            while ((match = textMarkers.exec(pdfString)) !== null) {
+              // Find the start of the text object
+              const startIdx = match.index + match[0].length - 1;
+              let endIdx = startIdx;
+              let depth = 1;
+              const opener = pdfString[startIdx];
+              const closer = opener === '(' ? ')' : ']';
+              
+              // Find the end of the text object by matching parentheses/brackets
+              for (let i = startIdx + 1; i < pdfString.length && depth > 0; i++) {
+                if (pdfString[i] === opener) depth++;
+                else if (pdfString[i] === closer) depth--;
+                if (depth === 0) endIdx = i;
+              }
+              
+              if (endIdx > startIdx) {
+                let text = pdfString.substring(startIdx + 1, endIdx);
+                
+                // Basic PDF text decoding
+                text = text.replace(/\\n/g, '\n')
+                          .replace(/\\r/g, '\r')
+                          .replace(/\\t/g, '\t')
+                          .replace(/\\\(/g, '(')
+                          .replace(/\\\)/g, ')')
+                          .replace(/\\\\/g, '\\');
+                
+                // Remove non-printable ASCII chars
+                text = text.replace(/[^\x20-\x7E\r\n\t]/g, ' ');
+                
+                textChunks.push(text);
+              }
+            }
+            
+            fullText = textChunks.join(' ').trim();
+            
+            // If we got a significant amount of text, consider it successful
+            if (fullText.length > 100) {
+              console.log(`Extracted ${fullText.length} characters using direct method`);
+            } else {
+              throw new Error('Insufficient text extracted');
+            }
+          } catch (directError) {
+            console.error('Direct text extraction failed:', directError);
+            throw new Error('PDF text extraction failed. The PDF may be image-based, secured, or in a format we cannot parse.');
+          }
+        } else {
+          // Use PDF.js if it was successfully loaded
+          // Set up the worker if we have one
+          if (pdfjsWorker && pdfjsWorker.PDFWorker) {
+            pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
+          } else {
+            console.log('PDF.js worker not found, using default worker');
+          }
+          
+          // Convert Buffer to Uint8Array as required by PDF.js
+          const uint8Array = new Uint8Array(req.file.buffer);
+          
+          // Load and parse the PDF
+          const pdfDoc = await pdfjsLib.getDocument({
+            data: uint8Array,
+            disableRange: true,
+            disableStream: true,
+            disableAutoFetch: true,
+            isEvalSupported: false
+          }).promise;
+          
+          console.log(`PDF loaded successfully. Pages: ${pdfDoc.numPages}`);
+          
+          // Extract text from all pages
+          for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+            const page = await pdfDoc.getPage(pageNum);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            fullText += pageText + '\n\n';
+            
+            console.log(`Processed page ${pageNum}/${pdfDoc.numPages}`);
+          }
         }
         
         if (!fullText || fullText.trim().length === 0) {
@@ -205,7 +272,7 @@ router.post(async (req, res) => {
           success: true,
           text: fullText,
           structured: parsedResume.structured || null,
-          method: 'pdfjs'
+          method: useDirectParser ? 'direct' : 'pdfjs'
         });
       } catch (pdfError) {
         console.error('PDF.js parsing failed:', pdfError);
