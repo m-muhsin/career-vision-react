@@ -65,7 +65,7 @@ const headerStyles = {
     cursor: "not-allowed",
   },
   downloadButton: {
-    backgroundColor: "#069CAF",
+    backgroundColor: "#05889a",
     color: "white",
     border: "none",
     borderRadius: "4px",
@@ -80,12 +80,48 @@ const headerStyles = {
     transition: "background-color 0.3s ease",
   },
   downloadButtonHover: {
-    backgroundColor: "#05889a",
+    backgroundColor: "#069CAF",
   },
   buttonIcon: {
     width: "16px",
     height: "16px",
     fill: "currentColor",
+  },
+  newButton: {
+    backgroundColor: "#3aba60",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    padding: "8px 15px",
+    fontSize: "14px",
+    fontWeight: "600",
+    fontFamily: "'Poppins', sans-serif",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    transition: "background-color 0.3s ease",
+  },
+  newButtonHover: {
+    backgroundColor: "#4ade80",
+  },
+  importButton: {
+    backgroundColor: "#d97706",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    padding: "10px 15px",
+    fontSize: "14px",
+    fontWeight: "600",
+    fontFamily: "'Poppins', sans-serif",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    transition: "background-color 0.3s ease",
+  },
+  importButtonHover: {
+    backgroundColor: "#f59e0b",
   },
 };
 
@@ -96,6 +132,8 @@ const Header = ({
   handleUndo,
   handleRedo,
   handlePrint,
+  toggleEditMode,
+  isEditingMode,
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [undoHover, setUndoHover] = useState(false);
@@ -103,6 +141,8 @@ const Header = ({
   const [redoHover, setRedoHover] = useState(false);
   const [redoActive, setRedoActive] = useState(false);
   const [downloadHover, setDownloadHover] = useState(false);
+  const [newHover, setNewHover] = useState(false);
+  const [importHover, setImportHover] = useState(false);
 
   // Effect to detect scrolling in the iframe
   useEffect(() => {
@@ -230,6 +270,97 @@ const Header = ({
       </a>
 
       <div style={headerStyles.actionsContainer}>
+        {/* New + Button */}
+        <button
+          style={{
+            ...headerStyles.newButton,
+            ...(newHover ? headerStyles.newButtonHover : {})
+          }}
+          onClick={() => {
+            // You can add functionality to create a new document here
+            // For now, we'll just reset to the default template
+            window.location.reload();
+          }}
+          onMouseEnter={() => setNewHover(true)}
+          onMouseLeave={() => setNewHover(false)}
+          title="Create New Resume"
+          aria-label="Create new resume"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={headerStyles.buttonIcon}
+          >
+            <path
+              d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+              fill="currentColor"
+            />
+          </svg>
+          New
+        </button>
+        
+        {/* Import/Edit Toggle Button */}
+        {isEditingMode && (
+          <button
+            style={{
+              ...headerStyles.importButton,
+              ...(importHover ? headerStyles.importButtonHover : {})
+            }}
+            onClick={toggleEditMode}
+            onMouseEnter={() => setImportHover(true)}
+            onMouseLeave={() => setImportHover(false)}
+            title="Import Resume"
+            aria-label="Import resume from PDF"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={headerStyles.buttonIcon}
+            >
+              <path
+                d="M5 20h14v-2H5v2zM5 10h4v6h6v-6h4l-7-7-7 7z"
+                fill="currentColor"
+              />
+            </svg>
+            Import Resume
+          </button>
+        )}
+        
+        {!isEditingMode && (
+          <button
+            style={{
+              ...headerStyles.importButton,
+              ...(importHover ? headerStyles.importButtonHover : {})
+            }}
+            onClick={toggleEditMode}
+            onMouseEnter={() => setImportHover(true)}
+            onMouseLeave={() => setImportHover(false)}
+            title="Back to Editor"
+            aria-label="Return to editor"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={headerStyles.buttonIcon}
+            >
+              <path
+                d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+                fill="currentColor"
+              />
+            </svg>
+            Back to Editor
+          </button>
+        )}
+        
         {/* Undo Button */}
         <button
           style={{

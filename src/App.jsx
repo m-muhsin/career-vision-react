@@ -10,9 +10,8 @@ import "./styles/fonts.css";
 import "./App.css";
 import { contentStyles } from "./styles/contentStyles.js";
 import Header from "./components/Header";
-import ImportResume from "./components/ImportResume";
+import ResumeBuilder from "./components/ResumeBuilder";
 
-// Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [
   // Header section
   {
@@ -23,11 +22,7 @@ const resumeTemplate = [
       tagName: "div",
       layout: { type: "constrained" },
       style: {
-        spacing: {
-          padding: {
-            top: "1em",
-          },
-        },
+        spacing: { padding: { top: "1em" } },
       },
     },
     innerBlocks: [
@@ -36,16 +31,11 @@ const resumeTemplate = [
         name: "core/heading",
         isValid: true,
         attributes: {
-          content: "Your Full Name",
+          content: "Muhammad Muhsin",
           level: 1,
           textAlign: "center",
           fontSize: "large",
-          spacing: {
-            margin: {
-              top: "0",
-              bottom: "0.5em",
-            },
-          },
+          spacing: { margin: { top: "0", bottom: "0.5em" } },
           style: {
             typography: {
               fontWeight: "700",
@@ -62,7 +52,7 @@ const resumeTemplate = [
         isValid: true,
         attributes: {
           content:
-            '<a href="mailto:your.email@example.com">your.email@example.com</a> | (123) 456-7890 | City, State | <a href="https://linkedin.com/in/yourname" target="_blank">linkedin.com/in/yourname</a>',
+            '<a href="mailto:muhammad.muhseen@gmail.com">muhammad.muhseen@gmail.com</a> | Colombo, Sri Lanka | <a href="https://www.linkedin.com/in/mmuhsin" target="_blank">linkedin.com/in/mmuhsin</a> | <a href="https://muhammad.dev" target="_blank">muhammad.dev</a>',
           align: "center",
           fontSize: "small",
         },
@@ -74,10 +64,7 @@ const resumeTemplate = [
     clientId: "separator-1",
     name: "core/separator",
     isValid: true,
-    attributes: {
-      opacity: "alpha-channel",
-      tagName: "hr",
-    },
+    attributes: { opacity: "alpha-channel", tagName: "hr" },
     innerBlocks: [],
   },
   {
@@ -94,15 +81,8 @@ const resumeTemplate = [
           textTransform: "uppercase",
           fontSize: "18px",
         },
-        spacing: {
-          margin: {
-            top: "1.5em",
-            bottom: "0.5em",
-          },
-        },
-        color: {
-          text: "#2c3e50",
-        },
+        spacing: { margin: { top: "1.5em", bottom: "0.5em" } },
+        color: { text: "#2c3e50" },
       },
     },
     innerBlocks: [],
@@ -113,7 +93,7 @@ const resumeTemplate = [
     isValid: true,
     attributes: {
       content:
-        "Results-driven professional with over [X] years of experience in [industry/field]. Proven track record of [key achievement] and [key skill]. Adept at [skill/responsibility] and [skill/responsibility], with a strong focus on [value proposition]. Seeking to leverage my expertise in [area of expertise] to drive success for [target company/role].",
+        "Software engineer and business owner specializing in React, WordPress, and Gutenberg. Experienced in building Block Themes and modern WordPress experiences, including work on WordPress VIP platforms. Passionate about open-source technology, writing, and public speaking.",
     },
     innerBlocks: [],
   },
@@ -133,34 +113,21 @@ const resumeTemplate = [
           textTransform: "uppercase",
           fontSize: "18px",
         },
-        spacing: {
-          margin: {
-            top: "1.5em",
-            bottom: "0.5em",
-          },
-        },
-        color: {
-          text: "#2c3e50",
-        },
+        spacing: { margin: { top: "1.5em", bottom: "0.5em" } },
+        color: { text: "#2c3e50" },
       },
     },
     innerBlocks: [],
   },
 
-  // Job 1
+  // Most Recent Job
   {
     clientId: "job1-group",
     name: "core/group",
     isValid: true,
     attributes: {
       tagName: "div",
-      style: {
-        spacing: {
-          margin: {
-            bottom: "1.5em",
-          },
-        },
-      },
+      style: { spacing: { margin: { bottom: "1.5em" } } },
     },
     innerBlocks: [
       {
@@ -168,18 +135,11 @@ const resumeTemplate = [
         name: "core/heading",
         isValid: true,
         attributes: {
-          content: "Job Title",
+          content: "Product Developer",
           level: 3,
           style: {
-            typography: {
-              fontWeight: "600",
-              fontSize: "16px",
-            },
-            spacing: {
-              margin: {
-                bottom: "0.2em",
-              },
-            },
+            typography: { fontWeight: "600", fontSize: "16px" },
+            spacing: { margin: { bottom: "0.2em" } },
           },
         },
         innerBlocks: [],
@@ -190,17 +150,10 @@ const resumeTemplate = [
         isValid: true,
         attributes: {
           content:
-            "<strong>Company Name</strong> | City, State | <em>Month Year - Present</em>",
+            "<strong>Awesome Motive, Inc.</strong> | Florida, United States | <em>Sep 2022 - Dec 2024</em>",
           style: {
-            spacing: {
-              margin: {
-                top: "0",
-                bottom: "0.5em",
-              },
-            },
-            typography: {
-              fontSize: "14px",
-            },
+            spacing: { margin: { top: "0", bottom: "0.5em" } },
+            typography: { fontSize: "14px" },
           },
         },
         innerBlocks: [],
@@ -211,27 +164,21 @@ const resumeTemplate = [
         isValid: true,
         attributes: {
           values:
-            "<li>Spearheaded [specific project/initiative] that resulted in [specific, quantifiable result].</li><li>Managed a team of [X] professionals, overseeing [specific responsibility] and driving [specific outcome].</li><li>Implemented [specific strategy/solution] that improved [specific metric] by [X]%.</li><li>Collaborated with cross-functional teams to [specific accomplishment] and [specific result].</li>",
+            "<li>Rebuilt OptinMonster.com using Block Themes and custom blocks.</li><li>Developed features and fixed bugs using React, Vue, and PHP.</li>",
         },
         innerBlocks: [],
       },
     ],
   },
 
-  // Job 2
+  // Previous Job
   {
     clientId: "job2-group",
     name: "core/group",
     isValid: true,
     attributes: {
       tagName: "div",
-      style: {
-        spacing: {
-          margin: {
-            bottom: "1.5em",
-          },
-        },
-      },
+      style: { spacing: { margin: { bottom: "1.5em" } } },
     },
     innerBlocks: [
       {
@@ -239,18 +186,11 @@ const resumeTemplate = [
         name: "core/heading",
         isValid: true,
         attributes: {
-          content: "Previous Job Title",
+          content: "Senior Engineer",
           level: 3,
           style: {
-            typography: {
-              fontWeight: "600",
-              fontSize: "16px",
-            },
-            spacing: {
-              margin: {
-                bottom: "0.2em",
-              },
-            },
+            typography: { fontWeight: "600", fontSize: "16px" },
+            spacing: { margin: { bottom: "0.2em" } },
           },
         },
         innerBlocks: [],
@@ -261,17 +201,10 @@ const resumeTemplate = [
         isValid: true,
         attributes: {
           content:
-            "<strong>Previous Company</strong> | City, State | <em>Month Year - Month Year</em>",
+            "<strong>XWP</strong> | Melbourne, Australia | <em>Jan 2022 - Aug 2022</em>",
           style: {
-            spacing: {
-              margin: {
-                top: "0",
-                bottom: "0.5em",
-              },
-            },
-            typography: {
-              fontSize: "14px",
-            },
+            spacing: { margin: { top: "0", bottom: "0.5em" } },
+            typography: { fontSize: "14px" },
           },
         },
         innerBlocks: [],
@@ -282,7 +215,56 @@ const resumeTemplate = [
         isValid: true,
         attributes: {
           values:
-            "<li>Led [specific initiative] that [specific achievement].</li><li>Developed and implemented [specific strategy] resulting in [specific outcome].</li><li>Consistently exceeded [specific goals/metrics] by [percentage/amount].</li>",
+            "<li>Developed frontend components using Gutenberg.</li><li>Built React extensions for Twitch and Amazon partnerships.</li>",
+        },
+        innerBlocks: [],
+      },
+    ],
+  },
+  {
+    clientId: "job3-group",
+    name: "core/group",
+    isValid: true,
+    attributes: {
+      tagName: "div",
+      style: { spacing: { margin: { bottom: "1.5em" } } },
+    },
+    innerBlocks: [
+      {
+        clientId: "job3-title",
+        name: "core/heading",
+        isValid: true,
+        attributes: {
+          content: "Senior Engineer",
+          level: 3,
+          style: {
+            typography: { fontWeight: "600", fontSize: "16px" },
+            spacing: { margin: { bottom: "0.2em" } },
+          },
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "job3-company",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: {
+          content:
+            "<strong>XWP</strong> | Melbourne, Australia | <em>Jan 2022 - Aug 2022</em>",
+          style: {
+            spacing: { margin: { top: "0", bottom: "0.5em" } },
+            typography: { fontSize: "14px" },
+          },
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "job3-desc",
+        name: "core/list",
+        isValid: true,
+        attributes: {
+          values:
+            "<li>Developed frontend components using Gutenberg.</li><li>Built React extensions for Twitch and Amazon partnerships.</li>",
         },
         innerBlocks: [],
       },
@@ -304,47 +286,26 @@ const resumeTemplate = [
           textTransform: "uppercase",
           fontSize: "18px",
         },
-        spacing: {
-          margin: {
-            top: "1.5em",
-            bottom: "0.5em",
-          },
-        },
-        color: {
-          text: "#2c3e50",
-        },
+        spacing: { margin: { top: "1.5em", bottom: "0.5em" } },
+        color: { text: "#2c3e50" },
       },
     },
     innerBlocks: [],
   },
-
-  // Degree
   {
     clientId: "education-group",
     name: "core/group",
     isValid: true,
-    attributes: {
-      tagName: "div",
-    },
+    attributes: { tagName: "div" },
     innerBlocks: [
       {
         clientId: "degree-title",
         name: "core/heading",
         isValid: true,
         attributes: {
-          content: "Degree Name",
+          content: "Bachelor's Degree, Software Engineering",
           level: 3,
-          style: {
-            typography: {
-              fontWeight: "600",
-              fontSize: "16px",
-            },
-            spacing: {
-              margin: {
-                bottom: "0.2em",
-              },
-            },
-          },
+          style: { typography: { fontWeight: "600", fontSize: "16px" } },
         },
         innerBlocks: [],
       },
@@ -354,29 +315,8 @@ const resumeTemplate = [
         isValid: true,
         attributes: {
           content:
-            "<strong>Institution Name</strong> | City, State | <em>Graduation Year</em>",
-          style: {
-            spacing: {
-              margin: {
-                top: "0",
-                bottom: "0.5em",
-              },
-            },
-            typography: {
-              fontSize: "14px",
-            },
-          },
-        },
-        innerBlocks: [],
-      },
-      {
-        clientId: "education-desc",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: {
-          content:
-            "Relevant coursework: [Course 1], [Course 2], [Course 3]<br>GPA: [X.XX/4.0]<br>Honors/Awards: [Honor/Award], [Honor/Award]",
-          fontSize: "small",
+            "<strong>University of Plymouth</strong> | <em>2013 - 2016</em>",
+          typography: { fontSize: "14px" },
         },
         innerBlocks: [],
       },
@@ -393,145 +333,23 @@ const resumeTemplate = [
       level: 2,
       textAlign: "center",
       style: {
-        typography: {
-          fontWeight: "600",
-          textTransform: "uppercase",
-          fontSize: "18px",
-        },
-        spacing: {
-          margin: {
-            top: "1.5em",
-            bottom: "0.5em",
-          },
-        },
-        color: {
-          text: "#2c3e50",
-        },
+        typography: { fontWeight: "600", textTransform: "uppercase", fontSize: "18px" },
+        spacing: { margin: { top: "1.5em", bottom: "0.5em" } },
+        color: { text: "#2c3e50" },
       },
     },
     innerBlocks: [],
   },
   {
-    clientId: "skills-group",
-    name: "core/group",
+    clientId: "skills-list",
+    name: "core/paragraph",
     isValid: true,
     attributes: {
-      tagName: "div",
-      style: {
-        spacing: {
-          margin: {
-            bottom: "1.5em",
-          },
-        },
-      },
-    },
-    innerBlocks: [
-      {
-        clientId: "tech-skills",
-        name: "core/heading",
-        isValid: true,
-        attributes: {
-          content: "Technical Skills",
-          level: 3,
-          style: {
-            typography: {
-              fontWeight: "600",
-              fontSize: "16px",
-            },
-            spacing: {
-              margin: {
-                bottom: "0.2em",
-              },
-            },
-          },
-        },
-        innerBlocks: [],
-      },
-      {
-        clientId: "tech-skills-list",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: {
-          content:
-            "[Skill 1] • [Skill 2] • [Skill 3] • [Skill 4] • [Skill 5] • [Skill 6]",
-        },
-        innerBlocks: [],
-      },
-      {
-        clientId: "soft-skills",
-        name: "core/heading",
-        isValid: true,
-        attributes: {
-          content: "Soft Skills",
-          level: 3,
-          style: {
-            typography: {
-              fontWeight: "600",
-              fontSize: "16px",
-            },
-            spacing: {
-              margin: {
-                top: "1em",
-                bottom: "0.2em",
-              },
-            },
-          },
-        },
-        innerBlocks: [],
-      },
-      {
-        clientId: "soft-skills-list",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: {
-          content:
-            "[Soft Skill 1] • [Soft Skill 2] • [Soft Skill 3] • [Soft Skill 4]",
-        },
-        innerBlocks: [],
-      },
-    ],
-  },
-
-  // Certifications (Optional)
-  {
-    clientId: "certifications-heading",
-    name: "core/heading",
-    isValid: true,
-    attributes: {
-      content: "Certifications",
-      level: 2,
-      textAlign: "center",
-      style: {
-        typography: {
-          fontWeight: "600",
-          textTransform: "uppercase",
-          fontSize: "18px",
-        },
-        spacing: {
-          margin: {
-            top: "1.5em",
-            bottom: "0.5em",
-          },
-        },
-        color: {
-          text: "#2c3e50",
-        },
-      },
-    },
-    innerBlocks: [],
-  },
-  {
-    clientId: "certifications-list",
-    name: "core/list",
-    isValid: true,
-    attributes: {
-      values:
-        "<li><strong>[Certification Name]</strong> - [Issuing Organization] ([Year])</li><li><strong>[Certification Name]</strong> - [Issuing Organization] ([Year])</li>",
+      content: "Next.js • WordPress • React.js • GraphQL • Gutenberg • REST API",
     },
     innerBlocks: [],
   },
 ];
-
 // A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
 // At 96 DPI, that's approximately 794px × 1123px
 
@@ -557,22 +375,6 @@ const appStyles = {
     marginTop: "60px",
     overflow: "hidden",
   },
-  importButton: {
-    position: "fixed",
-    top: "70px",
-    right: "20px",
-    backgroundColor: "var(--secondary-color)",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    padding: "8px 16px",
-    fontSize: "14px",
-    fontWeight: "500",
-    cursor: "pointer",
-    zIndex: 999,
-    fontFamily: "var(--font-family-heading)",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-  },
   overlay: {
     position: "fixed",
     top: 0,
@@ -594,8 +396,10 @@ export default function Editor() {
   const [blocks, setBlocks] = useState(resumeTemplate);
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
-  const [showImport, setShowImport] = useState(false);
+  const [isEditingMode, setIsEditingMode] = useState(true); // Whether we're in block editor mode or import/template mode
 
+  console.log("blocks", blocks);
+  
   // History state management
   const [history, setHistory] = useState([resumeTemplate]); // Stack of previous states
   const [historyIndex, setHistoryIndex] = useState(0); // Current position in history
@@ -637,11 +441,17 @@ export default function Editor() {
     updateHistoryOnBlocksChange(newBlocks);
   };
 
-  // Handle imported resume data
+  // Handle imported resume data and prepare it for the block editor
   const handleImportComplete = (importedBlocks) => {
+    console.log('App received imported blocks:', importedBlocks);
     setBlocks(importedBlocks);
     updateHistoryOnBlocksChange(importedBlocks);
-    setShowImport(false);
+    setIsEditingMode(true); // Switch to editor mode after import
+  };
+
+  // Toggle between editor and import/template view
+  const toggleEditMode = () => {
+    setIsEditingMode(!isEditingMode);
   };
 
   // Function to handle undo
@@ -889,39 +699,26 @@ export default function Editor() {
         handleUndo={handleUndo}
         handleRedo={handleRedo}
         handlePrint={handlePrint}
+        toggleEditMode={toggleEditMode}
+        isEditingMode={isEditingMode}
       />
 
-      {/* Import Resume Button */}
-      <button 
-        style={appStyles.importButton}
-        onClick={() => setShowImport(true)}
-      >
-        Import Resume
-      </button>
-
-      {/* Editor Container */}
-      <div style={appStyles.editorContainer}>
-        <BlockEditorProvider
-          value={blocks}
-          onChange={handleBlocksChange}
-          onInput={handleBlocksChange}
-        >
-          <BlockCanvas height="100%" width="100%" styles={contentStyles} />
-        </BlockEditorProvider>
-      </div>
-
-      {/* Import Resume Modal */}
-      {showImport && (
-        <div 
-          style={appStyles.overlay}
-          onClick={(e) => {
-            // Close when clicking outside the import component
-            if (e.target === e.currentTarget) {
-              setShowImport(false);
-            }
-          }}
-        >
-          <ImportResume onImportComplete={handleImportComplete} />
+      {/* Main Content Area - conditionally render either Editor or ResumeBuilder */}
+      {isEditingMode ? (
+        /* Editor Container */
+        <div style={appStyles.editorContainer}>
+          <BlockEditorProvider
+            value={blocks}
+            onChange={handleBlocksChange}
+            onInput={handleBlocksChange}
+          >
+            <BlockCanvas height="100%" width="100%" styles={contentStyles} />
+          </BlockEditorProvider>
+        </div>
+      ) : (
+        /* Resume Builder */
+        <div style={{...appStyles.editorContainer, padding: '20px'}}>
+          <ResumeBuilder onImportComplete={handleImportComplete} />
         </div>
       )}
     </div>
