@@ -1,6 +1,6 @@
-import multer from 'multer';
-import cors from 'cors';
-import { createRouter } from 'next-connect';
+const multer = require('multer');
+const cors = require('cors');
+const { createRouter } = require('next-connect');
 
 // Configure middleware for serverless environment
 const router = createRouter();
@@ -128,29 +128,49 @@ router.post(async (req, res) => {
       
       console.log(`Processing PDF file of size: ${req.file.size} bytes`);
       
-      // Dynamically import PDF.js - use legacy build for Node.js
-      let pdfjsLib;
+      // Simple text extraction using regex
+      // This is a fallback in case PDF.js fails
       try {
-        pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+        // Convert the PDF buffer to a string
+        const pdfText = req.file.buffer.toString('utf8');
         
-        // Disable worker to avoid issues in serverless environment
-        const pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.js');
-        pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
-      } catch (importError) {
-        console.error('Error importing pdfjs-dist:', importError);
-        return res.status(500).json({
-          success: false,
-          error: 'PDF parsing library failed to load: ' + importError.message
-        });
+        // Try to extract text using a simple regex approach
+        // This will only work for basic PDFs with readable text
+        const textMatches = pdfText.match(/[\w\s.,;:'"!?-]+/g) || [];
+        const extractedText = textMatches.join(' ').trim();
+        
+        if (extractedText.length > 100) { // Ensure we got something meaningful
+          console.log('Extracted text using simple approach');
+          
+          // Parse resume structure
+          const parsedResume = parseResumeText(extractedText);
+          
+          // Return the parsed content
+          return res.json({
+            success: true,
+            text: extractedText,
+            structured: parsedResume.structured || null,
+            method: 'simple'
+          });
+        }
+      } catch (_) {
+        console.log('Simple extraction failed, trying PDF.js approach');
       }
       
-      // Parse PDF with PDF.js
-      let pdfDoc;
+      // Try the PDF.js approach if simple extraction wasn't successful
       try {
+        // For Vercel serverless, we need to require PDF.js differently
+        const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+        
+        // Set up the worker
+        const pdfjsWorker = require('pdfjs-dist/legacy/build/pdf.worker.js');
+        pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
+        
         // Convert Buffer to Uint8Array as required by PDF.js
         const uint8Array = new Uint8Array(req.file.buffer);
         
-        pdfDoc = await pdfjsLib.getDocument({
+        // Load and parse the PDF
+        const pdfDoc = await pdfjsLib.getDocument({
           data: uint8Array,
           disableRange: true,
           disableStream: true,
@@ -159,17 +179,9 @@ router.post(async (req, res) => {
         }).promise;
         
         console.log(`PDF loaded successfully. Pages: ${pdfDoc.numPages}`);
-      } catch (parseError) {
-        console.error('Error parsing PDF:', parseError);
-        return res.status(400).json({
-          success: false,
-          error: 'Failed to parse the PDF file. It may be corrupted or in an unsupported format: ' + parseError.message
-        });
-      }
-      
-      // Extract text content from all pages
-      let fullText = '';
-      try {
+        
+        // Extract text from all pages
+        let fullText = '';
         for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
           const page = await pdfDoc.getPage(pageNum);
           const textContent = await page.getTextContent();
@@ -178,49 +190,39 @@ router.post(async (req, res) => {
           
           console.log(`Processed page ${pageNum}/${pdfDoc.numPages}`);
         }
-      } catch (textExtractionError) {
-        console.error('Error extracting text:', textExtractionError);
+        
+        if (!fullText || fullText.trim().length === 0) {
+          throw new Error('No text extracted');
+        }
+        
+        // Parse resume structure
+        const parsedResume = parseResumeText(fullText);
+        
+        // Return the parsed content
+        return res.json({
+          success: true,
+          text: fullText,
+          structured: parsedResume.structured || null,
+          method: 'pdfjs'
+        });
+      } catch (pdfError) {
+        console.error('PDF.js parsing failed:', pdfError);
+        
         return res.status(400).json({
           success: false,
-          error: 'Failed to extract text from the PDF: ' + textExtractionError.message
+          error: `PDF parsing failed: ${pdfError.message}. Please try a different PDF file.`
         });
       }
-      
-      if (!fullText || fullText.trim().length === 0) {
-        return res.status(400).json({
-          success: false,
-          error: 'No text could be extracted from this PDF. It may be image-based or secured against text extraction.'
-        });
-      }
-      
-      // Parse resume structure
-      const parsedResume = parseResumeText(fullText);
-      
-      // Return the parsed content
-      return res.json({
-        success: true,
-        text: fullText,
-        structured: parsedResume.structured || null
-      });
     } catch (error) {
       console.error('Error processing PDF:', error);
       
-      // Provide more detailed error messages
-      let errorMessage = 'Error processing PDF: ' + error.message;
-      
-      if (error.message?.includes('password')) {
-        errorMessage = 'This PDF is password protected. Please provide an unprotected PDF.';
-      } else if (error.message?.includes('file format')) {
-        errorMessage = 'The file is not a valid PDF or is corrupted.';
-      }
-      
       return res.status(500).json({
         success: false,
-        error: errorMessage
+        error: 'Error processing PDF: ' + (error.message || 'Unknown error')
       });
     }
   });
 });
 
 // Export the handler for Vercel
-export default router.handler(); 
+module.exports = router.handler(); 

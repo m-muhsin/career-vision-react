@@ -1,12 +1,14 @@
-import { Buffer } from 'buffer';
+const { Buffer } = require('buffer');
 
-export const config = {
+// Configuration for API
+const config = {
   api: {
     bodyParser: false,  // needed for file uploads
   },
 };
 
-export default async function handler(req, res) {
+// Main handler function
+async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Only POST requests are allowed.' });
     return;
@@ -39,22 +41,36 @@ export default async function handler(req, res) {
     // Log some info about the PDF for debugging
     console.log(`Processing PDF: ${pdfPart.filename}, size: ${pdfPart.data.length} bytes`);
 
-    // Dynamically import PDF.js - use legacy build for Node.js
-    let pdfjsLib;
+    // Try simple text extraction first
     try {
-      pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+      // Convert the PDF buffer to a string
+      const pdfText = pdfPart.data.toString('utf8');
       
-      // Disable worker to avoid issues in serverless environment
-      const pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.js');
-      pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
-    } catch (importError) {
-      console.error('Error importing pdfjs-dist:', importError);
-      res.status(500).json({ error: 'PDF parsing library failed to load: ' + importError.message });
-      return;
+      // Try to extract text using a simple regex approach
+      // This will only work for basic PDFs with readable text
+      const textMatches = pdfText.match(/[\w\s.,;:'"!?-]+/g) || [];
+      const extractedText = textMatches.join(' ').trim();
+      
+      if (extractedText.length > 100) { // Ensure we got something meaningful
+        console.log('Extracted text using simple approach');
+        return res.status(200).json({ 
+          text: extractedText,
+          method: 'simple'
+        });
+      }
+    } catch (_) {
+      console.log('Simple extraction failed, trying PDF.js approach');
     }
 
-    // Parse the PDF data with additional options for better compatibility
+    // If simple extraction didn't work, try PDF.js
     try {
+      // For Vercel serverless, we need to require PDF.js differently
+      const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+      
+      // Set up the worker
+      const pdfjsWorker = require('pdfjs-dist/legacy/build/pdf.worker.js');
+      pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
+      
       // Convert Buffer to Uint8Array as required by PDF.js
       const uint8Array = new Uint8Array(pdfPart.data);
       
@@ -79,7 +95,16 @@ export default async function handler(req, res) {
         console.log(`Processed page ${pageNum}/${pdf.numPages}`);
       }
 
-      res.status(200).json({ text: fullText });
+      if (!fullText || fullText.trim().length === 0) {
+        return res.status(400).json({ 
+          error: 'No text could be extracted from this PDF. It may be image-based or secured.' 
+        });
+      }
+
+      res.status(200).json({ 
+        text: fullText,
+        method: 'pdfjs'
+      });
     } catch (pdfError) {
       console.error('PDF processing error:', pdfError);
       res.status(400).json({ 
@@ -169,3 +194,7 @@ function parseHeaders(headersString) {
   
   return headers;
 }
+
+// Export configuration and handler
+module.exports = handler;
+module.exports.config = config;
