@@ -1,0 +1,36 @@
+<svg viewBox="0 0 500 500" version="1.1">
+    <g id="root" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="background" x="0" y="0" width="500" height="500"></rect>
+        <g id="shape" transform="translate(125, 125)">
+            <g id="left">
+                <path d="M125 0c-69.036 0 -125 55.964 -125 125c0 69.036 55.964 125 125 125"
+                    id="shape.primary" fill="#069CAF" opacity=".5"></path>
+                <path d="M125 25c-55.228 0 -100 44.772 -100 100c0 55.228 44.772 100 100 100"
+                    id="shape.primary" fill="#069CAF" opacity=".6"></path>
+                <path d="M125 45c-44.183 0 -80 35.817 -80 80c0 44.183 35.817 80 80 80"
+                    id="shape.primary" fill="#069CAF" opacity=".7"></path>
+                <path d="M125 61c-35.346 0 -64 28.654 -64 64c0 35.346 28.654 64 64 64"
+                    id="shape.primary" fill="#069CAF" opacity=".8"></path>
+                <path d="M125 74c-28.167 0 -51 22.833 -51 51c0 28.167 22.833 51 51 51" id="shape"
+                    fill="#FFF" opacity=".5"></path>
+                <path d="M125 100c-14.36 0 -26 11.417 -26 25.5c0 14.083 11.64 25.5 26 25.5"
+                    id="shape" fill="#FFF" opacity=".5"></path>
+            </g>
+            <g id="right"
+                transform="translate(187.500000, 125.000000) scale(-1, 1) translate(-187.500000, -125.000000) translate(125.000000, 0.000000)">
+                <path d="M125 0c-69.036 0 -125 55.964 -125 125c0 69.036 55.964 125 125 125"
+                    id="shape.secondary" fill="#FFFFFF" opacity=".5"></path>
+                <path d="M125 25c-55.228 0 -100 44.772 -100 100c0 55.228 44.772 100 100 100"
+                    id="shape.secondary" fill="#FFFFFF" opacity=".6"></path>
+                <path d="M125 45c-44.183 0 -80 35.817 -80 80c0 44.183 35.817 80 80 80"
+                    id="shape.secondary" fill="#FFFFFF" opacity=".7"></path>
+                <path d="M125 61c-35.346 0 -64 28.654 -64 64c0 35.346 28.654 64 64 64"
+                    id="shape.secondary" fill="#FFFFFF" opacity=".8"></path>
+                <path d="M125 74c-28.167 0 -51 22.833 -51 51c0 28.167 22.833 51 51 51" id="shape"
+                    fill="#FFF" opacity=".5"></path>
+                <path d="M125 100c-14.36 0 -26 11.417 -26 25.5c0 14.083 11.64 25.5 26 25.5"
+                    id="shape" fill="#FFF" opacity=".5"></path>
+            </g>
+        </g>
+    </g>
+</svg>

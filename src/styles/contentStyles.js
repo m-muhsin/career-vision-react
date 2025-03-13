@@ -184,4 +184,4 @@ const contentStyles = [
   },
 ];
 
-export default contentStyles;
+export { contentStyles };

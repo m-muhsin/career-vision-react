@@ -4,9 +4,12 @@ import "./styles/wordpress-fixes.css";
 import "./styles/block-editor-fix.css";
 import "./styles/inline-style-fix.css";
 import "./styles/wordpress-classes.css";
-
+import "./styles/toolbar-fix.css";
 import "./styles/iframe-styles.scss";
-import contentStyles from "./styles/contentStyles";
+import "./styles/fonts.css";
+import "./App.css";
+import { contentStyles } from "./styles/contentStyles.js";
+import Header from "./components/Header";
 
 // Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [
@@ -553,108 +556,6 @@ const appStyles = {
     marginTop: "60px",
     overflow: "hidden",
   },
-  navbar: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: "60px",
-    backgroundColor: "#fff",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 20px",
-    zIndex: 1000,
-    transition: "box-shadow 0.3s ease",
-  },
-  navbarScrolled: {
-    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-  },
-  navbarLogo: {
-    fontWeight: "bold",
-    fontSize: "18px",
-    color: "#2c3e50",
-  },
-  navbarActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-  },
-  iconButton: {
-    backgroundColor: "transparent",
-    color: "#2c3e50",
-    border: "none",
-    borderRadius: "4px",
-    padding: "8px",
-    fontSize: "14px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transition: "all 0.2s ease-in-out",
-    outline: "none",
-  },
-  iconButtonHover: {
-    backgroundColor: "#f5f5f5",
-    transform: "translateY(-2px)",
-  },
-  iconButtonActive: {
-    backgroundColor: "#e5e5e5",
-    transform: "translateY(1px)",
-  },
-  iconButtonDisabled: {
-    opacity: 0.5,
-    cursor: "not-allowed",
-  },
-  saveButton: {
-    backgroundColor: "#2c3e50",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    padding: "10px 15px",
-    fontSize: "14px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-    transition: "all 0.2s ease-in-out",
-    outline: "none",
-    position: "relative",
-    overflow: "hidden",
-  },
-  saveButtonHover: {
-    backgroundColor: "#34495e",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-    transform: "translateY(-2px)",
-  },
-  saveButtonActive: {
-    backgroundColor: "#1a252f",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-    transform: "translateY(1px)",
-  },
-  buttonIcon: {
-    width: "16px",
-    height: "16px",
-    fill: "currentColor",
-    transition: "transform 0.2s ease",
-  },
-  buttonIconHover: {
-    transform: "translateY(2px)",
-  },
-  warningText: {
-    color: "#d32f2f",
-    fontSize: "14px",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: "rgba(211, 47, 47, 0.1)",
-    padding: "6px 12px",
-    borderRadius: "4px",
-    border: "1px solid rgba(211, 47, 47, 0.3)",
-  },
 };
 
 export default function Editor() {
@@ -662,13 +563,6 @@ export default function Editor() {
   const [blocks, setBlocks] = useState(resumeTemplate);
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
-  const [buttonHover, setButtonHover] = useState(false);
-  const [buttonActive, setButtonActive] = useState(false);
-  const [undoHover, setUndoHover] = useState(false);
-  const [undoActive, setUndoActive] = useState(false);
-  const [redoHover, setRedoHover] = useState(false);
-  const [redoActive, setRedoActive] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   // History state management
   const [history, setHistory] = useState([resumeTemplate]); // Stack of previous states
@@ -763,54 +657,6 @@ export default function Editor() {
     document.body.style.padding = "0";
     document.body.style.height = "100%";
     document.body.style.overflow = "hidden";
-
-    // Add scroll event listener to detect when the page is scrolled
-    const handleScroll = () => {
-      // Get scroll position from the iframe instead of window
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
-      if (editorIframe && editorIframe.contentWindow) {
-        const scrollY = editorIframe.contentWindow.scrollY;
-        if (scrollY > 10) {
-          setScrolled(true);
-        } else {
-          setScrolled(false);
-        }
-      }
-    };
-
-    // Add event listener to the iframe once it's loaded
-    const setupIframeScroll = () => {
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
-      if (editorIframe && editorIframe.contentWindow) {
-        editorIframe.contentWindow.addEventListener("scroll", handleScroll);
-      }
-    };
-
-    // Check for iframe and add listener
-    const intervalId = setInterval(() => {
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
-      if (editorIframe && editorIframe.contentWindow) {
-        setupIframeScroll();
-        clearInterval(intervalId);
-      }
-    }, 500);
-
-    return () => {
-      clearInterval(intervalId);
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
-      if (editorIframe && editorIframe.contentWindow) {
-        editorIframe.contentWindow.removeEventListener("scroll", handleScroll);
-      }
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   // Set up keyboard shortcuts for undo/redo
@@ -996,119 +842,15 @@ export default function Editor() {
 
   return (
     <div style={appStyles.container}>
-      {/* Navigation Bar */}
-      <div
-        style={{
-          ...appStyles.navbar,
-          ...(scrolled ? appStyles.navbarScrolled : {}),
-        }}
-      >
-        <div style={appStyles.navbarLogo}>Career Vision</div>
-
-        <div style={appStyles.navbarActions}>
-          {/* Undo Button */}
-          <button
-            style={{
-              ...appStyles.iconButton,
-              ...(undoHover ? appStyles.iconButtonHover : {}),
-              ...(undoActive ? appStyles.iconButtonActive : {}),
-              ...(!hasUndo ? appStyles.iconButtonDisabled : {}),
-            }}
-            onClick={handleUndo}
-            disabled={!hasUndo}
-            onMouseEnter={() => setUndoHover(true)}
-            onMouseLeave={() => {
-              setUndoHover(false);
-              setUndoActive(false);
-            }}
-            onMouseDown={() => setUndoActive(true)}
-            onMouseUp={() => setUndoActive(false)}
-            title="Undo"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.5 8C9.85 8 7.45 8.99 5.6 10.6L2 7V16H11L7.38 12.38C8.77 11.22 10.54 10.5 12.5 10.5C16.04 10.5 19.05 12.81 20.1 16L22.47 15.22C21.08 11.03 17.15 8 12.5 8Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-
-          {/* Redo Button */}
-          <button
-            style={{
-              ...appStyles.iconButton,
-              ...(redoHover ? appStyles.iconButtonHover : {}),
-              ...(redoActive ? appStyles.iconButtonActive : {}),
-              ...(!hasRedo ? appStyles.iconButtonDisabled : {}),
-            }}
-            onClick={handleRedo}
-            disabled={!hasRedo}
-            onMouseEnter={() => setRedoHover(true)}
-            onMouseLeave={() => {
-              setRedoHover(false);
-              setRedoActive(false);
-            }}
-            onMouseDown={() => setRedoActive(true)}
-            onMouseUp={() => setRedoActive(false)}
-            title="Redo"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8C6.85 8 2.92 11.03 1.54 15.22L3.9 16C4.95 12.81 7.95 10.5 11.5 10.5C13.45 10.5 15.23 11.22 16.62 12.38L13 16H22V7L18.4 10.6Z"
-                fill="currentColor"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div style={appStyles.buttonContainer}>
-          {/* Removing content overflow warning
-          {contentOverflow && (
-            <div style={appStyles.warningText}>⚠️ Content exceeds one page</div>
-          )}
-          */}
-          <button
-            style={{
-              ...appStyles.saveButton,
-              ...(buttonHover ? appStyles.saveButtonHover : {}),
-              ...(buttonActive ? appStyles.saveButtonActive : {}),
-            }}
-            onClick={handlePrint}
-            disabled={isPrinting}
-            onMouseEnter={() => setButtonHover(true)}
-            onMouseLeave={() => {
-              setButtonHover(false);
-              setButtonActive(false);
-            }}
-            onMouseDown={() => setButtonActive(true)}
-            onMouseUp={() => setButtonActive(false)}
-          >
-            <svg
-              style={{
-                ...appStyles.buttonIcon,
-                ...(buttonHover ? appStyles.buttonIconHover : {}),
-              }}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-            </svg>
-            {isPrinting ? "Opening..." : "Download"}
-          </button>
-        </div>
-      </div>
+      {/* Use the Header component instead of inline navbar */}
+      <Header 
+        hasUndo={hasUndo}
+        hasRedo={hasRedo}
+        isPrinting={isPrinting}
+        handleUndo={handleUndo}
+        handleRedo={handleRedo}
+        handlePrint={handlePrint}
+      />
 
       <div style={appStyles.editorContainer}>
         <BlockEditorProvider

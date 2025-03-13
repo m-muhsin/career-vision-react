@@ -1,0 +1,8 @@
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Define font variables for use throughout the app */
+:root {
+  --font-poppins: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-primary: var(--font-poppins);
+} 
