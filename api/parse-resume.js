@@ -1,6 +1,6 @@
 import multer from 'multer';
 import cors from 'cors';
-import pdfParse from 'pdf-parse';
+// Import pdfParse dynamically to avoid initialization errors
 import { createRouter } from 'next-connect';
 
 // Configure middleware for serverless environment
@@ -109,56 +109,87 @@ function parseResumeText(text) {
 router.use(cors());
 
 // API endpoint to handle resume PDF upload and parsing
-router.post(upload.single('pdfFile'), async (req, res) => {
-  try {
-    if (!req.file) {
+router.post(async (req, res) => {
+  // Apply multer middleware manually
+  upload.single('pdfFile')(req, res, async (err) => {
+    if (err) {
       return res.status(400).json({ 
         success: false, 
-        error: 'No PDF file provided' 
+        error: err.message 
       });
     }
-    
-    console.log(`Processing PDF file of size: ${req.file.size} bytes`);
-    
-    // Parse PDF directly from buffer (no need to save to disk in serverless)
-    const pdfData = await pdfParse(req.file.buffer);
-    
-    // Extract text content
-    const text = pdfData.text;
-    
-    if (!text || text.trim().length === 0) {
-      return res.status(400).json({
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'No PDF file provided' 
+        });
+      }
+      
+      console.log(`Processing PDF file of size: ${req.file.size} bytes`);
+      
+      // Dynamically import pdfParse to avoid initialization errors
+      let pdfParse;
+      try {
+        pdfParse = (await import('pdf-parse')).default;
+      } catch (importError) {
+        console.error('Error importing pdf-parse:', importError);
+        return res.status(500).json({
+          success: false,
+          error: 'PDF parsing library failed to load'
+        });
+      }
+      
+      // Parse PDF directly from buffer
+      let pdfData;
+      try {
+        pdfData = await pdfParse(req.file.buffer);
+      } catch (parseError) {
+        console.error('Error parsing PDF:', parseError);
+        return res.status(400).json({
+          success: false,
+          error: 'Failed to parse the PDF file. It may be corrupted or in an unsupported format.'
+        });
+      }
+      
+      // Extract text content
+      const text = pdfData.text;
+      
+      if (!text || text.trim().length === 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'No text could be extracted from this PDF. It may be image-based or secured against text extraction.'
+        });
+      }
+      
+      // Parse resume structure
+      const parsedResume = parseResumeText(text);
+      
+      // Return the parsed content
+      return res.json({
+        success: true,
+        text: text,
+        structured: parsedResume.structured || null
+      });
+    } catch (error) {
+      console.error('Error processing PDF:', error);
+      
+      // Provide more detailed error messages
+      let errorMessage = 'Error processing PDF';
+      
+      if (error.message.includes('password')) {
+        errorMessage = 'This PDF is password protected. Please provide an unprotected PDF.';
+      } else if (error.message.includes('file format')) {
+        errorMessage = 'The file is not a valid PDF or is corrupted.';
+      }
+      
+      return res.status(500).json({
         success: false,
-        error: 'No text could be extracted from this PDF. It may be image-based or secured against text extraction.'
+        error: errorMessage
       });
     }
-    
-    // Parse resume structure
-    const parsedResume = parseResumeText(text);
-    
-    // Return the parsed content
-    return res.json({
-      success: true,
-      text: text,
-      structured: parsedResume.structured || null
-    });
-  } catch (error) {
-    console.error('Error processing PDF:', error);
-    
-    // Provide more detailed error messages
-    let errorMessage = 'Error processing PDF';
-    
-    if (error.message.includes('password')) {
-      errorMessage = 'This PDF is password protected. Please provide an unprotected PDF.';
-    } else if (error.message.includes('file format')) {
-      errorMessage = 'The file is not a valid PDF or is corrupted.';
-    }
-    
-    return res.status(500).json({
-      success: false,
-      error: errorMessage
-    });
-  }
+  });
 });
 
 // Export the handler for Vercel

@@ -1,8 +1,4 @@
-import * as pdfjsLib from 'pdfjs-dist';
 import { Buffer } from 'buffer';
-
-// Configure PDF.js for serverless environment
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 export const config = {
   api: {
@@ -37,6 +33,18 @@ export default async function handler(req, res) {
     
     if (!pdfPart) {
       res.status(400).json({ error: 'No PDF file found in request' });
+      return;
+    }
+
+    // Dynamically import PDF.js to avoid initialization issues
+    let pdfjsLib;
+    try {
+      pdfjsLib = await import('pdfjs-dist');
+      // Configure PDF.js for serverless environment
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    } catch (importError) {
+      console.error('Error importing pdfjs-dist:', importError);
+      res.status(500).json({ error: 'PDF parsing library failed to load: ' + importError.message });
       return;
     }
 
