@@ -15,8 +15,10 @@
     "@wordpress/block-library": "^9.19.0",
     "@wordpress/components": "^29.5.0",
     "html2pdf.js": "^0.10.3",
+    "pdfjs-dist": "^4.10.38",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-dropzone": "^14.3.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

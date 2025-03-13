@@ -10,6 +10,7 @@ import "./styles/fonts.css";
 import "./App.css";
 import { contentStyles } from "./styles/contentStyles.js";
 import Header from "./components/Header";
+import ImportResume from "./components/ImportResume";
 
 // Simplified template using fewer blocks and simpler structure
 const resumeTemplate = [
@@ -556,6 +557,36 @@ const appStyles = {
     marginTop: "60px",
     overflow: "hidden",
   },
+  importButton: {
+    position: "fixed",
+    top: "70px",
+    right: "20px",
+    backgroundColor: "var(--secondary-color)",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    padding: "8px 16px",
+    fontSize: "14px",
+    fontWeight: "500",
+    cursor: "pointer",
+    zIndex: 999,
+    fontFamily: "var(--font-family-heading)",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+  },
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    zIndex: 1000,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    overflow: "auto",
+    padding: "20px",
+  },
 };
 
 export default function Editor() {
@@ -563,6 +594,7 @@ export default function Editor() {
   const [blocks, setBlocks] = useState(resumeTemplate);
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
+  const [showImport, setShowImport] = useState(false);
 
   // History state management
   const [history, setHistory] = useState([resumeTemplate]); // Stack of previous states
@@ -603,6 +635,13 @@ export default function Editor() {
   const handleBlocksChange = (newBlocks) => {
     setBlocks(newBlocks);
     updateHistoryOnBlocksChange(newBlocks);
+  };
+
+  // Handle imported resume data
+  const handleImportComplete = (importedBlocks) => {
+    setBlocks(importedBlocks);
+    updateHistoryOnBlocksChange(importedBlocks);
+    setShowImport(false);
   };
 
   // Function to handle undo
@@ -842,7 +881,7 @@ export default function Editor() {
 
   return (
     <div style={appStyles.container}>
-      {/* Use the Header component instead of inline navbar */}
+      {/* Header */}
       <Header 
         hasUndo={hasUndo}
         hasRedo={hasRedo}
@@ -852,6 +891,15 @@ export default function Editor() {
         handlePrint={handlePrint}
       />
 
+      {/* Import Resume Button */}
+      <button 
+        style={appStyles.importButton}
+        onClick={() => setShowImport(true)}
+      >
+        Import Resume
+      </button>
+
+      {/* Editor Container */}
       <div style={appStyles.editorContainer}>
         <BlockEditorProvider
           value={blocks}
@@ -861,6 +909,21 @@ export default function Editor() {
           <BlockCanvas height="100%" width="100%" styles={contentStyles} />
         </BlockEditorProvider>
       </div>
+
+      {/* Import Resume Modal */}
+      {showImport && (
+        <div 
+          style={appStyles.overlay}
+          onClick={(e) => {
+            // Close when clicking outside the import component
+            if (e.target === e.currentTarget) {
+              setShowImport(false);
+            }
+          }}
+        >
+          <ImportResume onImportComplete={handleImportComplete} />
+        </div>
+      )}
     </div>
   );
 }
