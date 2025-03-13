@@ -7,41 +7,35 @@ const headerStyles = {
     left: 0,
     right: 0,
     height: "60px",
-    backgroundColor: "#1e293b", // Darker color as requested
+    backgroundColor: "#1e293b",
     boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     padding: "0 20px",
     zIndex: 1000,
-    transition: "all 0.3s ease", // Smooth transition for all properties
+    transition: "box-shadow 0.3s ease",
   },
   headerScrolled: {
     boxShadow: "0 2px 10px rgba(0,0,0,0.4)",
-    backdropFilter: "blur(4px)",
-    backgroundColor: "rgba(30, 41, 59, 0.95)", // Semi-transparent when scrolled
+    backgroundColor: "rgba(30, 41, 59, 0.95)",
   },
   logoContainer: {
     display: "flex",
     alignItems: "center",
-    gap: "6px",
-    transition: "transform 0.3s ease",
-  },
-  logoContainerHover: {
-    transform: "scale(1.05)",
+    gap: "12px",
+    textDecoration: "none",
   },
   logo: {
-    height: "60px",
+    height: "36px",
     width: "auto",
-    fill: "#069CAF",
-    display: "block",
   },
   brand: {
-    fontFamily: "'Poppins', sans-serif", // Using Poppins font
-    fontWeight: "400",
+    fontFamily: "'Poppins', sans-serif",
+    fontWeight: "500",
     fontSize: "18px",
     color: "#ffffff",
-    whiteSpace: "nowrap", // Keep text on one line
+    whiteSpace: "nowrap",
   },
   actionsContainer: {
     display: "flex",
@@ -54,42 +48,21 @@ const headerStyles = {
     border: "none",
     borderRadius: "4px",
     padding: "8px",
-    fontSize: "14px",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "all 0.2s ease-in-out",
-    outline: "none",
-    position: "relative",
-    overflow: "hidden",
-  },
-  iconButtonAfter: {
-    content: "''",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(255, 255, 255, 0)",
-    transition: "background-color 0.2s ease",
+    transition: "all 0.2s ease",
   },
   iconButtonHover: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
-    transform: "translateY(-2px)",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
   },
   iconButtonActive: {
     backgroundColor: "rgba(255, 255, 255, 0.15)",
-    transform: "translateY(1px)",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
   },
   iconButtonDisabled: {
     opacity: 0.5,
     cursor: "not-allowed",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    boxShadow: "none",
-    transform: "none",
   },
   downloadButton: {
     backgroundColor: "#069CAF",
@@ -104,30 +77,15 @@ const headerStyles = {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-    transition: "all 0.3s ease",
-    outline: "none",
-    position: "relative",
-    overflow: "hidden",
+    transition: "background-color 0.3s ease",
   },
   downloadButtonHover: {
-    backgroundColor: "#4338CA",
-    boxShadow: "0 4px 12px rgba(79, 70, 229, 0.4)",
-    transform: "translateY(-2px)",
-  },
-  downloadButtonActive: {
-    backgroundColor: "#3730A3",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
-    transform: "translateY(1px)",
+    backgroundColor: "#05889a",
   },
   buttonIcon: {
     width: "16px",
     height: "16px",
     fill: "currentColor",
-    transition: "transform 0.3s ease",
-  },
-  buttonIconHover: {
-    transform: "translateY(-1px)",
   },
 };
 
@@ -145,42 +103,26 @@ const Header = ({
   const [redoHover, setRedoHover] = useState(false);
   const [redoActive, setRedoActive] = useState(false);
   const [downloadHover, setDownloadHover] = useState(false);
-  const [downloadActive, setDownloadActive] = useState(false);
-  const [logoHover, setLogoHover] = useState(false);
 
   // Effect to detect scrolling in the iframe
   useEffect(() => {
-    // Add scroll event listener to detect when the page is scrolled
     const handleScroll = () => {
-      // Get scroll position from the iframe instead of window
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
       if (editorIframe && editorIframe.contentWindow) {
         const scrollY = editorIframe.contentWindow.scrollY;
-        if (scrollY > 10) {
-          setScrolled(true);
-        } else {
-          setScrolled(false);
-        }
+        setScrolled(scrollY > 10);
       }
     };
 
-    // Add event listener to the iframe once it's loaded
     const setupIframeScroll = () => {
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
       if (editorIframe && editorIframe.contentWindow) {
         editorIframe.contentWindow.addEventListener("scroll", handleScroll);
       }
     };
 
-    // Check for iframe and add listener
     const intervalId = setInterval(() => {
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
       if (editorIframe && editorIframe.contentWindow) {
         setupIframeScroll();
         clearInterval(intervalId);
@@ -189,9 +131,7 @@ const Header = ({
 
     return () => {
       clearInterval(intervalId);
-      const editorIframe = document.querySelector(
-        'iframe[name="editor-canvas"]'
-      );
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
       if (editorIframe && editorIframe.contentWindow) {
         editorIframe.contentWindow.removeEventListener("scroll", handleScroll);
       }
@@ -207,12 +147,7 @@ const Header = ({
     >
       <a 
         href="https://careervision.io"
-        style={{
-          ...headerStyles.logoContainer,
-          ...(logoHover ? headerStyles.logoContainerHover : {}),
-        }}
-        onMouseEnter={() => setLogoHover(true)}
-        onMouseLeave={() => setLogoHover(false)}
+        style={headerStyles.logoContainer}
       >
         <svg 
           viewBox="0 0 500 500" 
@@ -220,42 +155,35 @@ const Header = ({
           aria-hidden="true"
         >
           <g id="root" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <rect id="background" x="0" y="0" width="500" height="500"></rect>
             <g id="shape" transform="translate(125, 125)">
               <g id="left">
                 <path
                   d="M125 0c-69.036 0 -125 55.964 -125 125c0 69.036 55.964 125 125 125"
-                  id="shape.primary"
                   fill="#069CAF"
                   opacity=".5"
                 ></path>
                 <path
                   d="M125 25c-55.228 0 -100 44.772 -100 100c0 55.228 44.772 100 100 100"
-                  id="shape.primary"
                   fill="#069CAF"
                   opacity=".6"
                 ></path>
                 <path
                   d="M125 45c-44.183 0 -80 35.817 -80 80c0 44.183 35.817 80 80 80"
-                  id="shape.primary"
                   fill="#069CAF"
                   opacity=".7"
                 ></path>
                 <path
                   d="M125 61c-35.346 0 -64 28.654 -64 64c0 35.346 28.654 64 64 64"
-                  id="shape.primary"
                   fill="#069CAF"
                   opacity=".8"
                 ></path>
                 <path
                   d="M125 74c-28.167 0 -51 22.833 -51 51c0 28.167 22.833 51 51 51"
-                  id="shape"
                   fill="#FFF"
                   opacity=".5"
                 ></path>
                 <path
                   d="M125 100c-14.36 0 -26 11.417 -26 25.5c0 14.083 11.64 25.5 26 25.5"
-                  id="shape"
                   fill="#FFF"
                   opacity=".5"
                 ></path>
@@ -266,37 +194,31 @@ const Header = ({
               >
                 <path
                   d="M125 0c-69.036 0 -125 55.964 -125 125c0 69.036 55.964 125 125 125"
-                  id="shape.secondary"
                   fill="#FFFFFF"
                   opacity=".5"
                 ></path>
                 <path
                   d="M125 25c-55.228 0 -100 44.772 -100 100c0 55.228 44.772 100 100 100"
-                  id="shape.secondary"
                   fill="#FFFFFF"
                   opacity=".6"
                 ></path>
                 <path
                   d="M125 45c-44.183 0 -80 35.817 -80 80c0 44.183 35.817 80 80 80"
-                  id="shape.secondary"
                   fill="#FFFFFF"
                   opacity=".7"
                 ></path>
                 <path
                   d="M125 61c-35.346 0 -64 28.654 -64 64c0 35.346 28.654 64 64 64"
-                  id="shape.secondary"
                   fill="#FFFFFF"
                   opacity=".8"
                 ></path>
                 <path
                   d="M125 74c-28.167 0 -51 22.833 -51 51c0 28.167 22.833 51 51 51"
-                  id="shape"
                   fill="#FFF"
                   opacity=".5"
                 ></path>
                 <path
                   d="M125 100c-14.36 0 -26 11.417 -26 25.5c0 14.083 11.64 25.5 26 25.5"
-                  id="shape"
                   fill="#FFF"
                   opacity=".5"
                 ></path>
@@ -305,8 +227,7 @@ const Header = ({
           </g>
         </svg>
         <span style={headerStyles.brand}>Career Vision</span>
-      </a 
-        >
+      </a>
 
       <div style={headerStyles.actionsContainer}>
         {/* Undo Button */}
@@ -382,24 +303,17 @@ const Header = ({
           style={{
             ...headerStyles.downloadButton,
             ...(downloadHover ? headerStyles.downloadButtonHover : {}),
-            ...(downloadActive ? headerStyles.downloadButtonActive : {}),
           }}
           onClick={handlePrint}
           disabled={isPrinting}
           onMouseEnter={() => setDownloadHover(true)}
           onMouseLeave={() => {
             setDownloadHover(false);
-            setDownloadActive(false);
           }}
-          onMouseDown={() => setDownloadActive(true)}
-          onMouseUp={() => setDownloadActive(false)}
           aria-label="Download resume"
         >
           <svg
-            style={{
-              ...headerStyles.buttonIcon,
-              ...(downloadHover ? headerStyles.buttonIconHover : {}),
-            }}
+            style={headerStyles.buttonIcon}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             width="18"
