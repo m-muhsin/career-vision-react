@@ -1,11 +1,7 @@
-import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import pdfParse from 'pdf-parse';
-import { createRouter, createUploadHandler } from 'next-connect';
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import os from 'os';
+import { createRouter } from 'next-connect';
 
 // Configure middleware for serverless environment
 const router = createRouter();
