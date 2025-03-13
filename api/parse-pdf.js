@@ -35,33 +35,59 @@ export default async function handler(req, res) {
       res.status(400).json({ error: 'No PDF file found in request' });
       return;
     }
+    
+    // Log some info about the PDF for debugging
+    console.log(`Processing PDF: ${pdfPart.filename}, size: ${pdfPart.data.length} bytes`);
 
-    // Dynamically import PDF.js to avoid initialization issues
+    // Dynamically import PDF.js - use legacy build for Node.js
     let pdfjsLib;
     try {
-      pdfjsLib = await import('pdfjs-dist');
-      // Configure PDF.js for serverless environment
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+      pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+      
+      // Disable worker to avoid issues in serverless environment
+      const pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.js');
+      pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
     } catch (importError) {
       console.error('Error importing pdfjs-dist:', importError);
       res.status(500).json({ error: 'PDF parsing library failed to load: ' + importError.message });
       return;
     }
 
-    // Parse the PDF data
-    const pdf = await pdfjsLib.getDocument({ data: pdfPart.data }).promise;
+    // Parse the PDF data with additional options for better compatibility
+    try {
+      // Convert Buffer to Uint8Array as required by PDF.js
+      const uint8Array = new Uint8Array(pdfPart.data);
+      
+      const loadingTask = pdfjsLib.getDocument({
+        data: uint8Array,
+        disableRange: true,
+        disableStream: true,
+        disableAutoFetch: true,
+        isEvalSupported: false
+      });
+      
+      const pdf = await loadingTask.promise;
+      console.log(`PDF loaded successfully. Pages: ${pdf.numPages}`);
 
-    let fullText = '';
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items.map((item) => item.str).join(' ');
-      fullText += pageText + '\n\n';
+      let fullText = '';
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map((item) => item.str).join(' ');
+        fullText += pageText + '\n\n';
+        
+        console.log(`Processed page ${pageNum}/${pdf.numPages}`);
+      }
+
+      res.status(200).json({ text: fullText });
+    } catch (pdfError) {
+      console.error('PDF processing error:', pdfError);
+      res.status(400).json({ 
+        error: `PDF processing failed: ${pdfError.message || 'Unknown error'}. Please try a different PDF file.` 
+      });
     }
-
-    res.status(200).json({ text: fullText });
   } catch (error) {
-    console.error(error);
+    console.error('General error:', error);
     res.status(500).json({ error: 'PDF parsing failed: ' + error.message });
   }
 }

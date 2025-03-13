@@ -128,12 +128,14 @@ router.post(async (req, res) => {
       
       console.log(`Processing PDF file of size: ${req.file.size} bytes`);
       
-      // Dynamically import PDF.js instead of pdf-parse
+      // Dynamically import PDF.js - use legacy build for Node.js
       let pdfjsLib;
       try {
-        pdfjsLib = await import('pdfjs-dist');
-        // Configure worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+        pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.js');
+        
+        // Disable worker to avoid issues in serverless environment
+        const pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.js');
+        pdfjsLib.GlobalWorkerOptions.workerPort = new pdfjsWorker.PDFWorker('pdf.js-worker');
       } catch (importError) {
         console.error('Error importing pdfjs-dist:', importError);
         return res.status(500).json({
@@ -145,12 +147,23 @@ router.post(async (req, res) => {
       // Parse PDF with PDF.js
       let pdfDoc;
       try {
-        pdfDoc = await pdfjsLib.getDocument({ data: req.file.buffer }).promise;
+        // Convert Buffer to Uint8Array as required by PDF.js
+        const uint8Array = new Uint8Array(req.file.buffer);
+        
+        pdfDoc = await pdfjsLib.getDocument({
+          data: uint8Array,
+          disableRange: true,
+          disableStream: true,
+          disableAutoFetch: true,
+          isEvalSupported: false
+        }).promise;
+        
+        console.log(`PDF loaded successfully. Pages: ${pdfDoc.numPages}`);
       } catch (parseError) {
         console.error('Error parsing PDF:', parseError);
         return res.status(400).json({
           success: false,
-          error: 'Failed to parse the PDF file. It may be corrupted or in an unsupported format.'
+          error: 'Failed to parse the PDF file. It may be corrupted or in an unsupported format: ' + parseError.message
         });
       }
       
@@ -162,12 +175,14 @@ router.post(async (req, res) => {
           const textContent = await page.getTextContent();
           const pageText = textContent.items.map(item => item.str).join(' ');
           fullText += pageText + '\n\n';
+          
+          console.log(`Processed page ${pageNum}/${pdfDoc.numPages}`);
         }
       } catch (textExtractionError) {
         console.error('Error extracting text:', textExtractionError);
         return res.status(400).json({
           success: false,
-          error: 'Failed to extract text from the PDF.'
+          error: 'Failed to extract text from the PDF: ' + textExtractionError.message
         });
       }
       
@@ -191,7 +206,7 @@ router.post(async (req, res) => {
       console.error('Error processing PDF:', error);
       
       // Provide more detailed error messages
-      let errorMessage = 'Error processing PDF';
+      let errorMessage = 'Error processing PDF: ' + error.message;
       
       if (error.message?.includes('password')) {
         errorMessage = 'This PDF is password protected. Please provide an unprotected PDF.';
