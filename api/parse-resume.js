@@ -1,6 +1,5 @@
 import multer from 'multer';
 import cors from 'cors';
-// Import pdfParse dynamically to avoid initialization errors
 import { createRouter } from 'next-connect';
 
 // Configure middleware for serverless environment
@@ -129,22 +128,24 @@ router.post(async (req, res) => {
       
       console.log(`Processing PDF file of size: ${req.file.size} bytes`);
       
-      // Dynamically import pdfParse to avoid initialization errors
-      let pdfParse;
+      // Dynamically import PDF.js instead of pdf-parse
+      let pdfjsLib;
       try {
-        pdfParse = (await import('pdf-parse')).default;
+        pdfjsLib = await import('pdfjs-dist');
+        // Configure worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
       } catch (importError) {
-        console.error('Error importing pdf-parse:', importError);
+        console.error('Error importing pdfjs-dist:', importError);
         return res.status(500).json({
           success: false,
-          error: 'PDF parsing library failed to load'
+          error: 'PDF parsing library failed to load: ' + importError.message
         });
       }
       
-      // Parse PDF directly from buffer
-      let pdfData;
+      // Parse PDF with PDF.js
+      let pdfDoc;
       try {
-        pdfData = await pdfParse(req.file.buffer);
+        pdfDoc = await pdfjsLib.getDocument({ data: req.file.buffer }).promise;
       } catch (parseError) {
         console.error('Error parsing PDF:', parseError);
         return res.status(400).json({
@@ -153,10 +154,24 @@ router.post(async (req, res) => {
         });
       }
       
-      // Extract text content
-      const text = pdfData.text;
+      // Extract text content from all pages
+      let fullText = '';
+      try {
+        for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+          const page = await pdfDoc.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+          fullText += pageText + '\n\n';
+        }
+      } catch (textExtractionError) {
+        console.error('Error extracting text:', textExtractionError);
+        return res.status(400).json({
+          success: false,
+          error: 'Failed to extract text from the PDF.'
+        });
+      }
       
-      if (!text || text.trim().length === 0) {
+      if (!fullText || fullText.trim().length === 0) {
         return res.status(400).json({
           success: false,
           error: 'No text could be extracted from this PDF. It may be image-based or secured against text extraction.'
@@ -164,12 +179,12 @@ router.post(async (req, res) => {
       }
       
       // Parse resume structure
-      const parsedResume = parseResumeText(text);
+      const parsedResume = parseResumeText(fullText);
       
       // Return the parsed content
       return res.json({
         success: true,
-        text: text,
+        text: fullText,
         structured: parsedResume.structured || null
       });
     } catch (error) {
@@ -178,9 +193,9 @@ router.post(async (req, res) => {
       // Provide more detailed error messages
       let errorMessage = 'Error processing PDF';
       
-      if (error.message.includes('password')) {
+      if (error.message?.includes('password')) {
         errorMessage = 'This PDF is password protected. Please provide an unprotected PDF.';
-      } else if (error.message.includes('file format')) {
+      } else if (error.message?.includes('file format')) {
         errorMessage = 'The file is not a valid PDF or is corrupted.';
       }
       
