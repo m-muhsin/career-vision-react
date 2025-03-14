@@ -20,7 +20,186 @@ const upload = multer({
   }
 });
 
-// Resume parsing helper functions
+// Function to generate Gutenberg blocks from structured data
+function generateGutenbergBlocks(structured) {
+  if (!structured) return [];
+  
+  const blocks = [];
+  
+  // Header section with name and contact info
+  blocks.push({
+    clientId: "header-section",
+    name: "core/group",
+    isValid: true,
+    attributes: {
+      tagName: "div",
+      layout: {
+        type: "constrained"
+      }
+    },
+    innerBlocks: [
+      {
+        clientId: "name-heading",
+        name: "core/heading",
+        isValid: true,
+        attributes: {
+          content: structured.name || "Resume",
+          level: 1,
+          textAlign: "center",
+          fontSize: "large"
+        },
+        innerBlocks: []
+      },
+      {
+        clientId: "contact-info",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: {
+          content: (structured.contactInfo || []).join(' | '),
+          align: "center",
+          fontSize: "small"
+        },
+        innerBlocks: []
+      }
+    ]
+  });
+  
+  // Professional Summary section
+  if (structured.sections.summary && structured.sections.summary.length > 0) {
+    blocks.push({
+      clientId: "professional-summary-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {
+        tagName: "section"
+      },
+      innerBlocks: [
+        {
+          clientId: "professional-summary-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Professional Summary",
+            level: 2
+          },
+          innerBlocks: []
+        },
+        {
+          clientId: "professional-summary-content",
+          name: "core/paragraph",
+          isValid: true,
+          attributes: {
+            content: structured.sections.summary.join('\n\n')
+          },
+          innerBlocks: []
+        }
+      ]
+    });
+  }
+  
+  // Experience section
+  if (structured.sections.experience && structured.sections.experience.length > 0) {
+    blocks.push({
+      clientId: "experience-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {
+        tagName: "section"
+      },
+      innerBlocks: [
+        {
+          clientId: "experience-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Experience",
+            level: 2
+          },
+          innerBlocks: []
+        },
+        {
+          clientId: "experience-content",
+          name: "core/paragraph",
+          isValid: true,
+          attributes: {
+            content: structured.sections.experience.join('\n\n\n')
+          },
+          innerBlocks: []
+        }
+      ]
+    });
+  }
+  
+  // Education section
+  if (structured.sections.education && structured.sections.education.length > 0) {
+    blocks.push({
+      clientId: "education-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {
+        tagName: "section"
+      },
+      innerBlocks: [
+        {
+          clientId: "education-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Education",
+            level: 2
+          },
+          innerBlocks: []
+        },
+        {
+          clientId: "education-content",
+          name: "core/paragraph",
+          isValid: true,
+          attributes: {
+            content: structured.sections.education.join('\n\n')
+          },
+          innerBlocks: []
+        }
+      ]
+    });
+  }
+  
+  // Skills section
+  if (structured.sections.skills && structured.sections.skills.length > 0) {
+    blocks.push({
+      clientId: "skills-&-expertise-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {
+        tagName: "section"
+      },
+      innerBlocks: [
+        {
+          clientId: "skills-&-expertise-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Skills & Expertise",
+            level: 2
+          },
+          innerBlocks: []
+        },
+        {
+          clientId: "skills-&-expertise-content",
+          name: "core/paragraph",
+          isValid: true,
+          attributes: {
+            content: structured.sections.skills.join(', ')
+          },
+          innerBlocks: []
+        }
+      ]
+    });
+  }
+  
+  return blocks;
+}
+
+// Improved resume parsing function
 function parseResumeText(text) {
   // Split text into lines and remove empty lines
   const lines = text.split(/\n|\r\n|\r/).filter(line => line.trim());
@@ -32,7 +211,7 @@ function parseResumeText(text) {
   // Attempt to structure the resume data
   try {
     // Extract basic sections
-    let name = lines[0].trim();
+    let name = '';
     let contactInfo = [];
     let sections = {
       summary: [],
@@ -45,25 +224,59 @@ function parseResumeText(text) {
     const emailRegex = /[\w.-]+@[\w.-]+\.\w+/;
     const phoneRegex = /(\+\d{1,3}[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}/;
     const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-z0-9][-a-z0-9]+\.[a-z0-9-.]+)/i;
+    const locationRegex = /([A-Za-z\s]+),\s*([A-Za-z\s]+)/;
     
     // Keywords that typically indicate sections
     const sectionKeywords = {
       summary: ['summary', 'profile', 'objective', 'about', 'professional summary'],
       experience: ['experience', 'work experience', 'employment', 'work history', 'professional experience'],
       education: ['education', 'academic', 'degree', 'university', 'college', 'school'],
-      skills: ['skills', 'expertise', 'technologies', 'technical skills', 'proficiencies', 'competencies']
+      skills: ['skills', 'expertise', 'technologies', 'technical skills', 'proficiencies', 'competencies', 'languages', 'top skills']
     };
+    
+    // Try to find the name (usually one of the first few lines with 2+ words)
+    for (let i = 0; i < Math.min(5, lines.length); i++) {
+      const words = lines[i].trim().split(/\s+/);
+      if (words.length >= 2 && words.length <= 5 && !/page|contact|summary|experience|education|skills/i.test(lines[i])) {
+        name = lines[i].trim();
+        break;
+      }
+    }
+    
+    // If we couldn't find a name, use the first line
+    if (!name && lines.length > 0) {
+      name = lines[0].trim();
+    }
     
     // Simple classification of text into sections
     let currentSection = null;
+    let experienceEntries = [];
+    let currentExperience = null;
+    let educationEntries = [];
+    let currentEducation = null;
     
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].toLowerCase();
       const originalLine = lines[i];
       
       // Check for contact information
-      if (emailRegex.test(originalLine) || phoneRegex.test(originalLine) || urlRegex.test(originalLine)) {
-        contactInfo.push(originalLine);
+      if (emailRegex.test(originalLine)) {
+        contactInfo.push(originalLine.match(emailRegex)[0]);
+        continue;
+      }
+      
+      if (phoneRegex.test(originalLine)) {
+        contactInfo.push(originalLine.match(phoneRegex)[0]);
+        continue;
+      }
+      
+      if (urlRegex.test(originalLine)) {
+        contactInfo.push(originalLine.match(urlRegex)[0]);
+        continue;
+      }
+      
+      if (locationRegex.test(originalLine) && contactInfo.length < 4) {
+        contactInfo.push(originalLine.match(locationRegex)[0]);
         continue;
       }
       
@@ -79,14 +292,110 @@ function parseResumeText(text) {
       
       if (foundSection) continue;
       
+      // Process experience section more intelligently
+      if (currentSection === 'experience') {
+        // Check if this line might be a job title or company
+        if (/\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{4}\s*-\s*/i.test(originalLine)) {
+          // This looks like the start of a new job entry
+          if (currentExperience) {
+            experienceEntries.push(currentExperience);
+          }
+          
+          // Extract company, title, date range
+          const parts = originalLine.split(/\s*-\s*/);
+          const dateRange = parts.pop();
+          const titleAndCompany = parts.join(' - ').trim();
+          
+          currentExperience = {
+            titleAndCompany,
+            dateRange,
+            location: '',
+            description: []
+          };
+          
+          continue;
+        }
+        
+        // Check if this is a location line
+        if (/\b(united states|usa|canada|uk|australia|remote|hybrid)\b/i.test(originalLine) && currentExperience && !currentExperience.location) {
+          currentExperience.location = originalLine.trim();
+          continue;
+        }
+        
+        // Otherwise, add to the current experience description
+        if (currentExperience) {
+          currentExperience.description.push(originalLine.trim());
+        } else {
+          sections.experience.push(originalLine.trim());
+        }
+      }
+      // Process education section more intelligently
+      else if (currentSection === 'education') {
+        // Check if this line might be a degree or institution
+        if (/\b(university|college|school|academy|institute)\b/i.test(originalLine) || /\b(bachelor|master|phd|degree|diploma)\b/i.test(originalLine)) {
+          // This looks like the start of a new education entry
+          if (currentEducation) {
+            educationEntries.push(currentEducation);
+          }
+          
+          currentEducation = {
+            institution: originalLine.trim(),
+            details: []
+          };
+          
+          continue;
+        }
+        
+        // Otherwise, add to the current education details
+        if (currentEducation) {
+          currentEducation.details.push(originalLine.trim());
+        } else {
+          sections.education.push(originalLine.trim());
+        }
+      }
       // Add line to current section if we've identified one
-      if (currentSection && sections[currentSection] !== undefined) {
-        sections[currentSection].push(originalLine);
+      else if (currentSection && sections[currentSection] !== undefined) {
+        sections[currentSection].push(originalLine.trim());
       }
       // If we're near the top and haven't identified a section yet, it might be part of the summary
-      else if (i < 7) {
-        sections.summary.push(originalLine);
+      else if (i < 15) {
+        sections.summary.push(originalLine.trim());
       }
+    }
+    
+    // Add the last experience entry if there is one
+    if (currentExperience) {
+      experienceEntries.push(currentExperience);
+    }
+    
+    // Add the last education entry if there is one
+    if (currentEducation) {
+      educationEntries.push(currentEducation);
+    }
+    
+    // Format experience entries
+    if (experienceEntries.length > 0) {
+      sections.experience = experienceEntries.map(entry => {
+        let location = entry.location ? `, ${entry.location}` : '';
+        return `${entry.titleAndCompany} (${entry.dateRange}${location}): ${entry.description.join(' ')}`;
+      });
+    }
+    
+    // Format education entries
+    if (educationEntries.length > 0) {
+      sections.education = educationEntries.map(entry => {
+        return `${entry.institution} - ${entry.details.join(' ')}`;
+      });
+    }
+    
+    // Ensure we have at least one contact method
+    if (contactInfo.length === 0) {
+      contactInfo.push('N/A');
+    }
+    
+    // If we have less than 4 contact items, add placeholders
+    while (contactInfo.length < 4) {
+      contactInfo.push('N/A');
     }
     
     return {
@@ -102,6 +411,30 @@ function parseResumeText(text) {
     // Fall back to returning just the text
     return { text };
   }
+}
+
+// Function to normalize text for better formatting
+function normalizeText(text) {
+  return text
+    // Remove excessive spaces
+    .replace(/\s+/g, ' ')
+    // Fix common PDF formatting issues
+    .replace(/(\w) - (\w)/g, '$1-$2')
+    // Structure obvious paragraphs (based on sentence endings)
+    .replace(/([.!?])\s+([A-Z])/g, '$1\n\n$2')
+    // Add line breaks after likely headers (all caps words followed by normal text)
+    .replace(/([A-Z]{2,}[A-Z\s]+)(\s+[a-z])/g, '$1\n$2')
+    // Add paragraph breaks after numbers that might be section numbering
+    .replace(/(\d+\.)\s+([A-Z])/g, '$1\n\n$2')
+    // Try to detect bulleted lists
+    .replace(/([•\-*])\s+([A-Za-z])/g, '\n$1 $2')
+    // Format job titles and companies
+    .replace(/([A-Za-z]+)\s+([A-Za-z]+)\s+\|\s+\(/g, '$1\n\n$2 | (')
+    // Format section headers
+    .replace(/\b(Summary|Experience|Education|Skills|Expertise)\b/g, '\n\n$1\n')
+    // Clean up excessive newlines
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 // Setup API routes
@@ -133,6 +466,8 @@ router.post(async (req, res) => {
         // Try to load PDF.js with more robust error handling
         let pdfjsLib, pdfjsWorker;
         let useDirectParser = false;
+        let numPages = 0;
+        let filename = req.file.originalname || 'resume.pdf';
         
         try {
           // First try the legacy path
@@ -215,26 +550,10 @@ router.post(async (req, res) => {
             }
             
             // Process and clean the extracted text
-            let fullText = textChunks.join(' ').trim();
+            fullText = textChunks.join(' ').trim();
             
             // Improve text structure with better paragraph detection
-            fullText = fullText
-              // Remove excessive spaces
-              .replace(/\s+/g, ' ')
-              // Fix common PDF formatting issues
-              .replace(/(\w) - (\w)/g, '$1-$2')
-              // Structure obvious paragraphs (based on sentence endings)
-              .replace(/([.!?])\s+([A-Z])/g, '$1\n\n$2')
-              // Add line breaks after likely headers (all caps words followed by normal text)
-              .replace(/([A-Z]{2,}[A-Z\s]+)(\s+[a-z])/g, '$1\n$2')
-              // Add paragraph breaks after numbers that might be section numbering
-              .replace(/(\d+\.)\s+([A-Z])/g, '$1\n\n$2')
-              // Try to detect bulleted lists
-              .replace(/([•\-*])\s+([A-Za-z])/g, '\n$1 $2')
-              // Double newlines for readability
-              .replace(/\n/g, '\n\n')
-              // Clean up any triple+ newlines
-              .replace(/\n{3,}/g, '\n\n');
+            fullText = normalizeText(fullText);
             
             // If we got a significant amount of text, consider it successful
             if (fullText.length > 100) {
@@ -267,7 +586,8 @@ router.post(async (req, res) => {
             isEvalSupported: false
           }).promise;
           
-          console.log(`PDF loaded successfully. Pages: ${pdfDoc.numPages}`);
+          numPages = pdfDoc.numPages;
+          console.log(`PDF loaded successfully. Pages: ${numPages}`);
           
           // Extract text from all pages
           for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
@@ -278,6 +598,9 @@ router.post(async (req, res) => {
             
             console.log(`Processed page ${pageNum}/${pdfDoc.numPages}`);
           }
+          
+          // Normalize the text for better formatting
+          fullText = normalizeText(fullText);
         }
         
         if (!fullText || fullText.trim().length === 0) {
@@ -287,12 +610,18 @@ router.post(async (req, res) => {
         // Parse resume structure
         const parsedResume = parseResumeText(fullText);
         
+        // Generate Gutenberg blocks
+        const blocks = generateGutenbergBlocks(parsedResume.structured);
+        
         // Return the parsed content
         return res.json({
           success: true,
           text: fullText,
           structured: parsedResume.structured || null,
-          method: useDirectParser ? 'direct' : 'pdfjs'
+          blocks: blocks,
+          aiProcessed: true,
+          filename: filename,
+          pages: numPages
         });
       } catch (pdfError) {
         console.error('PDF.js parsing failed:', pdfError);
