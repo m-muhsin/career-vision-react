@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run setup-api",
+    "build": "vite build && npm run setup-api && npm run copy-pdfjs-files",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "server": "node server/parse-resume.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
-    "setup-api": "cd api && npm install && npm install pdfjs-dist@3.4.120"
+    "setup-api": "cd api && npm install && npm install pdfjs-dist@3.4.120",
+    "copy-pdfjs-files": "mkdir -p .vercel/output/functions/api && cp -r api/node_modules/pdfjs-dist/legacy api/node_modules/pdfjs-dist/build api/node_modules/pdfjs-dist/es5 .vercel/output/functions/api/ 2>/dev/null || true"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

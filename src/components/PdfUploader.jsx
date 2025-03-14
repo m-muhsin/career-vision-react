@@ -1,5 +1,29 @@
 import React, { useState } from 'react';
 
+// Utility function to normalize text structure
+const normalizeText = (text, method) => {
+  // Only apply additional normalization if it came from the direct extraction method
+  if (method === 'direct') {
+    // Apply additional normalization for direct extraction method
+    return text
+      // Ensure section headers stand out (likely all caps patterns)
+      .replace(/([A-Z][A-Z\s]{3,})/g, '\n\n$1\n')
+      // Make sure there's a gap after periods if not already
+      .replace(/\.([A-Z])/g, '.\n\n$1')
+      // Clean up multiple consecutive new lines to maximum of 2
+      .replace(/\n{3,}/g, '\n\n')
+      // Add spacing to bullet points if they're squished
+      .replace(/•([A-Za-z])/g, '• $1');
+  }
+  
+  // For PDF.js we still do minimal cleaning
+  return text
+    // Normalize line endings
+    .replace(/\r\n/g, '\n')
+    // Remove excessive blank lines
+    .replace(/\n{3,}/g, '\n\n');
+};
+
 const PdfUploader = ({ onParsed }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -60,8 +84,12 @@ const PdfUploader = ({ onParsed }) => {
         throw new Error(data.error || 'Failed to parse PDF.');
       }
 
-      setDebug(prev => `${prev}\nParsed ${data.text.length} characters of text using ${data.method || 'unknown'} method`);
-      onParsed(data.text);
+      // Apply text normalization based on extraction method
+      const method = data.method || 'unknown';
+      const normalizedText = normalizeText(data.text, method);
+      
+      setDebug(prev => `${prev}\nParsed ${data.text.length} characters of text using ${method} method`);
+      onParsed(normalizedText);
     } catch (err) {
       console.error('PDF parsing error:', err);
       

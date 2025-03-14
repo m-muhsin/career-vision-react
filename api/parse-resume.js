@@ -214,7 +214,27 @@ router.post(async (req, res) => {
               }
             }
             
-            fullText = textChunks.join(' ').trim();
+            // Process and clean the extracted text
+            let fullText = textChunks.join(' ').trim();
+            
+            // Improve text structure with better paragraph detection
+            fullText = fullText
+              // Remove excessive spaces
+              .replace(/\s+/g, ' ')
+              // Fix common PDF formatting issues
+              .replace(/(\w) - (\w)/g, '$1-$2')
+              // Structure obvious paragraphs (based on sentence endings)
+              .replace(/([.!?])\s+([A-Z])/g, '$1\n\n$2')
+              // Add line breaks after likely headers (all caps words followed by normal text)
+              .replace(/([A-Z]{2,}[A-Z\s]+)(\s+[a-z])/g, '$1\n$2')
+              // Add paragraph breaks after numbers that might be section numbering
+              .replace(/(\d+\.)\s+([A-Z])/g, '$1\n\n$2')
+              // Try to detect bulleted lists
+              .replace(/([•\-*])\s+([A-Za-z])/g, '\n$1 $2')
+              // Double newlines for readability
+              .replace(/\n/g, '\n\n')
+              // Clean up any triple+ newlines
+              .replace(/\n{3,}/g, '\n\n');
             
             // If we got a significant amount of text, consider it successful
             if (fullText.length > 100) {
