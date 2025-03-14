@@ -1,3 +1,4 @@
+/* global require, module */
 const multer = require('multer');
 const cors = require('cors');
 const { createRouter } = require('next-connect');
@@ -415,26 +416,45 @@ function parseResumeText(text) {
 
 // Function to normalize text for better formatting
 function normalizeText(text) {
-  return text
-    // Remove excessive spaces
+  // First, clean up the text by removing excessive whitespace
+  let cleanedText = text
+    // Replace multiple spaces with a single space
     .replace(/\s+/g, ' ')
     // Fix common PDF formatting issues
-    .replace(/(\w) - (\w)/g, '$1-$2')
-    // Structure obvious paragraphs (based on sentence endings)
-    .replace(/([.!?])\s+([A-Z])/g, '$1\n\n$2')
-    // Add line breaks after likely headers (all caps words followed by normal text)
-    .replace(/([A-Z]{2,}[A-Z\s]+)(\s+[a-z])/g, '$1\n$2')
-    // Add paragraph breaks after numbers that might be section numbering
-    .replace(/(\d+\.)\s+([A-Z])/g, '$1\n\n$2')
-    // Try to detect bulleted lists
-    .replace(/([•\-*])\s+([A-Za-z])/g, '\n$1 $2')
-    // Format job titles and companies
+    .replace(/(\w) - (\w)/g, '$1-$2');
+  
+  // Identify and format section headers
+  cleanedText = cleanedText
+    .replace(/\b(Summary|Experience|Education|Skills|Expertise|Contact|Languages|Certifications|Publications|Honors-Awards)\b/gi, '\n\n$1\n');
+  
+  // Format bullet points
+  cleanedText = cleanedText
+    .replace(/([•\-*])\s+([A-Za-z])/g, '\n• $2');
+  
+  // Format job titles and dates
+  cleanedText = cleanedText
     .replace(/([A-Za-z]+)\s+([A-Za-z]+)\s+\|\s+\(/g, '$1\n\n$2 | (')
-    // Format section headers
-    .replace(/\b(Summary|Experience|Education|Skills|Expertise)\b/g, '\n\n$1\n')
-    // Clean up excessive newlines
+    .replace(/([A-Za-z]+)\s+([A-Za-z]+)\s+\(([A-Za-z]+\s+\d{4})/g, '$1\n\n$2 ($3');
+  
+  // Add paragraph breaks after periods followed by capital letters
+  cleanedText = cleanedText
+    .replace(/\.([A-Z])/g, '.\n\n$1');
+  
+  // Add line breaks after company names and positions
+  cleanedText = cleanedText
+    .replace(/([A-Za-z]+)\s+(Partner|Engineer|Developer|Founder|Intern)/g, '$1\n$2');
+  
+  // Format dates and locations
+  cleanedText = cleanedText
+    .replace(/(\d{4})\s*-\s*([A-Za-z]+\s+\d{4})/g, '$1 - $2')
+    .replace(/(\d{4})\s*-\s*(Present)/g, '$1 - $2');
+  
+  // Clean up excessive newlines
+  cleanedText = cleanedText
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+  
+  return cleanedText;
 }
 
 // Setup API routes
@@ -482,7 +502,7 @@ router.post(async (req, res) => {
             pdfjsLib = require('pdfjs-dist/build/pdf.js');
             pdfjsWorker = require('pdfjs-dist/build/pdf.worker.js');
             console.log('Successfully loaded PDF.js from standard path');
-          } catch (importError2) {
+          } catch (_importError2) {
             console.log('Could not load PDF.js from standard path, trying es5 path');
             
             try {
@@ -490,7 +510,7 @@ router.post(async (req, res) => {
               pdfjsLib = require('pdfjs-dist/es5/build/pdf.js');
               pdfjsWorker = require('pdfjs-dist/es5/build/pdf.worker.js');
               console.log('Successfully loaded PDF.js from ES5 path');
-            } catch (importError3) {
+            } catch (_importError3) {
               console.error('All PDF.js import attempts failed');
               console.log('Falling back to direct text extraction method');
               useDirectParser = true;

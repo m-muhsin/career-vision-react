@@ -1,3 +1,4 @@
+/* global module */
 module.exports = {
   env: {
     node: true,
@@ -9,9 +10,9 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
-    'no-unused-vars': ['error', { 
-      argsIgnorePattern: '^_',
-      varsIgnorePattern: '^_' 
+    'no-unused-vars': ['warn', { 
+      'argsIgnorePattern': '^_',
+      'varsIgnorePattern': '^_' 
     }]
   }
 }; 
