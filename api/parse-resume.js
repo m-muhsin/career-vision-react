@@ -304,7 +304,6 @@ function createHeaderBlock(name, contactInfo) {
 
 // Helper function to create section blocks with different formatting per section type
 function createSectionBlock(title, content, sectionType) {
-  // Ensure we're working with an array of strings
   const safeContent = Array.isArray(content)
     ? content.map((item) => {
         if (item === null || item === undefined) return "";
@@ -404,7 +403,7 @@ function createSectionBlock(title, content, sectionType) {
 }
 
 // API endpoint to handle resume PDF upload and parsing
-app.post("/api/parse-resume", upload.single("pdfFile"), async (req, res) => {
+export default async function handler(req, res) {
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -475,19 +474,4 @@ app.post("/api/parse-resume", upload.single("pdfFile"), async (req, res) => {
       error: errorMessage,
     });
   }
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Resume parsing server running on port ${PORT}`);
-  console.log(`API endpoint: http://localhost:${PORT}/api/parse-resume`);
-  console.log(
-    `AI integration: ${
-      process.env.OPENAI_API_KEY
-        ? "Enabled"
-        : "Not configured (set OPENAI_API_KEY in .env file)"
-    }`
-  );
-});
-
-module.exports = app;
+}
