@@ -405,21 +405,12 @@ function createSectionBlock(title, content, sectionType) {
 // API endpoint to handle resume PDF upload and parsing
 export default async function handler(req, res) {
   try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: "No PDF file provided",
-      });
-    }
 
-    const filePath = req.file.path;
-    console.log(`Processing PDF file: ${filePath}`);
+    // use multipart-form-data to parse the pdf file
+    const formData = await req.formData();
+    const pdfFile = formData.get("pdfFile");
 
-    // Read the file
-    const dataBuffer = fs.readFileSync(filePath);
-
-    // Parse PDF
-    const pdfData = await pdfParse(dataBuffer);
+    const pdfData = await pdfParse(pdfFile);
 
     // Extract text content
     const text = pdfData.text;
