@@ -64,7 +64,7 @@ const PdfUploader = ({ onParsed }) => {
 
     try {
       // Try both endpoints, starting with parse-resume
-      const endpoint = '/api/parse-resume';
+      const endpoint = '/api/parse-pdf';
       
       setDebug(prev => `${prev}\nSending request to ${endpoint}...`);
       
