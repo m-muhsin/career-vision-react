@@ -1,10 +1,30 @@
-/* global require, module */
+/* global require, module, process */
 const multer = require('multer');
 const cors = require('cors');
 const { createRouter } = require('next-connect');
 const pdf = require('pdf-parse');
+const OpenAI = require('openai');
+const dotenv = require('dotenv');
 
-const { parseResumeWithAI, convertToBlockStructure } = require('./parse-profile');
+// Load environment variables
+dotenv.config();
+
+// Import shared utilities
+const { parseResumeText, convertToBlockStructure } = require('../utils/resume-parser.cjs');
+const { parseResumeWithAI } = require('../utils/ai-parser.cjs');
+
+// Initialize OpenAI if API key exists
+let openai = null;
+try {
+  if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+    console.log("OpenAI initialized successfully");
+  }
+} catch (error) {
+  console.error("Failed to initialize OpenAI:", error.message);
+}
 
 // Configure middleware for serverless environment
 const router = createRouter();
@@ -58,7 +78,7 @@ router.post(async (req, res) => {
       
       // Use the PDF buffer directly from multer's memory storage
       const dataBuffer = req.file.buffer;
-      console.log("dataBuffer", dataBuffer);
+      
       // Parse PDF using pdf-parse
       try {
         const pdfData = await pdf(dataBuffer);
@@ -74,7 +94,28 @@ router.post(async (req, res) => {
         }
         
         // Parse the resume text
-        const parsedResume = parseResumeWithAI(text);
+        let parsedResume;
+        let usedAI = false;
+        
+        try {
+          // First try the AI parsing if available
+          if (openai) {
+            parsedResume = await parseResumeWithAI(text, openai);
+            usedAI = true;
+          } else {
+            parsedResume = parseResumeText(text);
+          }
+        } catch (aiError) {
+          console.error('AI parsing failed, using fallback:', aiError);
+          parsedResume = parseResumeText(text);
+        }
+        
+        // If AI parsing returned nothing, use fallback
+        if (!parsedResume) {
+          console.log('AI parsing returned no results, using fallback');
+          parsedResume = parseResumeText(text);
+          usedAI = false;
+        }
         
         // Convert to block structure
         const blockStructure = convertToBlockStructure(parsedResume);
@@ -85,7 +126,7 @@ router.post(async (req, res) => {
           text: text,
           structured: parsedResume,
           blocks: blockStructure,
-          aiProcessed: false,
+          aiProcessed: usedAI,
           filename: filename,
           pages: pdfData.numpages || 1
         });

@@ -1,3 +1,4 @@
+/* global require, module, process, __dirname */
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
@@ -7,16 +8,25 @@ const path = require("path");
 const dotenv = require("dotenv");
 const OpenAI = require("openai");
 
-const parseProfile = require("./parse-profile");
-const { parseResumeWithAI, convertToBlockStructure } = parseProfile;
+// Import shared utilities
+const { parseResumeText, convertToBlockStructure } = require('../utils/resume-parser.cjs');
+const { parseResumeWithAI } = require('../utils/ai-parser.cjs');
 
 // Load environment variables
 dotenv.config();
 
 // Initialize OpenAI API
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let openai = null;
+try {
+  if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+    console.log("OpenAI initialized successfully");
+  }
+} catch (error) {
+  console.error("Failed to initialize OpenAI:", error.message);
+}
 
 // Create Express app
 const app = express();
@@ -54,107 +64,122 @@ app.get("/api/health", (req, res) => {
 // Configure file storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, "uploads");
-
+    const uploadDir = path.join(__dirname, 'uploads');
+    
     // Create uploads directory if it doesn't exist
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
-
+    
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     // Use a unique filename to avoid collisions
-    const uniqueName = `${Date.now()}-${Math.round(
-      Math.random() * 1e9
-    )}${path.extname(file.originalname)}`;
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
     cb(null, uniqueName);
-  },
+  }
 });
 
 // Configure upload middleware
-const upload = multer({
+const upload = multer({ 
   storage: storage,
   limits: { fileSize: 50 * 1024 * 1024 }, // Increase limit to 50MB
   fileFilter: (req, file, cb) => {
-    if (file.mimetype !== "application/pdf") {
-      return cb(new Error("Only PDF files are allowed!"), false);
+    if (file.mimetype !== 'application/pdf') {
+      return cb(new Error('Only PDF files are allowed!'), false);
     }
     cb(null, true);
-  },
+  }
 });
 
 // API endpoint to handle resume PDF upload and parsing
-app.post("/api/parse-resume", upload.single("pdfFile"), async (req, res) => {
+app.post('/api/parse-resume', upload.single('pdfFile'), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: "No PDF file provided",
+      return res.status(400).json({ 
+        success: false, 
+        error: 'No PDF file provided' 
       });
     }
-
+    
     const filePath = req.file.path;
     console.log(`Processing PDF file: ${filePath}`);
-
+    
     // Read the file
     const dataBuffer = fs.readFileSync(filePath);
-
-    console.log("dataBuffer", dataBuffer);
+    
     // Parse PDF
     const pdfData = await pdfParse(dataBuffer);
-
+    
     // Extract text content
     const text = pdfData.text;
-
+    
     if (!text || text.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        error:
-          "No text could be extracted from this PDF. It may be image-based or secured against text extraction.",
+        error: 'No text could be extracted from this PDF. It may be image-based or secured against text extraction.'
       });
     }
-
-    // Determine if we should use AI
-    const useAI = !!process.env.OPENAI_API_KEY;
+    
+    // Parse the resume text
     let parsedResume;
-
-    parsedResume = await parseResumeWithAI(text);
-
+    let usedAI = false;
+    
+    try {
+      // First try the AI parsing if available
+      if (openai) {
+        parsedResume = await parseResumeWithAI(text, openai);
+        usedAI = true;
+      } else {
+        parsedResume = parseResumeText(text);
+      }
+    } catch (aiError) {
+      console.error('AI parsing failed, using fallback:', aiError);
+      parsedResume = parseResumeText(text);
+    }
+    
+    // If AI parsing returned nothing, use fallback
+    if (!parsedResume) {
+      console.log('AI parsing returned no results, using fallback');
+      parsedResume = parseResumeText(text);
+      usedAI = false;
+    }
+    
     // Convert to block structure
     const blockStructure = convertToBlockStructure(parsedResume);
-
+    
     // Clean up uploaded file
     fs.unlinkSync(filePath);
-
+    
     // Return the parsed content and block structure
     return res.json({
       success: true,
       text: text,
       structured: parsedResume,
       blocks: blockStructure,
-      aiProcessed: useAI,
+      aiProcessed: usedAI,
+      filename: req.file.originalname || 'resume.pdf',
+      pages: pdfData.numpages || 1
     });
   } catch (error) {
-    console.error("Error processing PDF:", error);
-
+    console.error('Error processing PDF:', error);
+    
     // Provide more detailed error messages
-    let errorMessage = "Error processing PDF";
-
-    if (error.message.includes("password")) {
-      errorMessage =
-        "This PDF is password protected. Please provide an unprotected PDF.";
-    } else if (error.message.includes("file format")) {
-      errorMessage = "The file is not a valid PDF or is corrupted.";
-    } else if (error.message.includes("too large")) {
-      errorMessage = "The PDF file is too large. Maximum size is 50MB.";
-    } else if (error.code === "ENOENT") {
-      errorMessage = "Error accessing the uploaded file. Please try again.";
+    let errorMessage = 'Error processing PDF';
+    
+    if (error.message.includes('password')) {
+      errorMessage = 'This PDF is password protected. Please provide an unprotected PDF.';
+    } else if (error.message.includes('file format')) {
+      errorMessage = 'The file is not a valid PDF or is corrupted.';
+    } else if (error.message.includes('too large')) {
+      errorMessage = 'The PDF file is too large. Maximum size is 50MB.';
+    } else if (error.code === 'ENOENT') {
+      errorMessage = 'Error accessing the uploaded file. Please try again.';
     }
-
+    
     return res.status(500).json({
       success: false,
-      error: errorMessage,
+      error: errorMessage
     });
   }
 });
@@ -163,13 +188,7 @@ app.post("/api/parse-resume", upload.single("pdfFile"), async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Resume parsing server running on port ${PORT}`);
   console.log(`API endpoint: http://localhost:${PORT}/api/parse-resume`);
-  console.log(
-    `AI integration: ${
-      process.env.OPENAI_API_KEY
-        ? "Enabled"
-        : "Not configured (set OPENAI_API_KEY in .env file)"
-    }`
-  );
+  console.log(`AI integration: ${process.env.OPENAI_API_KEY ? 'Enabled' : 'Not configured (set OPENAI_API_KEY in .env file)'}`);
 });
 
 module.exports = app;
