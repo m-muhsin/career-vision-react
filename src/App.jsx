@@ -397,8 +397,6 @@ export default function Editor() {
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
   const [isEditingMode, setIsEditingMode] = useState(true); // Whether we're in block editor mode or import/template mode
-
-  console.log("blocks", blocks);
   
   // History state management
   const [history, setHistory] = useState([resumeTemplate]); // Stack of previous states
@@ -443,7 +441,6 @@ export default function Editor() {
 
   // Handle imported resume data and prepare it for the block editor
   const handleImportComplete = (importedBlocks) => {
-    console.log('App received imported blocks:', importedBlocks);
     setBlocks(importedBlocks);
     updateHistoryOnBlocksChange(importedBlocks);
     setIsEditingMode(true); // Switch to editor mode after import

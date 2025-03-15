@@ -4,7 +4,6 @@ import { registerCoreBlocks } from '@wordpress/block-library'
 import { Analytics } from "@vercel/analytics/react"
 
 import App from './App.jsx'
-import './index.css'
 
 registerCoreBlocks();
 
