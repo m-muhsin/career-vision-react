@@ -58,7 +58,7 @@ router.post(async (req, res) => {
       
       // Use the PDF buffer directly from multer's memory storage
       const dataBuffer = req.file.buffer;
-      
+      console.log("dataBuffer", dataBuffer);
       // Parse PDF using pdf-parse
       try {
         const pdfData = await pdf(dataBuffer);
