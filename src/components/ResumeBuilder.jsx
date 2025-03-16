@@ -2,43 +2,6 @@ import React, { useState } from 'react';
 import ImportResume from './ImportResume';
 import ResumeTemplate from './ResumeTemplate';
 
-const styles = {
-  container: {
-    padding: '20px',
-    maxWidth: '1000px',
-    margin: '0 auto',
-    minHeight: '100vh',
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: '28px',
-    fontWeight: '700',
-    margin: '30px 0',
-    color: 'var(--primary-color)',
-    fontFamily: 'var(--font-family-heading)',
-  },
-  subtitle: {
-    textAlign: 'center',
-    fontSize: '18px',
-    fontWeight: '400',
-    marginBottom: '30px',
-    color: '#666',
-  },
-  actionButton: {
-    backgroundColor: 'var(--primary-color)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    padding: '12px 24px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    display: 'block',
-    margin: '30px auto',
-    fontFamily: 'var(--font-family-heading)',
-  },
-};
-
 /**
  * ResumeBuilder component manages the resume creation workflow
  */
@@ -89,9 +52,9 @@ const ResumeBuilder = ({ onImportComplete }) => {
   };
   
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Career Vision Resume Builder</h1>
-      <p style={styles.subtitle}>
+    <div className="resume-builder__container">
+      <h1 className="resume-builder__title">Career Vision Resume Builder</h1>
+      <p className="resume-builder__subtitle">
         {step === 'import' 
           ? 'Import your existing resume to get started quickly'
           : 'Your resume has been created! You can continue editing as needed.'}
@@ -101,7 +64,7 @@ const ResumeBuilder = ({ onImportComplete }) => {
       
       {resumeData && step === 'import' && (
         <button 
-          style={styles.actionButton}
+          className="resume-builder__action-button"
           onClick={handleContinue}
         >
           Continue with Imported Resume
@@ -110,7 +73,7 @@ const ResumeBuilder = ({ onImportComplete }) => {
       
       {resumeData && step === 'display' && (
         <button 
-          style={styles.actionButton}
+          className="resume-builder__action-button"
           onClick={handleContinue}
         >
           Edit Resume in Block Editor

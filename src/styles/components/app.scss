@@ -1,0 +1,39 @@
+/* App Component Styles */
+.app {
+  &__container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f0f0f0;
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  &__editor-container {
+    width: 100%;
+    height: calc(100% - 60px);
+    position: relative;
+    margin-top: 60px;
+    overflow: hidden;
+  }
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+    padding: 20px;
+  }
+} 

@@ -1,66 +1,5 @@
 import React from 'react';
 
-const styles = {
-  container: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '40px',
-    backgroundColor: 'white',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-    borderRadius: '8px',
-  },
-  header: {
-    textAlign: 'center',
-    marginBottom: '30px',
-    borderBottom: '2px solid var(--primary-color)',
-    paddingBottom: '20px',
-  },
-  name: {
-    fontSize: '32px',
-    fontWeight: '700',
-    marginBottom: '10px',
-    color: 'var(--primary-color)',
-    fontFamily: 'var(--font-family-heading)',
-  },
-  contactInfo: {
-    fontSize: '14px',
-    color: '#555',
-    marginBottom: '5px',
-  },
-  sectionHeading: {
-    fontSize: '22px',
-    fontWeight: '600',
-    marginTop: '30px',
-    marginBottom: '15px',
-    color: 'var(--secondary-color)',
-    fontFamily: 'var(--font-family-heading)',
-    borderBottom: '1px solid #eee',
-    paddingBottom: '8px',
-  },
-  content: {
-    fontSize: '15px',
-    lineHeight: '1.6',
-    color: '#333',
-    whiteSpace: 'pre-wrap',
-  },
-  paragraph: {
-    marginBottom: '15px',
-  },
-  editButton: {
-    backgroundColor: 'var(--secondary-color)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    padding: '10px 20px',
-    fontSize: '14px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    display: 'inline-block',
-    marginTop: '20px',
-    fontFamily: 'var(--font-family-heading)',
-  },
-};
-
 /**
  * ResumeTemplate component displays the resume data in a nicely formatted layout
  * @param {Object} props 
@@ -112,10 +51,10 @@ const ResumeTemplate = ({ resumeData, onEdit }) => {
     
     return (
       <div>
-        <h2 style={styles.sectionHeading}>{headingText}</h2>
-        <div style={styles.content}>
+        <h2 className="resume-template__section-heading">{headingText}</h2>
+        <div className="resume-template__content">
           {contentText.split('\n\n').map((paragraph, index) => (
-            <p key={index} style={styles.paragraph}>{paragraph}</p>
+            <p key={index} className="resume-template__paragraph">{paragraph}</p>
           ))}
         </div>
       </div>
@@ -123,10 +62,10 @@ const ResumeTemplate = ({ resumeData, onEdit }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h1 style={styles.name}>{name}</h1>
-        <div style={styles.contactInfo}>{contactInfo}</div>
+    <div className="resume-template__container">
+      <div className="resume-template__header">
+        <h1 className="resume-template__name">{name}</h1>
+        <div className="resume-template__contact-info">{contactInfo}</div>
       </div>
       
       {renderSection(summarySection, "Professional Summary")}
@@ -135,7 +74,7 @@ const ResumeTemplate = ({ resumeData, onEdit }) => {
       {renderSection(skillsSection, "Skills & Expertise")}
       
       <div style={{ textAlign: 'center', marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '20px' }}>
-        <button style={styles.editButton} onClick={onEdit}>
+        <button className="resume-template__edit-button" onClick={onEdit}>
           Edit Template View
         </button>
       </div>

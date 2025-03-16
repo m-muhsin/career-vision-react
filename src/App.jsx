@@ -8,6 +8,7 @@ import "./styles/toolbar-fix.css";
 import "./styles/iframe-styles.scss";
 import "./styles/fonts.css";
 import "./App.css";
+import "./styles/main.scss";
 import { contentStyles } from "./styles/contentStyles.js";
 import Header from "./components/Header";
 import ResumeBuilder from "./components/ResumeBuilder";
@@ -353,44 +354,6 @@ const resumeTemplate = [
 // A4 paper dimensions are 210mm × 297mm (8.27in × 11.69in)
 // At 96 DPI, that's approximately 794px × 1123px
 
-// Full screen app styles
-const appStyles = {
-  container: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#f0f0f0",
-    width: "100%",
-    height: "100vh",
-    padding: 0,
-    margin: 0,
-    overflow: "hidden",
-  },
-  editorContainer: {
-    width: "100%",
-    height: "calc(100% - 60px)",
-    position: "relative",
-    marginTop: "60px",
-    overflow: "hidden",
-  },
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    zIndex: 1000,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    overflow: "auto",
-    padding: "20px",
-  },
-};
-
 export default function Editor() {
   // Initial state
   const [blocks, setBlocks] = useState(resumeTemplate);
@@ -687,9 +650,8 @@ export default function Editor() {
   };
 
   return (
-    <div style={appStyles.container}>
-      {/* Header */}
-      <Header 
+    <div className="app__container">
+      <Header
         hasUndo={hasUndo}
         hasRedo={hasRedo}
         isPrinting={isPrinting}
@@ -703,7 +665,7 @@ export default function Editor() {
       {/* Main Content Area - conditionally render either Editor or ResumeBuilder */}
       {isEditingMode ? (
         /* Editor Container */
-        <div style={appStyles.editorContainer}>
+        <div className="app__editor-container">
           <BlockEditorProvider
             value={blocks}
             onChange={handleBlocksChange}
@@ -714,7 +676,7 @@ export default function Editor() {
         </div>
       ) : (
         /* Resume Builder */
-        <div style={{...appStyles.editorContainer, padding: '20px'}}>
+        <div className="app__editor-container" style={{padding: '20px'}}>
           <ResumeBuilder onImportComplete={handleImportComplete} />
         </div>
       )}

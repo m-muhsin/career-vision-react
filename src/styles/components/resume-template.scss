@@ -1,0 +1,68 @@
+/* Resume Template Component Styles */
+.resume-template {
+  &__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 20px;
+  }
+
+  &__name {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-family: var(--font-family-heading);
+  }
+
+  &__contact-info {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+  }
+
+  &__section-heading {
+    font-size: 22px;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+    font-family: var(--font-family-heading);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+
+  &__content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+    white-space: pre-wrap;
+  }
+
+  &__paragraph {
+    margin-bottom: 15px;
+  }
+
+  &__edit-button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 20px;
+    font-family: var(--font-family-heading);
+  }
+} 

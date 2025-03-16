@@ -1,90 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
-const styles = {
-  container: {
-    padding: "20px",
-    maxWidth: "600px",
-    margin: "80px auto 0",
-    backgroundColor: "white",
-    borderRadius: "8px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-  },
-  title: {
-    fontSize: "24px",
-    fontWeight: "600",
-    marginBottom: "16px",
-    fontFamily: "var(--font-family-heading)",
-    color: "var(--primary-color)",
-  },
-  dropzone: {
-    border: "2px dashed #ccc",
-    borderRadius: "4px",
-    padding: "40px",
-    textAlign: "center",
-    cursor: "pointer",
-    marginBottom: "20px",
-    transition: "border 0.3s ease",
-  },
-  dropzoneActive: {
-    border: "2px dashed var(--secondary-color)",
-    backgroundColor: "rgba(6, 156, 175, 0.05)",
-  },
-  uploadIcon: {
-    fontSize: "48px",
-    marginBottom: "16px",
-    color: "var(--secondary-color)",
-  },
-  dropzoneText: {
-    fontSize: "16px",
-    marginBottom: "8px",
-  },
-  button: {
-    backgroundColor: "var(--secondary-color)",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    padding: "10px 20px",
-    fontSize: "14px",
-    fontWeight: "bold",
-    cursor: "pointer",
-    display: "inline-block",
-    marginTop: "12px",
-    fontFamily: "var(--font-family-heading)",
-  },
-  statusContainer: {
-    marginTop: "20px",
-    padding: "16px",
-    borderRadius: "4px",
-  },
-  loadingStatus: {
-    backgroundColor: "rgba(6, 156, 175, 0.1)",
-    color: "var(--secondary-color)",
-  },
-  spinner: {
-    display: "inline-block",
-    width: "20px",
-    height: "20px",
-    marginRight: "8px",
-    border: "3px solid rgba(6, 156, 175, 0.2)",
-    borderRadius: "50%",
-    borderTop: "3px solid var(--secondary-color)",
-    animation: "spin 1s linear infinite",
-  },
-  errorStatus: {
-    backgroundColor: "#ffebee",
-    color: "#d32f2f",
-  },
-  successStatus: {
-    backgroundColor: "#e8f5e9",
-    color: "#2e7d32",
-  },
-  fileDetails: {
-    marginTop: "12px",
-    fontSize: "14px",
-  },
-};
-
 const ImportResume = ({ onImportComplete }) => {
   const [status, setStatus] = useState({ type: null, message: "" });
   const [pdfText, setPdfText] = useState("");
@@ -1057,19 +973,18 @@ const ImportResume = ({ onImportComplete }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Import Your Resume</h2>
+    <div className="import-resume__container">
+      <h2 className="import-resume__title">Import Your Resume</h2>
 
       <div
         {...getRootProps()}
-        style={{
-          ...styles.dropzone,
-          ...(isDragActive ? styles.dropzoneActive : {}),
-        }}
+        className={`import-resume__dropzone ${
+          isDragActive ? "import-resume__dropzone--active" : ""
+        }`}
       >
         <input {...getInputProps()} />
-        <div style={styles.uploadIcon}>📄</div>
-        <p style={styles.dropzoneText}>
+        <div className="import-resume__upload-icon">📄</div>
+        <p className="import-resume__text">
           {isDragActive
             ? "Drop your PDF resume here..."
             : "Drag & drop your PDF resume here, or click to select file"}
@@ -1080,7 +995,7 @@ const ImportResume = ({ onImportComplete }) => {
       </div>
 
       {selectedFile && (
-        <div style={styles.fileDetails}>
+        <div style={{ marginTop: "12px", fontSize: "14px" }}>
           <strong>Selected file:</strong> {selectedFile.name} (
           {Math.round(selectedFile.size / 1024)} KB)
         </div>
@@ -1121,24 +1036,17 @@ const ImportResume = ({ onImportComplete }) => {
 
       {status.type && !(isUploading && uploadProgress > 0) && (
         <div
-          style={{
-            ...styles.statusContainer,
-            ...(status.type === "loading" ? styles.loadingStatus : {}),
-            ...(status.type === "error" ? styles.errorStatus : {}),
-            ...(status.type === "success" ? styles.successStatus : {}),
-          }}
+          className={`import-resume__status-container ${
+            status.type === "loading" 
+              ? "import-resume__status-container--loading" 
+              : status.type === "error"
+              ? "import-resume__status-container--error"
+              : "import-resume__status-container--success"
+          }`}
         >
           {status.type === "loading" && (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <style>
-                {`
-                  @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                  }
-                `}
-              </style>
-              <div style={styles.spinner}></div>
+            <div className="import-resume__flex-container">
+              <div className="import-resume__spinner"></div>
               <span>{status.message}</span>
             </div>
           )}
@@ -1147,7 +1055,7 @@ const ImportResume = ({ onImportComplete }) => {
       )}
 
       {status.type === "success" && (
-        <button style={styles.button} onClick={handleImport}>
+        <button className="import-resume__button" onClick={handleImport}>
           Import Resume
         </button>
       )}
