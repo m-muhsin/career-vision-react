@@ -7,6 +7,7 @@ import "./styles/wordpress-classes.css";
 import "./styles/toolbar-fix.css";
 import "./styles/iframe-styles.scss";
 import "./styles/fonts.css";
+import "./styles/block-layout-fix.css";
 import "./App.css";
 import "./styles/main.scss";
 import { contentStyles } from "./styles/contentStyles.js";
@@ -132,32 +133,99 @@ const resumeTemplate = [
     },
     innerBlocks: [
       {
-        clientId: "job1-title",
-        name: "core/heading",
+        clientId: "job1-position-row",
+        name: "core/group",
         isValid: true,
         attributes: {
-          content: "Product Developer",
-          level: 3,
+          tagName: "div",
+          className: "job-listing__title-row",
           style: {
-            typography: { fontWeight: "600", fontSize: "16px" },
-            spacing: { margin: { bottom: "0.2em" } },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            spacing: { margin: { bottom: "0.5em" } },
+            width: "100%",
           },
         },
-        innerBlocks: [],
+        innerBlocks: [
+          {
+            clientId: "job1-position",
+            name: "core/heading",
+            isValid: true,
+            attributes: {
+              content: "Product Developer",
+              level: 3,
+              style: {
+                typography: { fontWeight: "600", fontSize: "16px" },
+                spacing: { margin: { top: "0", bottom: "0" } },
+                flex: "1",
+              },
+            },
+            innerBlocks: [],
+          },
+          {
+            clientId: "job1-duration",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "<em>Sep 2022 - Dec 2024</em>",
+              className: "job-listing__duration",
+              style: {
+                typography: { fontSize: "14px" },
+                spacing: { margin: { top: "0", bottom: "0" } },
+                textAlign: "right",
+                minWidth: "150px",
+              },
+            },
+            innerBlocks: [],
+          },
+        ],
       },
       {
-        clientId: "job1-company",
-        name: "core/paragraph",
+        clientId: "job1-company-row",
+        name: "core/group",
         isValid: true,
         attributes: {
-          content:
-            "<strong>Awesome Motive, Inc.</strong> | Florida, United States | <em>Sep 2022 - Dec 2024</em>",
+          tagName: "div",
+          className: "job-listing__company-row",
           style: {
-            spacing: { margin: { top: "0", bottom: "0.5em" } },
-            typography: { fontSize: "14px" },
+            spacing: { margin: { bottom: "5px" } },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           },
         },
-        innerBlocks: [],
+        innerBlocks: [
+          {
+            clientId: "job1-company-name",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "<strong>Awesome Motive, Inc.</strong>",
+              className: "job-listing__company-name",
+              style: {
+                spacing: { margin: { top: "0", bottom: "0" } },
+                flex: "1",
+              },
+            },
+            innerBlocks: [],
+          },
+          {
+            clientId: "job1-company-location",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "Florida, United States",
+              className: "job-listing__company-location",
+              style: {
+                spacing: { margin: { top: "0", bottom: "0" } },
+                textAlign: "right",
+                minWidth: "120px",
+              },
+            },
+            innerBlocks: [],
+          },
+        ],
       },
       {
         clientId: "job1-desc",
@@ -183,32 +251,99 @@ const resumeTemplate = [
     },
     innerBlocks: [
       {
-        clientId: "job2-title",
-        name: "core/heading",
+        clientId: "job2-position-row",
+        name: "core/group",
         isValid: true,
         attributes: {
-          content: "Senior Engineer",
-          level: 3,
+          tagName: "div",
+          className: "job-listing__title-row",
           style: {
-            typography: { fontWeight: "600", fontSize: "16px" },
-            spacing: { margin: { bottom: "0.2em" } },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            spacing: { margin: { bottom: "0.5em" } },
+            width: "100%",
           },
         },
-        innerBlocks: [],
+        innerBlocks: [
+          {
+            clientId: "job2-position",
+            name: "core/heading",
+            isValid: true,
+            attributes: {
+              content: "Senior Engineer",
+              level: 3,
+              style: {
+                typography: { fontWeight: "600", fontSize: "16px" },
+                spacing: { margin: { top: "0", bottom: "0" } },
+                flex: "1",
+              },
+            },
+            innerBlocks: [],
+          },
+          {
+            clientId: "job2-duration",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "<em>Jan 2022 - Aug 2022</em>",
+              className: "job-listing__duration",
+              style: {
+                typography: { fontSize: "14px" },
+                spacing: { margin: { top: "0", bottom: "0" } },
+                textAlign: "right",
+                minWidth: "150px",
+              },
+            },
+            innerBlocks: [],
+          },
+        ],
       },
       {
-        clientId: "job2-company",
-        name: "core/paragraph",
+        clientId: "job2-company-row",
+        name: "core/group",
         isValid: true,
         attributes: {
-          content:
-            "<strong>XWP</strong> | Melbourne, Australia | <em>Jan 2022 - Aug 2022</em>",
+          tagName: "div",
+          className: "job-listing__company-row",
           style: {
-            spacing: { margin: { top: "0", bottom: "0.5em" } },
-            typography: { fontSize: "14px" },
+            spacing: { margin: { bottom: "5px" } },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           },
         },
-        innerBlocks: [],
+        innerBlocks: [
+          {
+            clientId: "job2-company-name",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "<strong>XWP</strong>",
+              className: "job-listing__company-name",
+              style: {
+                spacing: { margin: { top: "0", bottom: "0" } },
+                flex: "1",
+              },
+            },
+            innerBlocks: [],
+          },
+          {
+            clientId: "job2-company-location",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "Melbourne, Australia",
+              className: "job-listing__company-location",
+              style: {
+                spacing: { margin: { top: "0", bottom: "0" } },
+                textAlign: "right",
+                minWidth: "120px",
+              },
+            },
+            innerBlocks: [],
+          },
+        ],
       },
       {
         clientId: "job2-desc",
@@ -232,32 +367,99 @@ const resumeTemplate = [
     },
     innerBlocks: [
       {
-        clientId: "job3-title",
-        name: "core/heading",
+        clientId: "job3-position-row",
+        name: "core/group",
         isValid: true,
         attributes: {
-          content: "Senior Engineer",
-          level: 3,
+          tagName: "div",
+          className: "job-listing__title-row",
           style: {
-            typography: { fontWeight: "600", fontSize: "16px" },
-            spacing: { margin: { bottom: "0.2em" } },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            spacing: { margin: { bottom: "0.5em" } },
+            width: "100%",
           },
         },
-        innerBlocks: [],
+        innerBlocks: [
+          {
+            clientId: "job3-position",
+            name: "core/heading",
+            isValid: true,
+            attributes: {
+              content: "Senior Engineer",
+              level: 3,
+              style: {
+                typography: { fontWeight: "600", fontSize: "16px" },
+                spacing: { margin: { top: "0", bottom: "0" } },
+                flex: "1",
+              },
+            },
+            innerBlocks: [],
+          },
+          {
+            clientId: "job3-duration",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "<em>Jan 2022 - Aug 2022</em>",
+              className: "job-listing__duration",
+              style: {
+                typography: { fontSize: "14px" },
+                spacing: { margin: { top: "0", bottom: "0" } },
+                textAlign: "right",
+                minWidth: "150px",
+              },
+            },
+            innerBlocks: [],
+          },
+        ],
       },
       {
-        clientId: "job3-company",
-        name: "core/paragraph",
+        clientId: "job3-company-row",
+        name: "core/group",
         isValid: true,
         attributes: {
-          content:
-            "<strong>XWP</strong> | Melbourne, Australia | <em>Jan 2022 - Aug 2022</em>",
+          tagName: "div",
+          className: "job-listing__company-row",
           style: {
-            spacing: { margin: { top: "0", bottom: "0.5em" } },
-            typography: { fontSize: "14px" },
+            spacing: { margin: { bottom: "5px" } },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           },
         },
-        innerBlocks: [],
+        innerBlocks: [
+          {
+            clientId: "job3-company-name",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "<strong>XWP</strong>",
+              className: "job-listing__company-name",
+              style: {
+                spacing: { margin: { top: "0", bottom: "0" } },
+                flex: "1",
+              },
+            },
+            innerBlocks: [],
+          },
+          {
+            clientId: "job3-company-location",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "Melbourne, Australia",
+              className: "job-listing__company-location",
+              style: {
+                spacing: { margin: { top: "0", bottom: "0" } },
+                textAlign: "right",
+                minWidth: "120px",
+              },
+            },
+            innerBlocks: [],
+          },
+        ],
       },
       {
         clientId: "job3-desc",
@@ -404,9 +606,161 @@ export default function Editor() {
 
   // Handle imported resume data and prepare it for the block editor
   const handleImportComplete = (importedBlocks) => {
-    setBlocks(importedBlocks);
-    updateHistoryOnBlocksChange(importedBlocks);
+    // Process imported blocks to ensure consistent styling
+    const processedBlocks = processImportedBlocks(importedBlocks);
+    
+    setBlocks(processedBlocks);
+    updateHistoryOnBlocksChange(processedBlocks);
     setIsEditingMode(true); // Switch to editor mode after import
+  };
+  
+  // Process imported blocks to ensure proper styling
+  const processImportedBlocks = (blocks) => {
+    return blocks.map(block => {
+      // Process block based on its type
+      if (block.name === 'core/group') {
+        // Check if this is a job listing group
+        if (block.innerBlocks && block.innerBlocks.length > 0) {
+          // Process inner blocks
+          const processedInnerBlocks = processJobListingBlocks(block.innerBlocks);
+          return { ...block, innerBlocks: processedInnerBlocks };
+        }
+      }
+      
+      // Process any nested blocks
+      if (block.innerBlocks && block.innerBlocks.length > 0) {
+        return { ...block, innerBlocks: processImportedBlocks(block.innerBlocks) };
+      }
+      
+      return block;
+    });
+  };
+  
+  // Process job listing blocks to ensure proper flex styling
+  const processJobListingBlocks = (innerBlocks) => {
+    // Second pass: ensure blocks have proper styling
+    return innerBlocks.map(block => {
+      if (block.name === 'core/group') {
+        // Fix title row
+        if (block.attributes?.className?.includes('job-listing__title-row')) {
+          const titleRowStyle = {
+            ...block.attributes.style,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          };
+          
+          if (block.innerBlocks && block.innerBlocks.length >= 2) {
+            // First block should be heading, second should be duration
+            const updatedInnerBlocks = block.innerBlocks.map((innerBlock, index) => {
+              if (index === 0 && innerBlock.name === 'core/heading') {
+                // Job title
+                return {
+                  ...innerBlock,
+                  attributes: {
+                    ...innerBlock.attributes,
+                    style: {
+                      ...innerBlock.attributes.style,
+                      flex: "1",
+                      spacing: { margin: { top: "0", bottom: "0" } },
+                    }
+                  }
+                };
+              } else if (index === 1 && innerBlock.name === 'core/paragraph') {
+                // Duration
+                return {
+                  ...innerBlock,
+                  attributes: {
+                    ...innerBlock.attributes,
+                    className: "job-listing__duration",
+                    style: {
+                      ...innerBlock.attributes.style,
+                      textAlign: "right",
+                      minWidth: "150px",
+                    }
+                  }
+                };
+              }
+              return innerBlock;
+            });
+            
+            return {
+              ...block,
+              attributes: {
+                ...block.attributes,
+                style: titleRowStyle,
+              },
+              innerBlocks: updatedInnerBlocks
+            };
+          }
+        }
+        
+        // Fix company row
+        if (block.attributes?.className?.includes('job-listing__company-row')) {
+          const companyRowStyle = {
+            ...block.attributes.style,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            spacing: { margin: { bottom: "5px" } },
+          };
+          
+          if (block.innerBlocks && block.innerBlocks.length >= 2) {
+            // First block should be company name, second should be location
+            const updatedInnerBlocks = block.innerBlocks.map((innerBlock, index) => {
+              if (index === 0 && innerBlock.name === 'core/paragraph') {
+                // Company name
+                return {
+                  ...innerBlock,
+                  attributes: {
+                    ...innerBlock.attributes,
+                    className: "job-listing__company-name",
+                    style: {
+                      ...innerBlock.attributes.style,
+                      flex: "1",
+                      spacing: { margin: { top: "0", bottom: "0" } },
+                    }
+                  }
+                };
+              } else if (index === 1 && innerBlock.name === 'core/paragraph') {
+                // Location
+                return {
+                  ...innerBlock,
+                  attributes: {
+                    ...innerBlock.attributes,
+                    className: "job-listing__company-location",
+                    style: {
+                      ...innerBlock.attributes.style,
+                      textAlign: "right",
+                      minWidth: "120px",
+                      spacing: { margin: { top: "0", bottom: "0" } },
+                    }
+                  }
+                };
+              }
+              return innerBlock;
+            });
+            
+            return {
+              ...block,
+              attributes: {
+                ...block.attributes,
+                style: companyRowStyle,
+              },
+              innerBlocks: updatedInnerBlocks
+            };
+          }
+        }
+      }
+      
+      // Process any nested blocks
+      if (block.innerBlocks && block.innerBlocks.length > 0) {
+        return { ...block, innerBlocks: processJobListingBlocks(block.innerBlocks) };
+      }
+      
+      return block;
+    });
   };
 
   // Toggle between editor and import/template view
@@ -586,6 +940,75 @@ export default function Editor() {
     };
   }, [contentOverflow]);
 
+  // Inject direct CSS into the iframe for more reliable styling
+  useEffect(() => {
+    const injectCssIntoIframe = () => {
+      const editorIframe = document.querySelector(
+        'iframe[name="editor-canvas"]'
+      );
+      if (!editorIframe) return;
+
+      try {
+        const iframeDocument =
+          editorIframe.contentDocument || editorIframe.contentWindow.document;
+        
+        // Check if our custom style element already exists
+        let styleElement = iframeDocument.getElementById('custom-flex-styles');
+        
+        if (!styleElement) {
+          // Create and inject a style element with custom CSS
+          styleElement = iframeDocument.createElement('style');
+          styleElement.id = 'custom-flex-styles';
+          styleElement.textContent = `
+            /* Direct flex layout styling */
+            .job-listing__title-row, div[class*="job-listing__title-row"] {
+              display: flex !important;
+              justify-content: space-between !important;
+              align-items: center !important;
+              width: 100% !important;
+            }
+            
+            .job-listing__company-row, div[class*="job-listing__company-row"] {
+              display: flex !important;
+              justify-content: space-between !important;
+              align-items: center !important;
+              width: 100% !important;
+            }
+            
+            /* Style job title and duration */
+            .job-listing__duration {
+              text-align: right !important;
+              min-width: 150px !important;
+            }
+            
+            /* Company name and location styling */
+            .job-listing__company-name {
+              flex: 1 !important;
+            }
+            
+            .job-listing__company-location {
+              text-align: right !important;
+              min-width: 120px !important;
+            }
+          `;
+          
+          iframeDocument.head.appendChild(styleElement);
+        }
+      } catch (error) {
+        console.error('Error injecting CSS into iframe:', error);
+      }
+    };
+
+    // Attempt to inject the CSS immediately and then periodically
+    const initialTimeoutId = setTimeout(injectCssIntoIframe, 1500);
+    const intervalId = setInterval(injectCssIntoIframe, 3000);
+
+    return () => {
+      clearTimeout(initialTimeoutId);
+      clearInterval(intervalId);
+    };
+  }, []);
+
   // Handle print functionality
   const handlePrint = () => {
     try {
@@ -671,7 +1094,7 @@ export default function Editor() {
             onChange={handleBlocksChange}
             onInput={handleBlocksChange}
           >
-            <BlockCanvas height="100%" width="100%" styles={contentStyles} />
+            <BlockCanvas height="100%" width="100%" styles={contentStyles} className="custom-editor-styling" />
           </BlockEditorProvider>
         </div>
       ) : (

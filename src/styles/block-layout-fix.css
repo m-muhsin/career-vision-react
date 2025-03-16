@@ -1,0 +1,41 @@
+/**
+ * CSS fixes for WordPress block layouts
+ */
+
+/* Job listing company row layout */
+.job-listing__company-row > .wp-block-group__inner-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.job-listing__company-row .wp-block-paragraph:first-child {
+  margin-right: 10px;
+  flex: 1;
+}
+
+.job-listing__company-row .wp-block-paragraph:last-child {
+  text-align: right;
+  min-width: 150px;
+}
+
+/* Company name and location styles */
+.job-listing__company-name {
+  font-weight: 600;
+  color: var(--primary-color, #069CAF);
+  margin: 0;
+}
+
+.job-listing__company-location {
+  font-style: italic;
+  color: #666;
+  text-align: right;
+  margin: 0;
+}
+
+.job-listing__duration {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 10px;
+} 

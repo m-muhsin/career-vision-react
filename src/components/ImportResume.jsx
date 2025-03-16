@@ -115,7 +115,7 @@ const sampeStructuredData = {
   Education: [
     {
       Institution: "University of Plymouth",
-      Degree: "Bachelor’s Degree in Software Engineering",
+      Degree: "Bachelor's Degree in Software Engineering",
       Duration: "2013 - 2016",
     },
     {
@@ -135,7 +135,7 @@ const sampeStructuredData = {
 const ImportResume = ({ onImportComplete }) => {
   const [status, setStatus] = useState({ type: "success",
     message: `PDF processed successfully! Click "Import Resume" to continue.`, });
-  const [pdfText, setPdfText] = useState(sampeStructuredData);
+  const [pdfText] = useState(sampeStructuredData);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -465,8 +465,20 @@ const ImportResume = ({ onImportComplete }) => {
                     name: "core/group",
                     isValid: true,
                     attributes: {
-                      orientation: "row",
-                      className: "experience-company-row flex-row",
+                      orientation: "horizontal",
+                      className: "job-listing__company-row flex-row",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      style: {
+                        spacing: {
+                          margin: {
+                            bottom: "5px"
+
+                          }
+                        },
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }
                     },
                     innerBlocks: [
                       {
@@ -474,7 +486,16 @@ const ImportResume = ({ onImportComplete }) => {
                         name: "core/paragraph",
                         isValid: true,
                         attributes: {
-                          content: experience.Company,
+                          content: `<strong>${experience.Company}</strong>`,
+                          className: "job-listing__company-name",
+                          style: {
+                            spacing: {
+                              margin: {
+                                top: "0",
+                                bottom: "0"
+                              }
+                            }
+                          }
                         },
                         innerBlocks: [],
                       },
@@ -484,28 +505,82 @@ const ImportResume = ({ onImportComplete }) => {
                         isValid: true,
                         attributes: {
                           content: experience.Location,
+                          className: "job-listing__company-location",
+                          style: {
+                            spacing: {
+                              margin: {
+                                top: "0",
+                                bottom: "0"
+                              }
+                            }
+                          }
                         },
                         innerBlocks: [],
                       },
                     ],
                   },
                   {
-                    clientId: `experience-position-${index}`,
-                    name: "core/paragraph",
+                    clientId: `experience-row-${index}`,
+                    name: "core/group",
                     isValid: true,
                     attributes: {
-                      content: experience.Position,
+                      style: {
+                        display: "flex",
+                        justifyContent: "space-between",
+                        spacing: {
+                          margin: {
+                            bottom: "10px"
+                          }
+                        }
+                      }
                     },
-                    innerBlocks: [],
-                  },
-                  {
-                    clientId: `experience-duration-${index}`,
-                    name: "core/paragraph",
-                    isValid: true,
-                    attributes: {
-                      content: experience.Duration,
-                    },
-                    innerBlocks: [],
+                    innerBlocks: [
+                      {
+                        clientId: `experience-position-${index}`,
+                        name: "core/paragraph",
+                        isValid: true,
+                        attributes: {
+                          content: `<strong>${experience.Position}</strong>`,
+                          style: {
+                            spacing: {
+                              margin: {
+                                top: "5px",
+                                bottom: "5px"
+                              }
+                            },
+                            typography: {
+                              fontWeight: "600"
+                            }
+                          }
+                        },
+                        innerBlocks: [],
+                      },
+                      {
+                        clientId: `experience-duration-${index}`,
+                        name: "core/paragraph",
+                        isValid: true,
+                        attributes: {
+                          content: experience.Duration,
+                          className: "job-listing__duration",
+                          style: {
+                            spacing: {
+                              margin: {
+                                top: "0",
+                                bottom: "10px"
+                              }
+                            },
+                            typography: {
+                              fontStyle: "italic",
+                              fontSize: "14px"
+                            },
+                            color: {
+                              text: "#666"
+                            }
+                          }
+                        },
+                        innerBlocks: [],
+                      },
+                    ],
                   },
                   {
                     clientId: `experience-responsibilities-${index}`,

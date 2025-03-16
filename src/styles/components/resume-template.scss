@@ -65,4 +65,22 @@
     margin-top: 20px;
     font-family: var(--font-family-heading);
   }
+  
+  &__experience-company-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  &__company-name {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  &__company-location {
+    font-style: italic;
+    color: #666;
+    text-align: right;
+  }
 } 

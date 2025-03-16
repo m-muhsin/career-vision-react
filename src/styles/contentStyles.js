@@ -171,6 +171,102 @@ const contentStyles = [
         text-align: center !important;
       }
       
+      /* Job title row flex layout */
+      .job-listing__title-row,
+      div[class*="job-listing__title-row"],
+      .wp-block-group.job-listing__title-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+      }
+      
+      /* Fix for title row layout in Gutenberg editor */
+      .job-listing__title-row > .block-editor-inner-blocks > .block-editor-block-list__layout,
+      div[class*="job-listing__title-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      
+      /* Company row flex styling - extra specificity */
+      .job-listing__company-row,
+      div[class*="job-listing__company-row"],
+      .wp-block-group.job-listing__company-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+      }
+      
+      /* Force flex layout in the editor for company rows */
+      .job-listing__company-row > .block-editor-inner-blocks > .block-editor-block-list__layout,
+      div[class*="job-listing__company-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      
+      /* Additional more general flex selectors to catch edge cases */
+      .wp-block-group > .block-editor-inner-blocks > .block-editor-block-list__layout {
+        display: flex !important;
+        flex-wrap: wrap !important;
+      }
+      
+      /* This is a more specific rule to target groups that should have flex layout */
+      .wp-block-group[class*="job-listing__"] > .block-editor-inner-blocks > .block-editor-block-list__layout {
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      
+      /* Style for items within the flex containers */
+      .job-listing__title-row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:first-child,
+      div[class*="job-listing__title-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout > div:first-child {
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+      
+      .job-listing__title-row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child,
+      div[class*="job-listing__title-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child {
+        text-align: right !important;
+        min-width: 150px !important;
+        flex-shrink: 0 !important;
+      }
+      
+      .job-listing__company-row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:first-child,
+      div[class*="job-listing__company-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout > div:first-child {
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+      
+      .job-listing__company-row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child,
+      div[class*="job-listing__company-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child {
+        text-align: right !important;
+        min-width: 120px !important;
+        flex-shrink: 0 !important;
+      }
+      
+      /* Override any default box model properties */
+      .job-listing__company-row *,
+      .job-listing__title-row *,
+      div[class*="job-listing__company-row"] *,
+      div[class*="job-listing__title-row"] * {
+        box-sizing: border-box !important;
+      }
+      
+      /* Ensure the job listings themselves have proper layout */
+      [data-type="core/group"] {
+        position: relative !important;
+      }
+      
+      /* Duration styling */
+      .job-listing__duration {
+        font-style: italic !important;
+        color: #666 !important;
+      }
+      
       /* Hide UI elements during PDF export */
       .pdf-export-mode .block-editor-writing-flow__click-redirect,
       .pdf-export-mode .block-editor-block-list__insertion-point,
