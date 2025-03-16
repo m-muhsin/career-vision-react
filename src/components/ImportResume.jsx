@@ -1,9 +1,141 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
+const sampeStructuredData = {
+  Contact: {
+    Location: "Colombo, Sri Lanka",
+    Email: "muhammad.muhseen@gmail.com",
+    LinkedIn: "www.linkedin.com/in/mmuhsin",
+    PersonalWebsite: "muhammad.dev",
+  },
+  Summary: {
+    Name: "Muhammad Muhsin",
+    Title: "Software Engineer and Business Owner",
+    Location: "Colombo District, Western Province, Sri Lanka",
+    Description:
+      "Software engineer and business owner running a web development agency. Currently working with Gutenberg, creating blocks for the WordPress editor and building Block Themes. Led development of modern experiences using WordPress, React, REST API, and GraphQL. Passionate about writing, speaking, and advocating for WordPress and open-source technologies.",
+  },
+  Skills: {
+    TopSkills: ["Next.js", "WordPress", "React.js"],
+    Languages: {
+      Arabic: "Limited Working",
+      English: "Native or Bilingual",
+      Tamil: "Native or Bilingual",
+      Sinhalese: "Limited Working",
+    },
+  },
+  Certifications: ["Managing Your Emotions at Work"],
+  HonorsAwards: [
+    "Award for Best Performance",
+    "Outstanding Cambridge Learner Award",
+  ],
+  Publications: [
+    "Building Mobile Apps Using React Native And WordPress",
+    "Using React Context API with Gatsby",
+    "How To Build A Skin For Your Web App With React And WordPress",
+    "Speaking remotely at WordCamp US",
+    "Why you should render React on the server side",
+  ],
+  Experiences: [
+    {
+      Company: "Insytful",
+      Position: "Partner",
+      Duration: "February 2019 - Present (6 years 2 months)",
+      Location: "Colombo, Sri Lanka",
+      Responsibilities: [
+        "Led development of modern experiences using WordPress for eCommerce, technology, and media companies",
+        "Collaborated with industry leaders like Human Made, LearnDash, and Simplur",
+        "Achieved increased user engagement and revenue growth through strategic website design and functionality enhancements",
+      ],
+    },
+    {
+      Company: "Awesome Motive, Inc.",
+      Position: "Product Developer",
+      Duration: "September 2022 - December 2024 (2 years 4 months)",
+      Location: "Florida, United States",
+      Responsibilities: [
+        "Rebuilt OptinMonster.com from scratch using a Block Theme and custom blocks",
+        "Developed new features and fixed bugs on the OptinMonster product using React, Vue, and PHP",
+      ],
+    },
+    {
+      Company: "XWP",
+      Position: "Senior Engineer",
+      Duration: "January 2022 - August 2022 (8 months)",
+      Location: "Melbourne, Victoria, Australia",
+      Responsibilities: [
+        "Worked on the frontend of the GIC Singapore Careers site using Gutenberg",
+        "Built part of the frontend for a React-based extension that powered a Twitch US partnership with Amazon",
+      ],
+    },
+    {
+      Company: "rtCamp",
+      Position: "Senior React Engineer",
+      Duration: "May 2019 - January 2022 (2 years 9 months)",
+      Location: "Atlanta, Georgia, United States",
+      Responsibilities: [
+        "Worked for popular media brands from PMC using WordPress VIP",
+        "Led the development of modern experiences on top of WordPress using GraphQL, Gutenberg, WooCommerce, and Next.js",
+        "Worked on meta tasks like updating documentation, hiring, and writing on the company blog",
+      ],
+    },
+    {
+      Company: "Capbase",
+      Position: "Software Engineer",
+      Duration: "April 2019 - October 2019 (7 months)",
+      Location: "San Francisco, California, United States",
+      Responsibilities: [
+        "Worked on the frontend using React, Flow, and Sass",
+        "Learned about React Hooks, including useReducer",
+        "Worked with Cognito and DynamoDB from the AWS stack",
+      ],
+    },
+    {
+      Company: "Laccadive IO",
+      Position: "Co-Founder",
+      Duration: "March 2016 - February 2019 (3 years)",
+      Location: "Colombo, Sri Lanka",
+      Responsibilities: [
+        "Developed solutions using WordPress, React, and other technologies for clients in the Middle East and the Indian subcontinent",
+        "Completed projects for government organizations, sports organizations, adventure parks, and legal tech education and publication",
+      ],
+    },
+    {
+      Company: "Rezgateway",
+      Position: "Software Development Intern",
+      Duration: "July 2015 - November 2015 (5 months)",
+      Location: "Colombo, Sri Lanka",
+      Responsibilities: [
+        "Worked on Bonotel, the company's flagship project",
+        "Tasks included bug fixes and new feature implementation",
+        "Learned about the Agile/Scrum software development methodology",
+      ],
+    },
+  ],
+  Education: [
+    {
+      Institution: "University of Plymouth",
+      Degree: "Bachelor’s Degree in Software Engineering",
+      Duration: "2013 - 2016",
+    },
+    {
+      Institution: "Cisco Networking Academy",
+      Certification: "CCNA Routing and Switching in Computer Networking",
+      Duration: "2013 - 2014",
+    },
+    {
+      Institution: "Minhal International Boys' School",
+      Degree:
+        "Advanced Levels in Mathematics, Business Studies, Accounting",
+      Duration: "January 2004 - June 2013",
+    },
+  ],
+};
+
 const ImportResume = ({ onImportComplete }) => {
-  const [status, setStatus] = useState({ type: null, message: "" });
-  const [pdfText, setPdfText] = useState("");
+  const [status, setStatus] = useState({ type: "success",
+    message: `PDF processed successfully! Click "Import Resume" to continue.`, });
+  const [pdfText, setPdfText] = useState(sampeStructuredData);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -73,7 +205,6 @@ const ImportResume = ({ onImportComplete }) => {
 
       if (response.success) {
         console.log("Server response:", response);
-        setPdfText(response.text);
 
         // Store the structured data for later use
         if (typeof window !== "undefined") {
@@ -160,815 +291,369 @@ const ImportResume = ({ onImportComplete }) => {
           window.lastParsedResume.blocks
         );
         // Use the pre-structured blocks from the server (AI or basic parsing)
-        onImportComplete(parseResumeText(window.lastParsedResume));
+        onImportComplete(createBlocksFromStructuredData(pdfText));
         return;
       } else if (window.lastParsedResume.structured) {
         console.log("Using structured data from server");
         // Create blocks from structured data
-        const resumeData = parseResumeText(window.lastParsedResume);
-        console.log("Created blocks from structured data:", resumeData);
-        onImportComplete(resumeData);
+        onImportComplete(createBlocksFromStructuredData(pdfText));
         return;
       }
     }
 
     console.log("Falling back to client-side parsing");
     // Fallback to client-side parsing if server didn't provide structured data
-    const resumeData = parseResumeText({ text: pdfText });
-    console.log("Created blocks from client-side parsing:", resumeData);
-    onImportComplete(resumeData);
-  };
-
-  const parseResumeText = (resumeData) => {
-    // If we have pre-structured blocks, transform them to match ideal format
-    if (resumeData.blocks) {
-      return transformBlocksToIdealFormat(resumeData.blocks);
-    }
-
-    // If we have structured data from the server
-    if (resumeData.structured) {
-      return createBlocksFromStructuredData(resumeData.structured);
-    }
-
-    // Fallback to basic parsing from raw text
-    return createBasicResumeStructure(resumeData.text);
-  };
-
-  // Transform existing blocks to match the ideal format
-  const transformBlocksToIdealFormat = (blocks) => {
-    const result = [];
-    
-    // Process each block and transform it
-    blocks.forEach(block => {
-      // Header section
-      if (block.name === "core/group" && block.clientId === "header-section") {
-        result.push({
-          ...block,
-          attributes: {
-            ...block.attributes,
-            layout: { type: "constrained" },
-            style: {
-              spacing: {
-                padding: {
-                  top: "1em"
-                }
-              }
-            }
-          },
-          innerBlocks: block.innerBlocks.map(innerBlock => {
-            // Name heading
-            if (innerBlock.name === "core/heading") {
-              return {
-                ...innerBlock,
-                attributes: {
-                  ...innerBlock.attributes,
-                  textAlign: "center",
-                  fontSize: "large",
-                  style: {
-                    typography: {
-                      fontWeight: "700",
-                      textTransform: "uppercase",
-                      letterSpacing: "1px"
-                    },
-                    spacing: {
-                      margin: {
-                        top: "0",
-                        bottom: "0.5em"
-                      }
-                    }
-                  }
-                }
-              };
-            }
-            // Contact info
-            if (innerBlock.name === "core/paragraph") {
-              // First, split the content by separators to get individual items
-              let content = innerBlock.attributes.content;
-              const contactItems = content.split(/\s*\|\s*/);
-              const processedItems = [];
-              
-              // Process each contact item separately
-              contactItems.forEach(item => {
-                const trimmedItem = item.trim();
-                
-                // Skip empty items
-                if (!trimmedItem) return;
-                
-                // Email address
-                if (trimmedItem.match(/[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+/)) {
-                  processedItems.push(`<a href="mailto:${trimmedItem}">${trimmedItem}</a>`);
-                }
-                // LinkedIn profile
-                else if (trimmedItem.match(/linkedin\.com\/in\/[a-zA-Z0-9._-]+/)) {
-                  processedItems.push(`<a href="https://www.${trimmedItem}" target="_blank">${trimmedItem}</a>`);
-                }
-                // Website URL
-                else if (trimmedItem.match(/([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/)) {
-                  // Ignore if it's just a location with country code like "Colombo, Sri Lanka"
-                  if (!trimmedItem.includes(",")) {
-                    const url = trimmedItem.startsWith("http") ? trimmedItem : `https://${trimmedItem}`;
-                    processedItems.push(`<a href="${url}" target="_blank">${trimmedItem}</a>`);
-                  } else {
-                    processedItems.push(trimmedItem);
-                  }
-                }
-                // Other items (like location)
-                else {
-                  processedItems.push(trimmedItem);
-                }
-              });
-              
-              // Join back with separators
-              const processedContent = processedItems.join(" | ");
-
-              return {
-                ...innerBlock,
-                attributes: {
-                  ...innerBlock.attributes,
-                  content: processedContent,
-                  align: "center",
-                  fontSize: "small"
-                }
-              };
-            }
-            return innerBlock;
-          })
-        });
-        
-        // Add separator after header
-        result.push({
-          clientId: "separator-1",
-          name: "core/separator",
-          isValid: true,
-          attributes: {
-            opacity: "alpha-channel",
-            tagName: "hr"
-          },
-          innerBlocks: []
-        });
-        return;
-      }
-      
-      // Section headings and content
-      if (block.name === "core/group" && block.attributes.tagName === "section") {
-        // Extract section type from first innerBlock (heading)
-        const sectionHeading = block.innerBlocks.find(b => b.name === "core/heading");
-        const sectionType = sectionHeading?.attributes.content.toLowerCase() || "";
-        
-        // Add styled heading
-        if (sectionHeading) {
-          result.push({
-            clientId: `${sectionHeading.attributes.content.toLowerCase().replace(/\s+/g, '-')}-heading`,
-            name: "core/heading",
-            isValid: true,
-            attributes: {
-              content: sectionHeading.attributes.content,
-              level: 2,
-              textAlign: "center",
-              style: {
-                typography: {
-                  fontWeight: "600",
-                  textTransform: "uppercase",
-                  fontSize: "18px"
-                },
-                spacing: {
-                  margin: {
-                    top: "1.5em",
-                    bottom: "0.5em"
-                  }
-                },
-                color: {
-                  text: "#2c3e50"
-                }
-              }
-            },
-            innerBlocks: []
-          });
-        }
-        
-        // Handle content based on section type
-        const contentBlock = block.innerBlocks.find(b => b.name === "core/paragraph");
-        if (contentBlock) {
-          // For general section content
-          if (sectionType.includes("summary")) {
-            result.push({
-              clientId: "summary-content",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: contentBlock.attributes.content
-              },
-              innerBlocks: []
-            });
-          }
-          
-          // For experience section
-          else if (sectionType.includes("experience")) {
-            // Parse experience entries from the paragraph content
-            const experiences = parseExperienceEntries(contentBlock.attributes.content);
-            experiences.forEach((job, index) => {
-              result.push(createJobBlock(job, index));
-            });
-          }
-          
-          // For education section
-          else if (sectionType.includes("education")) {
-            const educationEntries = parseEducationEntries(contentBlock.attributes.content);
-            educationEntries.forEach((edu, index) => {
-              result.push(createEducationBlock(edu, index));
-            });
-          }
-          
-          // For skills section
-          else if (sectionType.includes("skills")) {
-            result.push({
-              clientId: "skills-list",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: formatSkillsList(contentBlock.attributes.content)
-              },
-              innerBlocks: []
-            });
-          }
-          
-          // For other sections, just add the content as is
-          else {
-            result.push({
-              clientId: `${sectionType}-content`,
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: contentBlock.attributes.content
-              },
-              innerBlocks: []
-            });
-          }
-        }
-        return;
-      }
-      
-      // Add any other blocks as-is
-      result.push(block);
-    });
-    
-    return result;
-  };
-
-  // Parse job entries from experience content
-  const parseExperienceEntries = (content) => {
-    // Split by multiple newlines to separate job entries
-    const entries = content.split(/\n\n+/);
-    return entries.map(entry => {
-      // Try to extract job information from each entry
-      const result = { 
-        title: "",
-        company: "",
-        location: "",
-        duration: "",
-        description: []
-      };
-      
-      // Pattern: Company - Title (Duration, Location): Description
-      if (entry.includes(" - ") && entry.includes("(") && entry.includes("):")) {
-        const [company, rest] = entry.split(" - ", 2);
-        result.company = company.trim();
-        
-        // Extract title, duration and location
-        const titleDurationPart = rest.split(":", 2)[0];
-        const titleMatch = titleDurationPart.match(/(.*?)\s*\(/);
-        if (titleMatch) {
-          result.title = titleMatch[1].trim();
-        }
-        
-        // Extract duration and location from parentheses
-        const durationLocationMatch = titleDurationPart.match(/\((.*?)\)/);
-        if (durationLocationMatch) {
-          const durationLocation = durationLocationMatch[1];
-          
-          // Try to separate duration and location
-          if (durationLocation.includes(",")) {
-            // If there's a comma, it might separate duration and location
-            const [durationPart, ...locationParts] = durationLocation.split(",");
-            result.duration = durationPart.trim();
-            result.location = locationParts.join(",").trim();
-          } else {
-            // No comma, assume it's just duration
-            result.duration = durationLocation.trim();
-          }
-        }
-        
-        // Extract description
-        const descriptionPart = rest.split(":", 2)[1];
-        if (descriptionPart) {
-          // Split description into bullet points by sentences
-          const descriptions = descriptionPart.trim().split(/\.\s+/);
-          result.description = descriptions
-            .filter(d => d.trim().length > 0)
-            .map(d => d.trim() + (d.endsWith('.') ? '' : '.'));
-        }
-      } 
-      // Other formats could be handled here
-      else {
-        // Basic fallback: just use the whole entry as description
-        result.description = [entry];
-      }
-      
-      return result;
-    }).filter(job => job.company || job.title || job.description.length > 0);
-  };
-
-  // Create a job block structure from parsed job data
-  const createJobBlock = (job, index) => {
-    return {
-      clientId: `job${index + 1}-group`,
-      name: "core/group",
-      isValid: true,
-      attributes: {
-        tagName: "div",
-        style: {
-          spacing: {
-            margin: {
-              bottom: "1.5em"
-            }
-          }
-        }
-      },
-      innerBlocks: [
-        // Job title heading
-        {
-          clientId: `job${index + 1}-title`,
-          name: "core/heading",
-          isValid: true,
-          attributes: {
-            content: job.title || "Position/Role",
-            level: 3,
-            style: {
-              typography: {
-                fontWeight: "600",
-                fontSize: "16px"
-              },
-              spacing: {
-                margin: {
-                  bottom: "0.2em"
-                }
-              }
-            }
-          },
-          innerBlocks: []
-        },
-        // Company, location, and duration
-        {
-          clientId: `job${index + 1}-company`,
-          name: "core/paragraph",
-          isValid: true,
-          attributes: {
-            content: `<strong>${job.company || "Company Name"}</strong>${job.location ? " | " + job.location : ""}${job.duration ? " | <em>(" + job.duration + ")</em>" : ""}`,
-            style: {
-              spacing: {
-                margin: {
-                  top: "0",
-                  bottom: "0.5em"
-                }
-              },
-              typography: {
-                fontSize: "14px"
-              }
-            }
-          },
-          innerBlocks: []
-        },
-        // Job description as list
-        {
-          clientId: `job${index + 1}-desc`,
-          name: "core/list",
-          isValid: true,
-          attributes: {
-            values: "",
-            ordered: false
-          },
-          innerBlocks: job.description.map((desc, i) => ({
-            clientId: `job${index + 1}-desc-item-${i}`,
-            name: "core/list-item",
-            isValid: true,
-            attributes: {
-              content: desc
-            },
-            innerBlocks: []
-          }))
-        }
-      ]
-    };
-  };
-
-  // Parse education entries from content
-  const parseEducationEntries = (content) => {
-    // Split by multiple newlines to separate education entries
-    const entries = content.split(/\n\n+/);
-    return entries.map(entry => {
-      // Try to extract education information
-      const result = {
-        degree: "",
-        institution: "",
-        duration: ""
-      };
-      
-      // Try to match pattern: Institution - Degree (Duration)
-      if (entry.includes(" - ")) {
-        const [institution, rest] = entry.split(" - ", 2);
-        result.institution = institution.trim();
-        
-        // Extract degree and duration
-        if (rest.includes("(") && rest.includes(")")) {
-          const degreeMatch = rest.match(/(.*?)\s*\(/);
-          if (degreeMatch) {
-            result.degree = degreeMatch[1].trim();
-          }
-          
-          const durationMatch = rest.match(/\((.*?)\)/);
-          if (durationMatch) {
-            result.duration = durationMatch[1].trim();
-          }
-        } else {
-          result.degree = rest.trim();
-        }
-      }
-      // Fallback: use whole entry
-      else {
-        result.degree = entry;
-      }
-      
-      return result;
-    }).filter(edu => edu.institution || edu.degree);
-  };
-
-  // Create an education block
-  const createEducationBlock = (education, index) => {
-    return {
-      clientId: `education${index + 1}-group`,
-      name: "core/group",
-      isValid: true,
-      attributes: {
-        tagName: "div"
-      },
-      innerBlocks: [
-        // Degree title
-        {
-          clientId: `education${index + 1}-degree-title`,
-          name: "core/heading",
-          isValid: true,
-          attributes: {
-            content: education.degree || "Degree",
-            level: 3,
-            style: {
-              typography: {
-                fontWeight: "600",
-                fontSize: "16px"
-              }
-            }
-          },
-          innerBlocks: []
-        },
-        // Institution and duration
-        {
-          clientId: `education${index + 1}-institution`,
-          name: "core/paragraph",
-          isValid: true,
-          attributes: {
-            content: `<strong>${education.institution || "Institution"}</strong>${education.duration ? " | <em>(" + education.duration + ")</em>" : ""}`,
-            typography: {
-              fontSize: "14px"
-            }
-          },
-          innerBlocks: []
-        }
-      ]
-    };
-  };
-
-  // Format skills list with bullet separators
-  const formatSkillsList = (content) => {
-    // Split by commas or existing separators
-    const skills = content.split(/,|\s*\|\s*|\s*•\s*/);
-    // Join with bullet character
-    return skills
-      .map(skill => skill.trim())
-      .filter(skill => skill.length > 0)
-      .join(" • ");
-  };
-
-  // Create a basic resume structure from raw text
-  const createBasicResumeStructure = (text) => {
-    // Create a simple structure with the text
-    return [
-      {
-        clientId: "header-section",
-        name: "core/group",
-        isValid: true,
-        attributes: {
-          tagName: "div",
-          layout: { type: "constrained" },
-          style: {
-            spacing: {
-              padding: {
-                top: "1em"
-              }
-            }
-          }
-        },
-        innerBlocks: [
-          {
-            clientId: "name-heading",
-            name: "core/heading",
-            isValid: true,
-            attributes: {
-              content: "Your Name",
-              level: 1,
-              textAlign: "center",
-              fontSize: "large",
-              style: {
-                typography: {
-                  fontWeight: "700",
-                  textTransform: "uppercase",
-                  letterSpacing: "1px"
-                },
-                spacing: {
-                  margin: {
-                    top: "0",
-                    bottom: "0.5em"
-                  }
-                }
-              }
-            },
-            innerBlocks: []
-          },
-          {
-            clientId: "contact-info",
-            name: "core/paragraph",
-            isValid: true,
-            attributes: {
-              content: "Contact Information",
-              align: "center",
-              fontSize: "small"
-            },
-            innerBlocks: []
-          }
-        ]
-      },
-      {
-        clientId: "separator-1",
-        name: "core/separator",
-        isValid: true,
-        attributes: {
-          opacity: "alpha-channel",
-          tagName: "hr"
-        },
-        innerBlocks: []
-      },
-      {
-        clientId: "content",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: {
-          content: text
-        },
-        innerBlocks: []
-      }
-    ];
+    onImportComplete(createBlocksFromStructuredData(pdfText));
   };
 
   // Helper function to create blocks from structured data
   const createBlocksFromStructuredData = (structured) => {
+
+    // The blocks array
     const blocks = [];
-    
-    // Header with name and contact info
-    blocks.push({
+
+    // The header section
+    const headerSection = {
       clientId: "header-section",
       name: "core/group",
       isValid: true,
-      attributes: {
-        tagName: "div",
-        layout: { type: "constrained" },
-        style: {
-          spacing: {
-            padding: {
-              top: "1em"
-            }
-          }
-        }
-      },
+      attributes: {},
       innerBlocks: [
         {
           clientId: "name-heading",
           name: "core/heading",
           isValid: true,
           attributes: {
-            content: structured.name || "Your Name",
+            content: structured.Summary.Name,
             level: 1,
             textAlign: "center",
             fontSize: "large",
-            style: {
-              typography: {
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "1px"
-              },
-              spacing: {
-                margin: {
-                  top: "0",
-                  bottom: "0.5em"
-                }
-              }
-            }
           },
-          innerBlocks: []
+          innerBlocks: [],
+          spacing: {
+            margin: {
+              top: "0",
+              bottom: "0.5em",
+            },
+          },
+          color: {
+            text: "#2c3e50",
+          },
+          style: {
+            typography: {
+              fontWeight: "700",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+            },
+          },
         },
         {
           clientId: "contact-info",
           name: "core/paragraph",
           isValid: true,
           attributes: {
-            content: structured.contactInfo 
-              ? structured.contactInfo
-                .filter(item => item && item.trim() !== '' && item.trim() !== 'N/A')
-                .join(" | ") 
-              : "Contact Information",
+            content: `
+              ${structured.Contact.Location} | 
+              <a href="mailto:${structured.Contact.Email}">${structured.Contact.Email}</a> | 
+              <a href="${structured.Contact.LinkedIn}" target="_blank">${structured.Contact.LinkedIn}</a> | 
+              <a href="https://${structured.Contact.PersonalWebsite}" target="_blank">${structured.Contact.PersonalWebsite}</a>
+            `,
             align: "center",
-            fontSize: "small"
+            fontSize: "small",
           },
-          innerBlocks: []
-        }
-      ]
-    });
-    
-    // Separator
-    blocks.push({
-      clientId: "separator-1",
+          innerBlocks: [],
+          spacing: {
+            margin: {
+              top: "0",
+              bottom: "0.5em",
+            },
+          },
+          color: {
+            text: "#2c3e50",
+          },
+          style: {
+            typography: {
+              fontWeight: "400",
+              fontSize: "small",
+            },
+          },
+        },
+        {
+          clientId: "summary",
+          name: "core/paragraph",
+          isValid: true,
+          attributes: {
+            content: structured.Summary.Description,
+            align: "center",
+            fontSize: "medium",
+          },
+          innerBlocks: [],
+          spacing: {
+            margin: {
+              top: "1em",
+              bottom: "1em",
+            },
+          },
+          color: {
+            text: "#2c3e50",
+          },
+          style: {
+            typography: {
+              fontWeight: "400",
+            },
+          },
+        },
+      ],
+    };
+    console.log(structured);
+    // The skills section
+    const skillsSection = {
+      clientId: "skills-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [
+        {
+          clientId: "skills-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Skills",
+            level: 2,
+          },
+          innerBlocks: [],
+        },
+      ],
+    };
+
+    // The experiences section
+    const experiencesSection = {
+      clientId: "experiences-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [
+        {
+          clientId: "experiences-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Experiences",
+            level: 2,
+          },
+          innerBlocks: [],
+        },
+        {
+          clientId: "experiences-list",
+          name: "core/group",
+          isValid: true,
+          attributes: {},
+          innerBlocks: [
+            {
+              clientId: "experience-item",
+              name: "core/group",
+              isValid: true,
+              attributes: {},
+              innerBlocks: structured.Experiences.map((experience, index) => ({
+                clientId: `experience-item-${index}`,
+                name: "core/group",
+                isValid: true,
+                attributes: {},
+                innerBlocks: [
+                  {
+                    clientId: `experience-company-${index}`,
+                    name: "core/group",
+                    isValid: true,
+                    attributes: {
+                      orientation: "row",
+                      className: "experience-company-row flex-row",
+                    },
+                    innerBlocks: [
+                      {
+                        clientId: `experience-company-name-${index}`,
+                        name: "core/paragraph",
+                        isValid: true,
+                        attributes: {
+                          content: experience.Company,
+                        },
+                        innerBlocks: [],
+                      },
+                      {
+                        clientId: `experience-company-location-${index}`,
+                        name: "core/paragraph",
+                        isValid: true,
+                        attributes: {
+                          content: experience.Location,
+                        },
+                        innerBlocks: [],
+                      },
+                    ],
+                  },
+                  {
+                    clientId: `experience-position-${index}`,
+                    name: "core/paragraph",
+                    isValid: true,
+                    attributes: {
+                      content: experience.Position,
+                    },
+                    innerBlocks: [],
+                  },
+                  {
+                    clientId: `experience-duration-${index}`,
+                    name: "core/paragraph",
+                    isValid: true,
+                    attributes: {
+                      content: experience.Duration,
+                    },
+                    innerBlocks: [],
+                  },
+                  {
+                    clientId: `experience-responsibilities-${index}`,
+                    name: "core/list",
+                    isValid: true,
+                    attributes: {},
+                    innerBlocks: experience?.Responsibilities?.map((responsibility, i) => ({
+                      clientId: `experience-responsibility-${index}-${i}`,
+                      name: "core/list-item",
+                      isValid: true,
+                      attributes: {
+                        content: responsibility,
+                      },
+                      innerBlocks: [],
+                    })) || [],
+                  },
+                ],
+              })),
+            },
+          ],
+        },
+      ],
+    };
+
+    // The education section
+    const educationSection = {
+      clientId: "education-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [
+        {
+          clientId: "education-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {
+            content: "Education",
+            level: 2,
+          },
+          innerBlocks: [],
+        },
+        {
+          clientId: "education-list",
+          name: "core/list",
+          isValid: true,
+          attributes: {},
+          innerBlocks: [
+            {
+              clientId: "education-item",
+              name: "core/list-item",
+              isValid: true,
+              attributes: {},
+              innerBlocks: [
+                ...Object.entries(structured.Education[0]).map(([key, value]) => ({
+                  clientId: `education-${key.toLowerCase()}`,
+                  name: "core/paragraph",
+                  isValid: true,
+                  attributes: {
+                    content: value,
+                  },
+                  innerBlocks: [
+
+                  ],
+                })),
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+
+    // The certifications section
+    const certificationsSection = {
+      clientId: "certifications-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [
+        {
+          clientId: "certifications-heading",
+          name: "core/heading",
+          isValid: true,
+          attributes: {},
+          innerBlocks: [],
+        },
+      ],
+    };
+
+    // The honors-awards section
+    const honorsAwardsSection = {
+      clientId: "honors-awards-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [],
+    };
+
+    // The publications section
+    const publicationsSection = {
+      clientId: "publications-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [],
+    };
+
+    // The separator
+    const separator = {
+      clientId: "separator",
       name: "core/separator",
       isValid: true,
-      attributes: {
-        opacity: "alpha-channel",
-        tagName: "hr"
-      },
-      innerBlocks: []
-    });
-    
-    // Summary section
-    if (structured.sections.summary && structured.sections.summary.length > 0) {
-      blocks.push({
-        clientId: "summary-heading",
-        name: "core/heading",
-        isValid: true,
-        attributes: {
-          content: "Professional Summary",
-          textAlign: "center",
-          level: 2,
-          style: {
-            typography: {
-              fontWeight: "600",
-              textTransform: "uppercase",
-              fontSize: "18px"
-            },
-            spacing: {
-              margin: {
-                top: "1.5em",
-                bottom: "0.5em"
-              }
-            },
-            color: {
-              text: "#2c3e50"
-            }
-          }
-        },
-        innerBlocks: []
-      });
-      
-      blocks.push({
-        clientId: "summary-content",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: {
-          content: structured.sections.summary.join("\n\n")
-        },
-        innerBlocks: []
-      });
-    }
-    
-    // Experience section
-    if (structured.sections.experience && structured.sections.experience.length > 0) {
-      blocks.push({
-        clientId: "experience-heading",
-        name: "core/heading",
-        isValid: true,
-        attributes: {
-          content: "Work Experience",
-          textAlign: "center",
-          level: 2,
-          style: {
-            typography: {
-              fontWeight: "600",
-              textTransform: "uppercase",
-              fontSize: "18px"
-            },
-            spacing: {
-              margin: {
-                top: "1.5em",
-                bottom: "0.5em"
-              }
-            },
-            color: {
-              text: "#2c3e50"
-            }
-          }
-        },
-        innerBlocks: []
-      });
-      
-      // Create job blocks from experience data
-      const jobs = parseExperienceEntries(structured.sections.experience.join("\n\n\n"));
-      jobs.forEach((job, index) => {
-        blocks.push(createJobBlock(job, index));
-      });
-    }
-    
-    // Education section
-    if (structured.sections.education && structured.sections.education.length > 0) {
-      blocks.push({
-        clientId: "education-heading",
-        name: "core/heading",
-        isValid: true,
-        attributes: {
-          content: "Education",
-          level: 2,
-          textAlign: "center",
-          style: {
-            typography: {
-              fontWeight: "600",
-              textTransform: "uppercase",
-              fontSize: "18px"
-            },
-            spacing: {
-              margin: {
-                top: "1.5em",
-                bottom: "0.5em"
-              }
-            },
-            color: {
-              text: "#2c3e50"
-            }
-          }
-        },
-        innerBlocks: []
-      });
-      
-      // Create education blocks
-      const educationEntries = parseEducationEntries(structured.sections.education.join("\n\n"));
-      educationEntries.forEach((edu, index) => {
-        blocks.push(createEducationBlock(edu, index));
-      });
-    }
-    
-    // Skills section
-    if (structured.sections.skills && structured.sections.skills.length > 0) {
-      blocks.push({
-        clientId: "skills-heading",
-        name: "core/heading",
-        isValid: true,
-        attributes: {
-          content: "Skills",
-          level: 2,
-          textAlign: "center",
-          style: {
-            typography: {
-              fontWeight: "600",
-              textTransform: "uppercase",
-              fontSize: "18px"
-            },
-            spacing: {
-              margin: {
-                top: "1.5em",
-                bottom: "0.5em"
-              }
-            },
-            color: {
-              text: "#2c3e50"
-            }
-          }
-        },
-        innerBlocks: []
-      });
-      
-      blocks.push({
-        clientId: "skills-list",
-        name: "core/paragraph",
-        isValid: true,
-        attributes: {
-          content: formatSkillsList(structured.sections.skills.join(", "))
-        },
-        innerBlocks: []
-      });
-    }
-    
+      attributes: {},
+      innerBlocks: [],
+    };
+
+    // The content section
+    const contentSection = {
+      clientId: "content-section",
+      name: "core/paragraph",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [],
+    };
+
+    // The footer section
+    const footerSection = {
+      clientId: "footer-section",
+      name: "core/group",
+      isValid: true,
+      attributes: {},
+      innerBlocks: [],
+    };
+
+    // Add all sections to the blocks array
+    blocks.push(
+      headerSection,
+      skillsSection,
+      experiencesSection,
+      educationSection,
+      certificationsSection,
+      honorsAwardsSection,
+      publicationsSection,
+      separator,
+      contentSection,
+      footerSection
+    );
+
     return blocks;
   };
 
@@ -1037,11 +722,11 @@ const ImportResume = ({ onImportComplete }) => {
       {status.type && !(isUploading && uploadProgress > 0) && (
         <div
           className={`import-resume__status-container ${
-            status.type === "loading" 
-              ? "import-resume__status-container--loading" 
+            status.type === "loading"
+              ? "import-resume__status-container--loading"
               : status.type === "error"
-              ? "import-resume__status-container--error"
-              : "import-resume__status-container--success"
+                ? "import-resume__status-container--error"
+                : "import-resume__status-container--success"
           }`}
         >
           {status.type === "loading" && (

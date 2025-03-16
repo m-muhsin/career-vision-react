@@ -9,7 +9,7 @@ const dotenv = require("dotenv");
 const OpenAI = require("openai");
 
 // Import shared utilities
-const { parseResumeText, convertToBlockStructure } = require('../utils/resume-parser.cjs');
+const { parseResumeText } = require('../utils/resume-parser.cjs');
 const { parseResumeWithAI } = require('../utils/ai-parser.cjs');
 
 // Load environment variables
@@ -146,7 +146,7 @@ app.post('/api/parse-resume', upload.single('pdfFile'), async (req, res) => {
     }
     
     // Convert to block structure
-    const blockStructure = convertToBlockStructure(parsedResume);
+    // const blockStructure = convertToBlockStructure(parsedResume);
     
     // Clean up uploaded file
     fs.unlinkSync(filePath);
@@ -156,7 +156,6 @@ app.post('/api/parse-resume', upload.single('pdfFile'), async (req, res) => {
       success: true,
       text: text,
       structured: parsedResume,
-      blocks: blockStructure,
       aiProcessed: usedAI,
       filename: req.file.originalname || 'resume.pdf',
       pages: pdfData.numpages || 1
