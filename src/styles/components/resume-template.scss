@@ -11,13 +11,13 @@
 
   &__header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 20px;
+    padding-bottom: 16px;
   }
 
   &__name {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
     margin-bottom: 10px;
     color: var(--primary-color);
@@ -55,26 +55,82 @@
     user-select: none;
   }
 
-  &__section-heading {
-    font-size: 22px;
+  &__section {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__section-title {
+    font-size: 18px;
     font-weight: 600;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    color: var(--secondary-color);
-    font-family: var(--font-family-heading);
-    border-bottom: 1px solid #eee;
+    color: var(--primary-color);
+    margin-bottom: 16px;
     padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
   }
 
-  &__content {
+  &__experience-company-row,
+  &__education-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  &__company-name,
+  &__institution-name {
     font-size: 15px;
-    line-height: 1.6;
-    color: #333;
-    white-space: pre-wrap;
+    font-weight: 600;
+    color: var(--primary-color);
   }
 
-  &__paragraph {
-    margin-bottom: 15px;
+  &__job-title,
+  &__degree {
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+  }
+
+  &__company-location,
+  &__education-duration {
+    font-size: 13px;
+    font-style: italic;
+    color: #666;
+    text-align: right;
+  }
+
+  &__job-description,
+  &__education-description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #4a5568;
+    margin-top: 8px;
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__skill-item {
+    font-size: 13px;
+    padding: 4px 12px;
+    background-color: #f1f5f9;
+    border-radius: 16px;
+    color: #475569;
   }
 
   &__edit-button {
@@ -89,82 +145,5 @@
     display: inline-block;
     margin-top: 20px;
     font-family: var(--font-family-heading);
-  }
-  
-  &__experience-company-row,
-  &__education-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-  
-  &__company-name,
-  &__institution-name {
-    font-weight: 600;
-    color: var(--primary-color);
-  }
-  
-  &__company-location,
-  &__education-duration {
-    font-style: italic;
-    color: #666;
-    text-align: right;
-  }
-
-  &__degree {
-    font-weight: 600;
-    font-size: 16px;
-    color: #2c3e50;
-    margin-bottom: 4px;
-  }
-
-  &__education-details {
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #eee;
-
-    &:last-child {
-      margin-bottom: 0;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-  }
-
-  &__education-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-
-  &__degree {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 6px;
-    line-height: 1.4;
-  }
-
-  &__institution-name {
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 15px;
-  }
-
-  &__education-duration {
-    font-style: italic;
-    color: #666;
-    text-align: right;
-    font-size: 14px;
-    white-space: nowrap;
-    margin-left: 16px;
-  }
-
-  &__education-description {
-    color: #4a5568;
-    font-size: 15px;
-    line-height: 1.6;
-    margin-top: 8px;
   }
 } 

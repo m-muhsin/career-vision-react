@@ -515,7 +515,8 @@ export default function Editor() {
           .block-editor-block-list__block-selection-button,
           .block-editor-block-list__breadcrumb,
           .block-editor-block-toolbar,
-          .block-editor-block-contextual-toolbar {
+          .block-editor-block-contextual-toolbar,
+          .rich-text [data-rich-text-placeholder] {
             display: none !important;
           }
         }
