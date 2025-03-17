@@ -53,11 +53,11 @@ const ResumeBuilder = ({ onImportComplete }) => {
   
   return (
     <div className="resume-builder__container">
-      <h1 className="resume-builder__title">Career Vision Resume Builder</h1>
+      <h1 className="resume-builder__title">Transform Your LinkedIn Profile into a Professional Resume</h1>
       <p className="resume-builder__subtitle">
         {step === 'import' 
-          ? 'Import your existing resume to get started quickly'
-          : 'Your resume has been created! You can continue editing as needed.'}
+          ? 'Import your LinkedIn profile PDF and let us create a beautifully formatted resume in seconds'
+          : 'Your resume has been created! You can continue customizing it to make it perfect.'}
       </p>
       
       {renderStep()}

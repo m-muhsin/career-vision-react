@@ -734,7 +734,18 @@ const ImportResume = ({ onImportComplete }) => {
 
   return (
     <div className="import-resume__container">
-      <h2 className="import-resume__title">Import Your Resume</h2>
+      <h2 className="import-resume__title">Import Your LinkedIn Profile</h2>
+
+      <div className="import-resume__instructions">
+        <h3>How to Export Your LinkedIn Profile</h3>
+        <ol>
+          <li>Go to your <a href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer">LinkedIn profile</a></li>
+          <li>Click on "Resources" dropdown at the top-right of your profile</li>
+          <li>Select "Save to PDF"</li>
+          <li>Save the PDF file to your computer</li>
+          <li>Upload the PDF file using the form below</li>
+        </ol>
+      </div>
 
       <div
         {...getRootProps()}

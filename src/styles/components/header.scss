@@ -118,11 +118,11 @@
   }
 
   &__import-button {
-    background-color: #d97706;
+    background-color: #0077b5;
     color: white;
     border: none;
     border-radius: 4px;
-    padding: 10px 15px;
+    padding: 8px 15px;
     font-size: 14px;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
@@ -131,9 +131,16 @@
     align-items: center;
     gap: 8px;
     transition: background-color 0.3s ease;
+    min-width: 180px;
+    white-space: nowrap;
 
     &:hover {
-      background-color: #f59e0b;
+      background-color: #0066a1;
+    }
+
+    .header__button-icon {
+      width: 18px;
+      height: 18px;
     }
   }
 } 
