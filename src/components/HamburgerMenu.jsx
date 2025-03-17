@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const HamburgerMenu = ({ onPrint, onToggleEditMode, isEditingMode, onNew }) => {
   const [isOpen, setIsOpen] = useState(false);
