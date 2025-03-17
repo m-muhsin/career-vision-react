@@ -19,7 +19,8 @@
     height: calc(100% - 60px);
     position: relative;
     margin-top: 60px;
-    overflow: hidden;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   &__overlay {

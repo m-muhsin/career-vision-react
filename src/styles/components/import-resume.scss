@@ -1,34 +1,50 @@
 /* Import Resume Component Styles */
 .import-resume {
   &__container {
-    padding: 20px;
-    max-width: 600px;
-    margin: 80px auto 0;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
   }
 
   &__title {
     font-size: 24px;
     font-weight: 600;
-    margin-bottom: 16px;
-    font-family: var(--font-family-heading);
     color: var(--primary-color);
+    margin-bottom: 24px;
+    text-align: center;
+
+    @media (max-width: 768px) {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
   }
 
   &__instructions {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 24px;
+    padding: 16px;
+    margin-bottom: 20px;
+
+    @media (min-width: 640px) {
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 24px;
+      margin-bottom: 32px;
+    }
 
     h3 {
       color: #1e293b;
-      font-size: 18px;
-      margin: 0 0 16px 0;
+      font-size: 16px;
+      margin: 0 0 12px 0;
       font-weight: 600;
+      line-height: 1.4;
+
+      @media (min-width: 640px) {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
     }
 
     ol {
@@ -37,50 +53,172 @@
     }
 
     li {
-      color: #4a5568;
+      color: #475569;
       margin-bottom: 8px;
       line-height: 1.5;
+      font-size: 14px;
       
       &:last-child {
         margin-bottom: 0;
       }
+
+      @media (min-width: 640px) {
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
+
+      @media (min-width: 1024px) {
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
     }
 
     a {
-      color: #069CAF;
+      color: #0284c7;
       text-decoration: none;
       font-weight: 500;
+      transition: color 0.2s ease;
 
       &:hover {
+        color: #0369a1;
         text-decoration: underline;
       }
     }
   }
 
   &__dropzone {
-    border: 2px dashed #ccc;
-    border-radius: 4px;
-    padding: 40px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 24px 16px;
     text-align: center;
     cursor: pointer;
-    margin-bottom: 20px;
-    transition: border 0.3s ease;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    margin-bottom: 16px;
+
+    @media (min-width: 640px) {
+      padding: 32px 24px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 1024px) {
+      padding: 40px 32px;
+      margin-bottom: 24px;
+    }
 
     &--active {
-      border: 2px dashed var(--secondary-color);
-      background-color: rgba(6, 156, 175, 0.05);
+      border-color: #0284c7;
+      background-color: #f0f9ff;
+    }
+
+    &:hover:not(&--active) {
+      border-color: #64748b;
+      background-color: #f8fafc;
     }
   }
 
   &__upload-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    color: var(--secondary-color);
+    font-size: 36px;
+    margin-bottom: 12px;
+
+    @media (min-width: 640px) {
+      font-size: 42px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
   }
 
   &__text {
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1e293b;
     margin-bottom: 8px;
+    font-weight: 500;
+
+    @media (min-width: 640px) {
+      font-size: 15px;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 16px;
+    }
+
+    & + p {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+
+      @media (min-width: 640px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  &__progress {
+    margin-top: 16px;
+
+    @media (min-width: 640px) {
+      margin-top: 20px;
+    }
+
+    @media (min-width: 1024px) {
+      margin-top: 24px;
+    }
+  }
+
+  &__progress-bar {
+    height: 6px;
+    background-color: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+
+    @media (min-width: 640px) {
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    &-fill {
+      height: 100%;
+      background-color: #0284c7;
+      transition: width 0.3s ease;
+    }
+  }
+
+  &__progress-text {
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 8px;
+
+    @media (min-width: 640px) {
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 1024px) {
+      font-size: 14px;
+      margin-top: 12px;
+    }
+  }
+
+  &__selected-file {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #475569;
+
+    @media (min-width: 640px) {
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    strong {
+      color: #1e293b;
+      font-weight: 500;
+    }
   }
 
   &__button {
