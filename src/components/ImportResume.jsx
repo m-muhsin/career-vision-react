@@ -191,7 +191,6 @@ const createBlocksFromStructuredData = (structured = {}) => {
         attributes: {
           content: structured?.Summary?.Description || "Your Summary",
           align: "center",
-          fontSize: "medium",
         },
         innerBlocks: [],
         spacing: {

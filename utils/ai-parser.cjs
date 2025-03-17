@@ -22,7 +22,7 @@ async function parseResumeWithAI(text, openai) {
     console.log("Processing resume with OpenAI...");
 
     // Create a prompt that will instruct GPT to structure the resume
-    const prompt = `Parse the following resume text into structured JSON format with clear categories for contact information, summary, skills, experiences, education, certifications, honors, and publications:\n\n${text}`;
+    const prompt = `Parse the following resume text into structured JSON format with clear categories for contact information, summary, skills (source from top skills), experiences (as an array of objects with company, position, duration, location, and responsibilities), education (as an array of objects with school, degree, duration, and details), certifications, honors, and publications:\n\n${text}`;
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({

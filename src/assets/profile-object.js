@@ -1,45 +1,72 @@
 export const resumeData = {
   Summary: {
-    Name: "John Doe",
-    Location: "New York, NY",
-    Description: "I am a software engineer with a passion for building scalable and efficient systems.",
+    Name: "Alex Chen",
+    Location: "San Francisco, CA",
+    Description: "Full-stack developer with 5+ years of experience specializing in cloud-native applications and microservices architecture. Passionate about creating performant, accessible web experiences.",
   },
   Contact: {
-    Location: "New York, NY",
-    Email: "john.doe@example.com",
-    LinkedIn: "https://www.linkedin.com/in/johndoe",
-    PersonalWebsite: "https://www.johndoe.com",
+    Location: "San Francisco, CA",
+    Email: "alex.chen@gmail.com",
+    LinkedIn: "https://www.linkedin.com/in/alexchen-dev",
+    PersonalWebsite: "https://alexchen.dev",
+    Phone: "(415) 555-7890"
   },
   Skills: {
-    TopSkills: ["JavaScript", "React", "Node.js", "Python", "SQL"],
+    TopSkills: ["TypeScript", "React", "Node.js", "AWS", "GraphQL", "Docker", "MongoDB", "CI/CD"],
+    Languages: ["JavaScript", "Python", "Go", "SQL", "HTML/CSS"],
   },
   Education: [
     {
-      Institution: "University of California, Berkeley",
-      Degree: "Bachelor of Science in Computer Science",
-      Duration: "2015 - 2019",
+      Institution: "Stanford University",
+      Degree: "Master of Science in Computer Science",
+      Duration: "2016 - 2018",
+      GPA: "3.85/4.0",
+      Coursework: ["Distributed Systems", "Machine Learning", "Advanced Algorithms"]
     },
+    {
+      Institution: "University of Washington",
+      Degree: "Bachelor of Science in Computer Engineering",
+      Duration: "2012 - 2016",
+      GPA: "3.7/4.0"
+    }
   ],
   Experiences: [
     {
-      Company: "Google",
-      Position: "Software Engineer",
-      Duration: "2022 - Present",
-      Responsibilities: ["Develop and maintain scalable and efficient systems.", "Collaborate with cross-functional teams to deliver high-quality products.", "Lead projects and mentor junior developers."],
+      Company: "Stripe",
+      Position: "Senior Software Engineer",
+      Location: "San Francisco, CA",
+      Duration: "January 2021 - Present",
+      Responsibilities: [
+        "Lead a team of 5 engineers building the next generation payment processing API handling $2M+ daily transactions",
+        "Reduced API response time by 40% through implementation of Redis caching and query optimization",
+        "Architected and deployed a fault-tolerant microservices system using Kubernetes and AWS EKS",
+        "Implemented comprehensive monitoring with Datadog, reducing MTTR by 60%"
+      ]
     },
     {
-      Company: "Amazon",
-      Position: "Software Engineer",
-      Duration: "2020 - 2022",
-      Responsibilities: ["Develop and maintain scalable and efficient systems.", "Collaborate with cross-functional teams to deliver high-quality products.", "Lead projects and mentor junior developers."],
+      Company: "Airbnb",
+      Position: "Software Engineer II",
+      Location: "San Francisco, CA",
+      Duration: "March 2018 - December 2020",
+      Responsibilities: [
+        "Developed and maintained core booking components of the Airbnb web platform using React and GraphQL",
+        "Improved front-end performance by 35% through code splitting and lazy loading techniques",
+        "Collaborated with design team to implement responsive UI components used across the platform",
+        "Mentored 3 junior engineers and led bi-weekly knowledge sharing sessions"
+      ]
     },
     {
-      Company: "Facebook",
+      Company: "Dropbox",
       Position: "Software Engineer",
-      Duration: "2019 - 2020",
-      Responsibilities: ["Develop and maintain scalable and efficient systems.", "Collaborate with cross-functional teams to deliver high-quality products.", "Lead projects and mentor junior developers."],
-    },
-
+      Location: "Seattle, WA",
+      Duration: "July 2016 - February 2018",
+      Responsibilities: [
+        "Built and maintained RESTful APIs for file synchronization services using Python and Django",
+        "Implemented automated testing pipeline that increased test coverage from 65% to 92%",
+        "Optimized database queries resulting in 25% reduction in average API response time",
+        "Participated in on-call rotations to ensure 99.9% service uptime"
+      ]
+    }
   ],
 };
 
