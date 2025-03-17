@@ -195,8 +195,9 @@ const Header = ({
           New
         </button>
 
+        <div className="header__actions">
         <button
-          className="header__import-button"
+          className="header__import-button header__import-button--desktop"
           onClick={() => toggleEditMode(false)}
           title="Import Resume"
         >
@@ -208,6 +209,12 @@ const Header = ({
           </svg>
           Import
         </button>
+        <HamburgerMenu 
+          onPrint={handlePrint}
+          onToggleEditMode={toggleEditMode}
+          isEditingMode={isEditingMode}
+        />
+      </div>
       </div>
     </header>
   );
