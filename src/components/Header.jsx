@@ -195,7 +195,9 @@ const Header = ({
           New
         </button>
 
-        <div className="header__actions">
+        import HamburgerMenu from './HamburgerMenu';
+
+<div className="header__actions">
         <button
           className="header__import-button header__import-button--desktop"
           onClick={() => toggleEditMode(false)}
