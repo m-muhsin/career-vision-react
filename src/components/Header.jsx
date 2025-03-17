@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import HamburgerMenu from './HamburgerMenu';
 
 const Header = ({
   hasUndo,
@@ -195,28 +196,26 @@ const Header = ({
           New
         </button>
 
-        import HamburgerMenu from './HamburgerMenu';
-
-<div className="header__actions">
-        <button
-          className="header__import-button header__import-button--desktop"
-          onClick={() => toggleEditMode(false)}
-          title="Import Resume"
-        >
-          <svg className="header__button-icon" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,19.5V17.5H9.5V19.5H13.5M13.5,16.5V14.5H9.5V16.5H13.5M18,20H6V4H13V9H18"
-            />
-          </svg>
-          Import
-        </button>
-        <HamburgerMenu 
-          onPrint={handlePrint}
-          onToggleEditMode={toggleEditMode}
-          isEditingMode={isEditingMode}
-        />
-      </div>
+        <div className="header__actions">
+          <button
+            className="header__import-button header__import-button--desktop"
+            onClick={() => toggleEditMode(false)}
+            title="Import Resume"
+          >
+            <svg className="header__button-icon" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,19.5V17.5H9.5V19.5H13.5M13.5,16.5V14.5H9.5V16.5H13.5M18,20H6V4H13V9H18"
+              />
+            </svg>
+            Import
+          </button>
+          <HamburgerMenu
+            onPrint={handlePrint}
+            onToggleEditMode={toggleEditMode}
+            isEditingMode={isEditingMode}
+          />
+        </div>
       </div>
     </header>
   );
