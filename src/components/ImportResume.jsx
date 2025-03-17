@@ -1,6 +1,580 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
+// Helper function to create blocks from structured data
+const createBlocksFromStructuredData = (structured = {}) => {
+
+  // The blocks array
+  const blocks = [];
+
+  // The header section
+  const headerSection = {
+    clientId: "header-section",
+    name: "core/group",
+    isValid: true,
+    attributes: {},
+    innerBlocks: [
+      {
+        clientId: "name-heading",
+        name: "core/heading",
+        isValid: true,
+        attributes: {
+          content: structured?.Summary?.Name || "Your Name",
+          level: 1,
+          textAlign: "center",
+          fontSize: "large",
+        },
+        innerBlocks: [],
+        spacing: {
+          margin: {
+            top: "0",
+            bottom: "0.5em",
+          },
+        },
+        color: {
+          text: "#2c3e50",
+        },
+        style: {
+          typography: {
+            fontWeight: "700",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+          },
+        },
+      },
+      {
+        clientId: "contact-info-row",
+        name: "core/group",
+        isValid: true,
+        attributes: {
+          orientation: "horizontal",
+          className: "contact-info-row flex-row is-layout-flow wp-block-group-is-layout-flow",
+        },
+        innerBlocks: [
+          {
+            clientId: "location-column",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: structured?.Contact?.Location || "Your Location",
+              align: "center",
+              fontSize: "small",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#2c3e50",
+            },
+            style: {
+              typography: {
+                fontWeight: "400",
+                fontSize: "small",
+              },
+            },
+          },
+          {
+            clientId: "separator-1",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "|",
+              align: "center",
+              fontSize: "small",
+              className: "contact-info-separator",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#cbd5e1",
+            },
+          },
+          {
+            clientId: "email-column",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: `<a href="mailto:${structured?.Contact?.Email || "your-email@example.com" }">${structured?.Contact?.Email || "your-email@example.com"}</a>`,
+              align: "center",
+              fontSize: "small",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#2c3e50",
+            },
+            style: {
+              typography: {
+                fontWeight: "400",
+                fontSize: "small",
+              },
+            },
+          },
+          {
+            clientId: "separator-2",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "|",
+              align: "center",
+              fontSize: "small",
+              className: "contact-info-separator",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#cbd5e1",
+            },
+          },
+          {
+            clientId: "linkedin-column",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: `<a href="${structured?.Contact?.LinkedIn || "https://www.linkedin.com/in/"}" target="_blank">${structured?.Contact?.LinkedIn || "https://www.linkedin.com/in/"}</a>`,
+              align: "center",
+              fontSize: "small",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#2c3e50",
+            },
+            style: {
+              typography: {
+                fontWeight: "400",
+                fontSize: "small",
+              },
+            },
+          },
+          {
+            clientId: "separator-3",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: "|",
+              align: "center",
+              fontSize: "small",
+              className: "contact-info-separator",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#cbd5e1",
+            },
+          },
+          {
+            clientId: "website-column",
+            name: "core/paragraph",
+            isValid: true,
+            attributes: {
+              content: `<a href="https://${structured?.Contact?.PersonalWebsite || "your-website.com"}" target="_blank">${structured?.Contact?.PersonalWebsite || "your-website.com"}</a>`,
+              align: "center",
+              fontSize: "small",
+            },
+            innerBlocks: [],
+            color: {
+              text: "#2c3e50",
+            },
+            style: {
+              typography: {
+                fontWeight: "400",
+                fontSize: "small",
+              },
+            },
+          },
+        ],
+        spacing: {
+          margin: {
+            top: "0",
+            bottom: "0.5em",
+          },
+        },
+      },
+      {
+        clientId: "summary",
+        name: "core/paragraph",
+        isValid: true,
+        attributes: {
+          content: structured?.Summary?.Description || "Your Summary",
+          align: "center",
+          fontSize: "medium",
+        },
+        innerBlocks: [],
+        spacing: {
+          margin: {
+            top: "1em",
+            bottom: "1em",
+          },
+        },
+        color: {
+          text: "#2c3e50",
+        },
+        style: {
+          typography: {
+            fontWeight: "400",
+          },
+        },
+      },
+    ],
+  };
+  console.log(structured);
+  // The skills section
+  const skillsSection = {
+    clientId: "skills-section",
+    name: "core/group",
+    isValid: true,
+    attributes: {},
+    innerBlocks: [
+      {
+        clientId: "skills-heading",
+        name: "core/heading",
+        isValid: true,
+        attributes: {
+          content: "Skills",
+          level: 2,
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "skills-list",
+        name: "core/list",
+        isValid: true,
+        attributes: {},
+        innerBlocks: [
+          ...structured?.Skills?.TopSkills?.map((skill, index) => ({
+            clientId: `skill-${index}`,
+            name: "core/list-item",
+            isValid: true,
+            attributes: {
+              content: skill, 
+            },
+            innerBlocks: [],
+          })) || [],
+        ],
+      },
+    ],
+  };
+
+  // The experiences section
+  const experiencesSection = {
+    clientId: "experiences-section",
+    name: "core/group",
+    isValid: true,
+    attributes: {},
+    innerBlocks: [
+      {
+        clientId: "experiences-heading",
+        name: "core/heading",
+        isValid: true,
+        attributes: {
+          content: "Experiences",
+          level: 2,
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "experiences-list",
+        name: "core/group",
+        isValid: true,
+        attributes: {},
+        innerBlocks: [
+          {
+            clientId: "experience-item",
+            name: "core/group",
+            isValid: true,
+            attributes: {},
+            innerBlocks: structured?.Experiences?.map((experience, index) => ({
+              clientId: `experience-item-${index}`,
+              name: "core/group",
+              isValid: true,
+              attributes: {},
+              innerBlocks: [
+                {
+                  clientId: `experience-company-${index}`,
+                  name: "core/group",
+                  isValid: true,
+                  attributes: {
+                    orientation: "horizontal",
+                    className: "job-listing__company-row flex-row",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    style: {
+                      spacing: {
+                        margin: {
+                          bottom: "5px"
+
+                        }
+                      },
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }
+                  },
+                  innerBlocks: [
+                    {
+                      clientId: `experience-company-name-${index}`,
+                      name: "core/paragraph",
+                      isValid: true,
+                      attributes: {
+                        content: `<strong>${experience.Company}</strong>`,
+                        className: "job-listing__company-name",
+                        style: {
+                          spacing: {
+                            margin: {
+                              top: "0",
+                              bottom: "0"
+                            }
+                          }
+                        }
+                      },
+                      innerBlocks: [],
+                    },
+                    {
+                      clientId: `experience-company-location-${index}`,
+                      name: "core/paragraph",
+                      isValid: true,
+                      attributes: {
+                        content: experience.Location,
+                        className: "job-listing__company-location",
+                        style: {
+                          spacing: {
+                            margin: {
+                              top: "0",
+                              bottom: "0"
+                            }
+                          }
+                        }
+                      },
+                      innerBlocks: [],
+                    },
+                  ],
+                },
+                {
+                  clientId: `experience-row-${index}`,
+                  name: "core/group",
+                  isValid: true,
+                  attributes: {
+                    orientation: "horizontal",
+                    className: "job-listing__company-row flex-row",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    style: {
+                      spacing: {
+                        margin: {
+                          bottom: "5px"
+
+                        }
+                      },
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }
+                  },
+                  innerBlocks: [
+                    {
+                      clientId: `experience-position-${index}`,
+                      name: "core/paragraph",
+                      isValid: true,
+                      attributes: {
+                        content: `<strong>${experience.Position}</strong>`,
+                        style: {
+                          spacing: {
+                            margin: {
+                              top: "5px",
+                              bottom: "5px"
+                            }
+                          },
+                          typography: {
+                            fontWeight: "600"
+                          }
+                        }
+                      },
+                      innerBlocks: [],
+                    },
+                    {
+                      clientId: `experience-duration-${index}`,
+                      name: "core/paragraph",
+                      isValid: true,
+                      attributes: {
+                        content: experience.Duration,
+                        className: "job-listing__duration",
+                        style: {
+                          spacing: {
+                            margin: {
+                              top: "0",
+                              bottom: "10px"
+                            }
+                          },
+                          typography: {
+                            fontStyle: "italic",
+                            fontSize: "14px"
+                          },
+                          color: {
+                            text: "#666"
+                          }
+                        }
+                      },
+                      innerBlocks: [],
+                    },
+                  ],
+                },
+                {
+                  clientId: `experience-responsibilities-${index}`,
+                  name: "core/list",
+                  isValid: true,
+                  attributes: {},
+                  innerBlocks: experience?.Responsibilities?.map((responsibility, i) => ({
+                    clientId: `experience-responsibility-${index}-${i}`,
+                    name: "core/list-item",
+                    isValid: true,
+                    attributes: {
+                      content: responsibility,
+                    },
+                    innerBlocks: [],
+                  })) || [],
+                },
+              ],
+            })) || [],
+          },
+        ],
+      },
+    ],
+  };
+
+  // The education section
+  const educationSection = {
+    clientId: "education-section",
+    name: "core/group",
+    isValid: true,
+    attributes: {},
+    innerBlocks: [
+      {
+        clientId: "education-heading",
+        name: "core/heading",
+        isValid: true,
+        attributes: {
+          content: "Education",
+          level: 2,
+        },
+        innerBlocks: [],
+      },
+      {
+        clientId: "education-list",
+        name: "core/group",
+        isValid: true,
+        attributes: {},
+        innerBlocks: [
+          {
+            clientId: "education-items",
+            name: "core/group",
+            isValid: true,
+            attributes: {},
+            innerBlocks: structured?.Education?.map((education, index) => ({
+              clientId: `education-item-${index}`,
+              name: "core/group",
+              isValid: true,
+              attributes: {},
+              innerBlocks: [
+                {
+                  clientId: `education-institution-row-${index}`,
+                  name: "core/group",
+                  isValid: true,
+                  attributes: {
+                    orientation: "horizontal",
+                    className: "job-listing__company-row flex-row",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    style: {
+                      spacing: {
+                        margin: {
+                          bottom: "2px"
+                        }
+                      },
+                      display: "flex",
+                    }
+                  },
+                  innerBlocks: [
+                    {
+                      clientId: `education-institution-${index}`,
+                      name: "core/paragraph",
+                      isValid: true,
+                      attributes: {
+                        content: education?.Institution || "Your Institution",
+                        className: "job-listing__company-name",
+                        style: {
+                          typography: {
+                            fontWeight: "600"
+                          },
+                          color: {
+                            text: "var(--primary-color)"
+                          }
+                        }
+                      },
+                      innerBlocks: [],
+                    },
+                    {
+                      clientId: `education-duration-${index}`,
+                      name: "core/paragraph",
+                      isValid: true,
+                      attributes: {
+                        content: education?.Duration || "Your Duration",
+                        className: "job-listing__duration",
+                        style: {
+                          spacing: {
+                            margin: {
+                              top: "0",
+                              bottom: "5px"
+                            }
+                          },
+                          typography: {
+                            fontStyle: "italic",
+                            fontSize: "14px"
+                          },
+                          color: {
+                            text: "#666"
+                          }
+                        }
+                      },
+                      innerBlocks: [],
+                    },
+                  ],
+                },
+                {
+                  clientId: `education-degree-${index}`,
+                  name: "core/paragraph",
+                  isValid: true,
+                  attributes: {
+                    content: education?.Degree || education?.Certification || "Your Degree",
+                    className: "resume-template__degree",
+                    style: {
+                      typography: {
+                        fontWeight: "500",
+                        fontSize: "15px"
+                      },
+                      color: {
+                        text: "#4a5568"
+                      },
+                      spacing: {
+                        margin: {
+                          top: "0",
+                          bottom: "20px"
+                        }
+                      }
+                    }
+                  },
+                  innerBlocks: [],
+                },
+              ],
+            })) || [],
+          },
+        ],
+      },
+    ],
+  };
+
+  // Add all sections to the blocks array
+  blocks.push(
+    headerSection,
+    skillsSection,
+    experiencesSection,
+    educationSection,
+  );
+
+  return blocks;
+};
+
 const ImportResume = ({ onImportComplete }) => {
   const [status, setStatus] = useState({ type: null, message: "" });
   const [pdfText, setPdfText] = useState("");
@@ -151,583 +725,9 @@ const ImportResume = ({ onImportComplete }) => {
       setStatus({ type: "error", message: "No PDF content to import." });
       return;
     }
-    const resumeData = createBlocksFromStructuredData( pdfText );
+    const resumeData = createBlocksFromStructuredData(pdfText);
     console.log("Created blocks from client-side parsing:", resumeData);
     onImportComplete(resumeData);
-  };
-
-  // Helper function to create blocks from structured data
-  const createBlocksFromStructuredData = (structured) => {
-
-    // The blocks array
-    const blocks = [];
-
-    // The header section
-    const headerSection = {
-      clientId: "header-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [
-        {
-          clientId: "name-heading",
-          name: "core/heading",
-          isValid: true,
-          attributes: {
-            content: structured.Summary.Name,
-            level: 1,
-            textAlign: "center",
-            fontSize: "large",
-          },
-          innerBlocks: [],
-          spacing: {
-            margin: {
-              top: "0",
-              bottom: "0.5em",
-            },
-          },
-          color: {
-            text: "#2c3e50",
-          },
-          style: {
-            typography: {
-              fontWeight: "700",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-            },
-          },
-        },
-        {
-          clientId: "contact-info-row",
-          name: "core/group",
-          isValid: true,
-          attributes: {
-            orientation: "horizontal",
-            className: "contact-info-row flex-row is-layout-flow wp-block-group-is-layout-flow",
-          },
-          innerBlocks: [
-            {
-              clientId: "location-column",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: structured.Contact.Location,
-                align: "center",
-                fontSize: "small",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#2c3e50",
-              },
-              style: {
-                typography: {
-                  fontWeight: "400",
-                  fontSize: "small",
-                },
-              },
-            },
-            {
-              clientId: "separator-1",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: "|",
-                align: "center",
-                fontSize: "small",
-                className: "contact-info-separator",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#cbd5e1",
-              },
-            },
-            {
-              clientId: "email-column",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: `<a href="mailto:${structured.Contact.Email}">${structured.Contact.Email}</a>`,
-                align: "center",
-                fontSize: "small",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#2c3e50",
-              },
-              style: {
-                typography: {
-                  fontWeight: "400",
-                  fontSize: "small",
-                },
-              },
-            },
-            {
-              clientId: "separator-2",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: "|",
-                align: "center",
-                fontSize: "small",
-                className: "contact-info-separator",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#cbd5e1",
-              },
-            },
-            {
-              clientId: "linkedin-column",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: `<a href="${structured.Contact.LinkedIn}" target="_blank">${structured.Contact.LinkedIn}</a>`,
-                align: "center",
-                fontSize: "small",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#2c3e50",
-              },
-              style: {
-                typography: {
-                  fontWeight: "400",
-                  fontSize: "small",
-                },
-              },
-            },
-            {
-              clientId: "separator-3",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: "|",
-                align: "center",
-                fontSize: "small",
-                className: "contact-info-separator",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#cbd5e1",
-              },
-            },
-            {
-              clientId: "website-column",
-              name: "core/paragraph",
-              isValid: true,
-              attributes: {
-                content: `<a href="https://${structured.Contact.PersonalWebsite}" target="_blank">${structured.Contact.PersonalWebsite}</a>`,
-                align: "center",
-                fontSize: "small",
-              },
-              innerBlocks: [],
-              color: {
-                text: "#2c3e50",
-              },
-              style: {
-                typography: {
-                  fontWeight: "400",
-                  fontSize: "small",
-                },
-              },
-            },
-          ],
-          spacing: {
-            margin: {
-              top: "0",
-              bottom: "0.5em",
-            },
-          },
-        },
-        {
-          clientId: "summary",
-          name: "core/paragraph",
-          isValid: true,
-          attributes: {
-            content: structured.Summary.Description,
-            align: "center",
-            fontSize: "medium",
-          },
-          innerBlocks: [],
-          spacing: {
-            margin: {
-              top: "1em",
-              bottom: "1em",
-            },
-          },
-          color: {
-            text: "#2c3e50",
-          },
-          style: {
-            typography: {
-              fontWeight: "400",
-            },
-          },
-        },
-      ],
-    };
-    console.log(structured);
-    // The skills section
-    const skillsSection = {
-      clientId: "skills-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [
-        {
-          clientId: "skills-heading",
-          name: "core/heading",
-          isValid: true,
-          attributes: {
-            content: "Skills",
-            level: 2,
-          },
-          innerBlocks: [],
-        },
-        {
-          clientId: "skills-list",
-          name: "core/list",
-          isValid: true,
-          attributes: {},
-          innerBlocks: [
-            ...structured.Skills.TopSkills.map((skill, index) => ({
-              clientId: `skill-${index}`,
-              name: "core/list-item",
-              isValid: true,
-              attributes: {
-                content: skill, 
-              },
-              innerBlocks: [],
-            })),
-          ],
-        },
-      ],
-    };
-
-    // The experiences section
-    const experiencesSection = {
-      clientId: "experiences-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [
-        {
-          clientId: "experiences-heading",
-          name: "core/heading",
-          isValid: true,
-          attributes: {
-            content: "Experiences",
-            level: 2,
-          },
-          innerBlocks: [],
-        },
-        {
-          clientId: "experiences-list",
-          name: "core/group",
-          isValid: true,
-          attributes: {},
-          innerBlocks: [
-            {
-              clientId: "experience-item",
-              name: "core/group",
-              isValid: true,
-              attributes: {},
-              innerBlocks: structured.Experiences.map((experience, index) => ({
-                clientId: `experience-item-${index}`,
-                name: "core/group",
-                isValid: true,
-                attributes: {},
-                innerBlocks: [
-                  {
-                    clientId: `experience-company-${index}`,
-                    name: "core/group",
-                    isValid: true,
-                    attributes: {
-                      orientation: "horizontal",
-                      className: "job-listing__company-row flex-row",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      style: {
-                        spacing: {
-                          margin: {
-                            bottom: "5px"
-
-                          }
-                        },
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }
-                    },
-                    innerBlocks: [
-                      {
-                        clientId: `experience-company-name-${index}`,
-                        name: "core/paragraph",
-                        isValid: true,
-                        attributes: {
-                          content: `<strong>${experience.Company}</strong>`,
-                          className: "job-listing__company-name",
-                          style: {
-                            spacing: {
-                              margin: {
-                                top: "0",
-                                bottom: "0"
-                              }
-                            }
-                          }
-                        },
-                        innerBlocks: [],
-                      },
-                      {
-                        clientId: `experience-company-location-${index}`,
-                        name: "core/paragraph",
-                        isValid: true,
-                        attributes: {
-                          content: experience.Location,
-                          className: "job-listing__company-location",
-                          style: {
-                            spacing: {
-                              margin: {
-                                top: "0",
-                                bottom: "0"
-                              }
-                            }
-                          }
-                        },
-                        innerBlocks: [],
-                      },
-                    ],
-                  },
-                  {
-                    clientId: `experience-row-${index}`,
-                    name: "core/group",
-                    isValid: true,
-                    attributes: {
-                      orientation: "horizontal",
-                      className: "job-listing__company-row flex-row",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      style: {
-                        spacing: {
-                          margin: {
-                            bottom: "5px"
-
-                          }
-                        },
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }
-                    },
-                    innerBlocks: [
-                      {
-                        clientId: `experience-position-${index}`,
-                        name: "core/paragraph",
-                        isValid: true,
-                        attributes: {
-                          content: `<strong>${experience.Position}</strong>`,
-                          style: {
-                            spacing: {
-                              margin: {
-                                top: "5px",
-                                bottom: "5px"
-                              }
-                            },
-                            typography: {
-                              fontWeight: "600"
-                            }
-                          }
-                        },
-                        innerBlocks: [],
-                      },
-                      {
-                        clientId: `experience-duration-${index}`,
-                        name: "core/paragraph",
-                        isValid: true,
-                        attributes: {
-                          content: experience.Duration,
-                          className: "job-listing__duration",
-                          style: {
-                            spacing: {
-                              margin: {
-                                top: "0",
-                                bottom: "10px"
-                              }
-                            },
-                            typography: {
-                              fontStyle: "italic",
-                              fontSize: "14px"
-                            },
-                            color: {
-                              text: "#666"
-                            }
-                          }
-                        },
-                        innerBlocks: [],
-                      },
-                    ],
-                  },
-                  {
-                    clientId: `experience-responsibilities-${index}`,
-                    name: "core/list",
-                    isValid: true,
-                    attributes: {},
-                    innerBlocks: experience?.Responsibilities?.map((responsibility, i) => ({
-                      clientId: `experience-responsibility-${index}-${i}`,
-                      name: "core/list-item",
-                      isValid: true,
-                      attributes: {
-                        content: responsibility,
-                      },
-                      innerBlocks: [],
-                    })) || [],
-                  },
-                ],
-              })),
-            },
-          ],
-        },
-      ],
-    };
-
-    // The education section
-    const educationSection = {
-      clientId: "education-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [
-        {
-          clientId: "education-heading",
-          name: "core/heading",
-          isValid: true,
-          attributes: {
-            content: "Education",
-            level: 2,
-          },
-          innerBlocks: [],
-        },
-        {
-          clientId: "education-list",
-          name: "core/group",
-          isValid: true,
-          attributes: {},
-          innerBlocks: [
-            {
-              clientId: "education-items",
-              name: "core/group",
-              isValid: true,
-              attributes: {},
-              innerBlocks: structured.Education.map((education, index) => ({
-                clientId: `education-item-${index}`,
-                name: "core/group",
-                isValid: true,
-                attributes: {},
-                innerBlocks: [
-                  {
-                    clientId: `education-institution-row-${index}`,
-                    name: "core/group",
-                    isValid: true,
-                    attributes: {
-                      orientation: "horizontal",
-                      className: "job-listing__company-row flex-row",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      style: {
-                        spacing: {
-                          margin: {
-                            bottom: "2px"
-                          }
-                        },
-                        display: "flex",
-                      }
-                    },
-                    innerBlocks: [
-                      {
-                        clientId: `education-institution-${index}`,
-                        name: "core/paragraph",
-                        isValid: true,
-                        attributes: {
-                          content: education.Institution,
-                          className: "job-listing__company-name",
-                          style: {
-                            typography: {
-                              fontWeight: "600"
-                            },
-                            color: {
-                              text: "var(--primary-color)"
-                            }
-                          }
-                        },
-                        innerBlocks: [],
-                      },
-                      {
-                        clientId: `education-duration-${index}`,
-                        name: "core/paragraph",
-                        isValid: true,
-                        attributes: {
-                          content: education.Duration,
-                          className: "job-listing__duration",
-                          style: {
-                            spacing: {
-                              margin: {
-                                top: "0",
-                                bottom: "5px"
-                              }
-                            },
-                            typography: {
-                              fontStyle: "italic",
-                              fontSize: "14px"
-                            },
-                            color: {
-                              text: "#666"
-                            }
-                          }
-                        },
-                        innerBlocks: [],
-                      },
-                    ],
-                  },
-                  {
-                    clientId: `education-degree-${index}`,
-                    name: "core/paragraph",
-                    isValid: true,
-                    attributes: {
-                      content: education.Degree || education.Certification,
-                      className: "resume-template__degree",
-                      style: {
-                        typography: {
-                          fontWeight: "500",
-                          fontSize: "15px"
-                        },
-                        color: {
-                          text: "#4a5568"
-                        },
-                        spacing: {
-                          margin: {
-                            top: "0",
-                            bottom: "20px"
-                          }
-                        }
-                      }
-                    },
-                    innerBlocks: [],
-                  },
-                ],
-              })),
-            },
-          ],
-        },
-      ],
-    };
-
-    // Add all sections to the blocks array
-    blocks.push(
-      headerSection,
-      skillsSection,
-      experiencesSection,
-      educationSection,
-    );
-
-    return blocks;
   };
 
   return (
@@ -737,8 +737,19 @@ const ImportResume = ({ onImportComplete }) => {
       <div className="import-resume__instructions">
         <h3>How to Export Your LinkedIn Profile</h3>
         <ol>
-          <li>Go to your <a href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer">LinkedIn profile</a></li>
-          <li>Click on "Resources" dropdown at the top-right of your profile</li>
+          <li>
+            Go to your{" "}
+            <a
+              href="https://www.linkedin.com/in/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn profile
+            </a>
+          </li>
+          <li>
+            Click on "Resources" dropdown at the top-right of your profile
+          </li>
           <li>Select "Save to PDF"</li>
           <li>Save the PDF file to your computer</li>
           <li>Upload the PDF file using the form below</li>
@@ -832,4 +843,5 @@ const ImportResume = ({ onImportComplete }) => {
   );
 };
 
+export { createBlocksFromStructuredData };
 export default ImportResume;
