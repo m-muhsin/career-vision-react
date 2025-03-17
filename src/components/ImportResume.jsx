@@ -780,81 +780,12 @@ const ImportResume = ({ onImportComplete }) => {
       ],
     };
 
-
-    // The certifications section
-    const certificationsSection = {
-      clientId: "certifications-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [
-        {
-          clientId: "certifications-heading",
-          name: "core/heading",
-          isValid: true,
-          attributes: {},
-          innerBlocks: [],
-        },
-      ],
-    };
-
-    // The honors-awards section
-    const honorsAwardsSection = {
-      clientId: "honors-awards-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [],
-    };
-
-    // The publications section
-    const publicationsSection = {
-      clientId: "publications-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [],
-    };
-
-    // The separator
-    const separator = {
-      clientId: "separator",
-      name: "core/separator",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [],
-    };
-
-    // The content section
-    const contentSection = {
-      clientId: "content-section",
-      name: "core/paragraph",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [],
-    };
-
-    // The footer section
-    const footerSection = {
-      clientId: "footer-section",
-      name: "core/group",
-      isValid: true,
-      attributes: {},
-      innerBlocks: [],
-    };
-
     // Add all sections to the blocks array
     blocks.push(
       headerSection,
       skillsSection,
       experiencesSection,
       educationSection,
-      certificationsSection,
-      honorsAwardsSection,
-      publicationsSection,
-      separator,
-      contentSection,
-      footerSection
     );
 
     return blocks;
