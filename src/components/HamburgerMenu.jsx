@@ -1,15 +1,66 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const HamburgerMenu = ({ onPrint, onToggleEditMode, isEditingMode, onNew }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // If menu is not open, no need to handle clicks
+      if (!isOpen) return;
+      
+      // Check if click was inside menu
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Add listeners to both main document and editor iframe if it exists
+    const addListeners = () => {
+      // Use capture phase to ensure we get the event first
+      document.addEventListener('mousedown', handleClickOutside, true);
+      
+      // Add listener to iframe if it exists
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        editorIframe.contentDocument.addEventListener('mousedown', handleClickOutside, true);
+      }
+    };
+
+    // Remove all listeners
+    const removeListeners = () => {
+      document.removeEventListener('mousedown', handleClickOutside, true);
+      
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        editorIframe.contentDocument.removeEventListener('mousedown', handleClickOutside, true);
+      }
+    };
+
+    // Set up listeners
+    addListeners();
+
+    // Check periodically for iframe and add listener if found
+    const intervalId = setInterval(() => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        editorIframe.contentDocument.addEventListener('mousedown', handleClickOutside, true);
+      }
+    }, 1000);
+
+    // Cleanup
+    return () => {
+      clearInterval(intervalId);
+      removeListeners();
+    };
+  }, [isOpen]); // Add isOpen to dependencies
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="hamburger-menu">
+    <div className="hamburger-menu" ref={menuRef}>
       <button 
         className={`hamburger-menu__button ${isOpen ? 'hamburger-menu__button--open' : ''}`} 
         onClick={toggleMenu}
