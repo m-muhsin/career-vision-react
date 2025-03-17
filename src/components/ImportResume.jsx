@@ -248,6 +248,7 @@ const createBlocksFromStructuredData = (structured = {}) => {
     ],
   };
 
+  const experiences = structured?.Experiences || structured?.Experience || [];
   // The experiences section
   const experiencesSection = {
     clientId: "experiences-section",
@@ -260,7 +261,7 @@ const createBlocksFromStructuredData = (structured = {}) => {
         name: "core/heading",
         isValid: true,
         attributes: {
-          content: "Experiences",
+          content: "Experience",
           level: 2,
         },
         innerBlocks: [],
@@ -276,7 +277,7 @@ const createBlocksFromStructuredData = (structured = {}) => {
             name: "core/group",
             isValid: true,
             attributes: {},
-            innerBlocks: structured?.Experiences?.map((experience, index) => ({
+            innerBlocks: experiences.map((experience, index) => ({
               clientId: `experience-item-${index}`,
               name: "core/group",
               isValid: true,
