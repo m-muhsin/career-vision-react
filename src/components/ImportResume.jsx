@@ -368,7 +368,7 @@ const createBlocksFromStructuredData = (structured = {}) => {
                       name: "core/paragraph",
                       isValid: true,
                       attributes: {
-                        content: `<strong>${experience.Position}</strong>`,
+                        content: `${experience.Position}`,
                         style: {
                           spacing: {
                             margin: {
@@ -377,7 +377,9 @@ const createBlocksFromStructuredData = (structured = {}) => {
                             }
                           },
                           typography: {
-                            fontWeight: "600"
+                            color: {
+                              text: "#666"
+                            }
                           }
                         }
                       },
@@ -415,15 +417,17 @@ const createBlocksFromStructuredData = (structured = {}) => {
                   name: "core/list",
                   isValid: true,
                   attributes: {},
-                  innerBlocks: experience?.Responsibilities?.map((responsibility, i) => ({
-                    clientId: `experience-responsibility-${index}-${i}`,
-                    name: "core/list-item",
-                    isValid: true,
-                    attributes: {
-                      content: responsibility,
-                    },
-                    innerBlocks: [],
-                  })) || [],
+                  innerBlocks: Array.isArray(experience?.Responsibilities) 
+                    ? experience.Responsibilities.map((responsibility, i) => ({
+                        clientId: `experience-responsibility-${index}-${i}`,
+                        name: "core/list-item",
+                        isValid: true,
+                        attributes: {
+                          content: responsibility,
+                        },
+                        innerBlocks: [],
+                      }))
+                    : experience?.Responsibilities || [],
                 },
               ],
             })) || [],
