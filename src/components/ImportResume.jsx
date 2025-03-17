@@ -534,6 +534,23 @@ const ImportResume = ({ onImportComplete }) => {
           },
           innerBlocks: [],
         },
+        {
+          clientId: "skills-list",
+          name: "core/list",
+          isValid: true,
+          attributes: {},
+          innerBlocks: [
+            ...structured.Skills.TopSkills.map((skill, index) => ({
+              clientId: `skill-${index}`,
+              name: "core/list-item",
+              isValid: true,
+              attributes: {
+                content: skill, 
+              },
+              innerBlocks: [],
+            })),
+          ],
+        },
       ],
     };
 
