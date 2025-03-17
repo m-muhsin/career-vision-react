@@ -10,7 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Import shared utilities
-const { parseResumeText, convertToBlockStructure } = require('../utils/resume-parser.cjs');
+const { parseResumeText } = require('../utils/resume-parser.cjs');
 const { parseResumeWithAI } = require('../utils/ai-parser.cjs');
 
 // Initialize OpenAI if API key exists
@@ -117,15 +117,11 @@ router.post(async (req, res) => {
           usedAI = false;
         }
         
-        // Convert to block structure
-        const blockStructure = convertToBlockStructure(parsedResume);
-        
         // Return the parsed content and block structure
         return res.json({
           success: true,
           text: text,
           structured: parsedResume,
-          blocks: blockStructure,
           aiProcessed: usedAI,
           filename: filename,
           pages: pdfData.numpages || 1

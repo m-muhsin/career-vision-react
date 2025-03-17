@@ -145,9 +145,6 @@ app.post('/api/parse-resume', upload.single('pdfFile'), async (req, res) => {
       usedAI = false;
     }
     
-    // Convert to block structure
-    // const blockStructure = convertToBlockStructure(parsedResume);
-    
     // Clean up uploaded file
     fs.unlinkSync(filePath);
     
