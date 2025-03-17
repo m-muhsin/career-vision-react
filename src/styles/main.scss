@@ -1,9 +1,7 @@
-/* Main SCSS file to import all component styles */
 
-/* Import component styles */
-@import 'components/app';
-@import 'components/header';
-@import 'components/import-resume';
-@import 'components/resume-builder';
-@import 'components/resume-template';
-@import 'components/hamburger-menu'; 
+@use 'components/app';
+@use 'components/header';
+@use 'components/import-resume';
+@use 'components/resume-builder';
+@use 'components/resume-template';
+@use 'components/hamburger-menu';
