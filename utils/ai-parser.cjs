@@ -1,10 +1,10 @@
-/* global require, module */
-const { parseResumeText } = require("./resume-parser.cjs");
-
 /**
  * AI-based resume parser utility
  * This is separated so it can be used conditionally based on environment
  */
+
+/* global require, module */
+const { parseResumeText } = require("./resume-parser.cjs");
 
 /**
  * Parses a resume using OpenAI
@@ -17,25 +17,84 @@ async function parseResumeWithAI(text, openai) {
     console.log("OpenAI client not provided, using fallback parser");
     return parseResumeText(text);
   }
+  const resumeData = {
+    Summary: {
+      Name: "Alex Chen",
+      Location: "San Francisco, CA",
+      Description:
+        "Full-stack developer with 5+ years of experience specializing in cloud-native applications and microservices architecture. Passionate about creating performant, accessible web experiences.",
+    },
+    Contact: {
+      Location: "San Francisco, CA",
+      Email: "alex.chen@gmail.com",
+      LinkedIn: "https://www.linkedin.com/in/alexchen-dev",
+      PersonalWebsite: "https://alexchen.dev",
+      Phone: "(415) 555-7890",
+    },
+    Skills: {
+      TopSkills: [
+        "TypeScript",
+        "React",
+        "Node.js",
+        "AWS",
+        "GraphQL",
+        "Docker",
+        "MongoDB",
+        "CI/CD",
+      ],
+    },
+    Education: [
+      {
+        Institution: "Stanford University",
+        Degree: "Master of Science in Computer Science",
+        Duration: "2016 - 2018",
+        GPA: "3.85/4.0",
+        Coursework: [
+          "Distributed Systems",
+          "Machine Learning",
+          "Advanced Algorithms",
+        ],
+      },
+    ],
+    Experiences: [
+      {
+        Company: "Stripe",
+        Position: "Senior Software Engineer",
+        Location: "San Francisco, CA",
+        Duration: "January 2021 - Present",
+        Responsibilities: [
+          "Lead a team of 5 engineers building the next generation payment processing API handling $2M+ daily transactions",
+          "Reduced API response time by 40% through implementation of Redis caching and query optimization",
+          "Architected and deployed a fault-tolerant microservices system using Kubernetes and AWS EKS",
+          "Implemented comprehensive monitoring with Datadog, reducing MTTR by 60%",
+        ],
+      },
+    ],
+  };
 
   try {
     console.log("Processing resume with OpenAI...");
 
     // Create a prompt that will instruct GPT to structure the resume
-    const prompt = `Parse the following resume text into structured JSON format with clear categories for contact information, summary, skills (source from top skills), experiences (as an array of objects with company, position, duration, location, and responsibilities), education (as an array of objects with school, degree, duration, and details), certifications, honors, and publications:\n\n${text}`;
+    const systemPrompt = `
+    You are a professional resume parser. Your task is to accurately extract structured information from resume text.
+    Parse the following resume text into a structured JSON format that follows this structure:
+    ${JSON.stringify(resumeData)}
+  
+    `;
 
+    const userPrompt = `Parse the following resume text:\n\n${text}`;
     // Call OpenAI API
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
-          content:
-            "You are a professional resume parser. Your task is to accurately extract structured information from resume text.",
+          content: systemPrompt,
         },
         {
           role: "user",
-          content: prompt,
+          content: userPrompt,
         },
       ],
       max_tokens: 2000,

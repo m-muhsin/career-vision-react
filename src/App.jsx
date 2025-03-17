@@ -13,7 +13,8 @@ import "./styles/main.scss";
 import { contentStyles } from "./styles/contentStyles.js";
 import Header from "./components/Header";
 import ResumeBuilder from "./components/ResumeBuilder";
-import resumeData from "./assets/profile-object";
+
+import resumeData from "./assets/profile-object.json";
 
 import { createBlocksFromStructuredData } from "./components/ImportResume";
 
@@ -22,13 +23,17 @@ import { createBlocksFromStructuredData } from "./components/ImportResume";
 
 export default function Editor() {
   // Initial state
-  const [blocks, setBlocks] = useState(createBlocksFromStructuredData(resumeData));
+  const [blocks, setBlocks] = useState(
+    createBlocksFromStructuredData(resumeData)
+  );
   const [isPrinting, setIsPrinting] = useState(false);
   const [contentOverflow, setContentOverflow] = useState(false);
   const [isEditingMode, setIsEditingMode] = useState(true); // Whether we're in block editor mode or import/template mode
-  
+
   // History state management
-  const [history, setHistory] = useState([createBlocksFromStructuredData(resumeData)]); // Stack of previous states
+  const [history, setHistory] = useState([
+    createBlocksFromStructuredData(resumeData),
+  ]); // Stack of previous states
   const [historyIndex, setHistoryIndex] = useState(0); // Current position in history
   const [hasUndo, setHasUndo] = useState(false); // Whether undo is available
   const [hasRedo, setHasRedo] = useState(false); // Whether redo is available
@@ -72,41 +77,46 @@ export default function Editor() {
   const handleImportComplete = (importedBlocks) => {
     // Process imported blocks to ensure consistent styling
     const processedBlocks = processImportedBlocks(importedBlocks);
-    
+
     setBlocks(processedBlocks);
     updateHistoryOnBlocksChange(processedBlocks);
     setIsEditingMode(true); // Switch to editor mode after import
   };
-  
+
   // Process imported blocks to ensure proper styling
   const processImportedBlocks = (blocks) => {
-    return blocks.map(block => {
+    return blocks.map((block) => {
       // Process block based on its type
-      if (block.name === 'core/group') {
+      if (block.name === "core/group") {
         // Check if this is a job listing group
         if (block.innerBlocks && block.innerBlocks.length > 0) {
           // Process inner blocks
-          const processedInnerBlocks = processJobListingBlocks(block.innerBlocks);
+          const processedInnerBlocks = processJobListingBlocks(
+            block.innerBlocks
+          );
           return { ...block, innerBlocks: processedInnerBlocks };
         }
       }
-      
+
       // Process any nested blocks
       if (block.innerBlocks && block.innerBlocks.length > 0) {
-        return { ...block, innerBlocks: processImportedBlocks(block.innerBlocks) };
+        return {
+          ...block,
+          innerBlocks: processImportedBlocks(block.innerBlocks),
+        };
       }
-      
+
       return block;
     });
   };
-  
+
   // Process job listing blocks to ensure proper flex styling
   const processJobListingBlocks = (innerBlocks) => {
     // Second pass: ensure blocks have proper styling
-    return innerBlocks.map(block => {
-      if (block.name === 'core/group') {
+    return innerBlocks.map((block) => {
+      if (block.name === "core/group") {
         // Fix title row
-        if (block.attributes?.className?.includes('job-listing__title-row')) {
+        if (block.attributes?.className?.includes("job-listing__title-row")) {
           const titleRowStyle = {
             ...block.attributes.style,
             display: "flex",
@@ -114,54 +124,59 @@ export default function Editor() {
             alignItems: "center",
             width: "100%",
           };
-          
+
           if (block.innerBlocks && block.innerBlocks.length >= 2) {
             // First block should be heading, second should be duration
-            const updatedInnerBlocks = block.innerBlocks.map((innerBlock, index) => {
-              if (index === 0 && innerBlock.name === 'core/heading') {
-                // Job title
-                return {
-                  ...innerBlock,
-                  attributes: {
-                    ...innerBlock.attributes,
-                    style: {
-                      ...innerBlock.attributes.style,
-                      flex: "1",
-                      spacing: { margin: { top: "0", bottom: "0" } },
-                    }
-                  }
-                };
-              } else if (index === 1 && innerBlock.name === 'core/paragraph') {
-                // Duration
-                return {
-                  ...innerBlock,
-                  attributes: {
-                    ...innerBlock.attributes,
-                    className: "job-listing__duration",
-                    style: {
-                      ...innerBlock.attributes.style,
-                      textAlign: "right",
-                      minWidth: "150px",
-                    }
-                  }
-                };
+            const updatedInnerBlocks = block.innerBlocks.map(
+              (innerBlock, index) => {
+                if (index === 0 && innerBlock.name === "core/heading") {
+                  // Job title
+                  return {
+                    ...innerBlock,
+                    attributes: {
+                      ...innerBlock.attributes,
+                      style: {
+                        ...innerBlock.attributes.style,
+                        flex: "1",
+                        spacing: { margin: { top: "0", bottom: "0" } },
+                      },
+                    },
+                  };
+                } else if (
+                  index === 1 &&
+                  innerBlock.name === "core/paragraph"
+                ) {
+                  // Duration
+                  return {
+                    ...innerBlock,
+                    attributes: {
+                      ...innerBlock.attributes,
+                      className: "job-listing__duration",
+                      style: {
+                        ...innerBlock.attributes.style,
+                        textAlign: "right",
+                        minWidth: "150px",
+                      },
+                    },
+                  };
+                }
+                return innerBlock;
               }
-              return innerBlock;
-            });
-            
+            );
+
             return {
               ...block,
               attributes: {
                 ...block.attributes,
                 style: titleRowStyle,
               },
-              innerBlocks: updatedInnerBlocks
+              innerBlocks: updatedInnerBlocks,
             };
           }
         }
-        
+
         // Fix company row
-        if (block.attributes?.className?.includes('job-listing__company-row')) {
+        if (block.attributes?.className?.includes("job-listing__company-row")) {
           const companyRowStyle = {
             ...block.attributes.style,
             display: "flex",
@@ -169,60 +184,68 @@ export default function Editor() {
             alignItems: "center",
             spacing: { margin: { bottom: "5px" } },
           };
-          
+
           if (block.innerBlocks && block.innerBlocks.length >= 2) {
             // First block should be company name, second should be location
-            const updatedInnerBlocks = block.innerBlocks.map((innerBlock, index) => {
-              if (index === 0 && innerBlock.name === 'core/paragraph') {
-                // Company name
-                return {
-                  ...innerBlock,
-                  attributes: {
-                    ...innerBlock.attributes,
-                    className: "job-listing__company-name",
-                    style: {
-                      ...innerBlock.attributes.style,
-                      flex: "1",
-                      spacing: { margin: { top: "0", bottom: "0" } },
-                    }
-                  }
-                };
-              } else if (index === 1 && innerBlock.name === 'core/paragraph') {
-                // Location
-                return {
-                  ...innerBlock,
-                  attributes: {
-                    ...innerBlock.attributes,
-                    className: "job-listing__company-location",
-                    style: {
-                      ...innerBlock.attributes.style,
-                      textAlign: "right",
-                      minWidth: "120px",
-                      spacing: { margin: { top: "0", bottom: "0" } },
-                    }
-                  }
-                };
+            const updatedInnerBlocks = block.innerBlocks.map(
+              (innerBlock, index) => {
+                if (index === 0 && innerBlock.name === "core/paragraph") {
+                  // Company name
+                  return {
+                    ...innerBlock,
+                    attributes: {
+                      ...innerBlock.attributes,
+                      className: "job-listing__company-name",
+                      style: {
+                        ...innerBlock.attributes.style,
+                        flex: "1",
+                        spacing: { margin: { top: "0", bottom: "0" } },
+                      },
+                    },
+                  };
+                } else if (
+                  index === 1 &&
+                  innerBlock.name === "core/paragraph"
+                ) {
+                  // Location
+                  return {
+                    ...innerBlock,
+                    attributes: {
+                      ...innerBlock.attributes,
+                      className: "job-listing__company-location",
+                      style: {
+                        ...innerBlock.attributes.style,
+                        textAlign: "right",
+                        minWidth: "120px",
+                        spacing: { margin: { top: "0", bottom: "0" } },
+                      },
+                    },
+                  };
+                }
+                return innerBlock;
               }
-              return innerBlock;
-            });
-            
+            );
+
             return {
               ...block,
               attributes: {
                 ...block.attributes,
                 style: companyRowStyle,
               },
-              innerBlocks: updatedInnerBlocks
+              innerBlocks: updatedInnerBlocks,
             };
           }
         }
       }
-      
+
       // Process any nested blocks
       if (block.innerBlocks && block.innerBlocks.length > 0) {
-        return { ...block, innerBlocks: processJobListingBlocks(block.innerBlocks) };
+        return {
+          ...block,
+          innerBlocks: processJobListingBlocks(block.innerBlocks),
+        };
       }
-      
+
       return block;
     });
   };
@@ -415,14 +438,14 @@ export default function Editor() {
       try {
         const iframeDocument =
           editorIframe.contentDocument || editorIframe.contentWindow.document;
-        
+
         // Check if our custom style element already exists
-        let styleElement = iframeDocument.getElementById('custom-flex-styles');
-        
+        let styleElement = iframeDocument.getElementById("custom-flex-styles");
+
         if (!styleElement) {
           // Create and inject a style element with custom CSS
-          styleElement = iframeDocument.createElement('style');
-          styleElement.id = 'custom-flex-styles';
+          styleElement = iframeDocument.createElement("style");
+          styleElement.id = "custom-flex-styles";
           styleElement.textContent = `
             /* Direct flex layout styling */
             .job-listing__title-row, div[class*="job-listing__title-row"] {
@@ -455,11 +478,11 @@ export default function Editor() {
               min-width: 120px !important;
             }
           `;
-          
+
           iframeDocument.head.appendChild(styleElement);
         }
       } catch (error) {
-        console.error('Error injecting CSS into iframe:', error);
+        console.error("Error injecting CSS into iframe:", error);
       }
     };
 
@@ -559,12 +582,17 @@ export default function Editor() {
             onChange={handleBlocksChange}
             onInput={handleBlocksChange}
           >
-            <BlockCanvas height="100%" width="100%" styles={contentStyles} className="custom-editor-styling" />
+            <BlockCanvas
+              height="100%"
+              width="100%"
+              styles={contentStyles}
+              className="custom-editor-styling"
+            />
           </BlockEditorProvider>
         </div>
       ) : (
         /* Resume Builder */
-        <div className="app__editor-container" style={{padding: '20px'}}>
+        <div className="app__editor-container" style={{ padding: "20px" }}>
           <ResumeBuilder onImportComplete={handleImportComplete} />
         </div>
       )}
