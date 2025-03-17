@@ -45,6 +45,7 @@
     height: 2px;
     background-color: currentColor;
     transition: transform 0.3s ease;
+    color: var(--background-color);
   }
 
   &--open {
