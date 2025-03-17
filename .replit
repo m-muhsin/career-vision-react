@@ -1,0 +1,18 @@
+
+run = "npm run dev"
+
+[deployment]
+build = "npm run build"
+run = "npm run preview"
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 15173664
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
