@@ -331,34 +331,74 @@ const contentStyles = [
         }
       }
 
-      /* Education degree styling */
-      .education-listing__degree {
-        font-weight: 600 !important;
-        font-size: 16px !important;
-        color: #2c3e50 !important;
-        margin-bottom: 4px !important;
-      }
-
-      /* Education institution styling */
-      .education-listing__institution {
-        font-weight: 600 !important;
-        color: var(--primary-color) !important;
-      }
-
-      /* Education duration styling */
-      .education-listing__duration {
-        font-style: italic !important;
-        color: #666 !important;
-        text-align: right !important;
-      }
-
-      /* Education details container */
+      /* Education section styling */
       .education-listing__details {
-        margin-bottom: 20px !important;
+        margin-bottom: 24px !important;
+        padding-bottom: 16px !important;
+        border-bottom: 1px solid #eee !important;
       }
 
       .education-listing__details:last-child {
         margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        border-bottom: none !important;
+      }
+
+      .education-listing__row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 8px !important;
+        width: 100% !important;
+      }
+
+      .education-listing__degree {
+        font-size: 17px !important;
+        font-weight: 600 !important;
+        color: var(--primary-color) !important;
+        margin-bottom: 6px !important;
+        line-height: 1.4 !important;
+      }
+
+      .education-listing__institution {
+        font-weight: 600 !important;
+        color: #2c3e50 !important;
+        font-size: 15px !important;
+      }
+
+      .education-listing__duration {
+        font-style: italic !important;
+        color: #666 !important;
+        text-align: right !important;
+        font-size: 14px !important;
+        white-space: nowrap !important;
+        margin-left: 16px !important;
+      }
+
+      .education-listing__description {
+        color: #4a5568 !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+        margin-top: 8px !important;
+      }
+
+      /* Fix for education row layout in Gutenberg editor */
+      .education-listing__row > .block-editor-inner-blocks > .block-editor-block-list__layout {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+
+      .education-listing__row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:first-child {
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+
+      .education-listing__row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child {
+        text-align: right !important;
+        min-width: 150px !important;
+        flex-shrink: 0 !important;
       }
     `,
   },

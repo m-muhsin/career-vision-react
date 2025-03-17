@@ -1,141 +1,9 @@
 import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
-const sampeStructuredData = {
-  Contact: {
-    Location: "Colombo, Sri Lanka",
-    Email: "muhammad.muhseen@gmail.com",
-    LinkedIn: "www.linkedin.com/in/mmuhsin",
-    PersonalWebsite: "muhammad.dev",
-  },
-  Summary: {
-    Name: "Muhammad Muhsin",
-    Title: "Software Engineer and Business Owner",
-    Location: "Colombo District, Western Province, Sri Lanka",
-    Description:
-      "Software engineer and business owner running a web development agency. Currently working with Gutenberg, creating blocks for the WordPress editor and building Block Themes. Led development of modern experiences using WordPress, React, REST API, and GraphQL. Passionate about writing, speaking, and advocating for WordPress and open-source technologies.",
-  },
-  Skills: {
-    TopSkills: ["Next.js", "WordPress", "React.js"],
-    Languages: {
-      Arabic: "Limited Working",
-      English: "Native or Bilingual",
-      Tamil: "Native or Bilingual",
-      Sinhalese: "Limited Working",
-    },
-  },
-  Certifications: ["Managing Your Emotions at Work"],
-  HonorsAwards: [
-    "Award for Best Performance",
-    "Outstanding Cambridge Learner Award",
-  ],
-  Publications: [
-    "Building Mobile Apps Using React Native And WordPress",
-    "Using React Context API with Gatsby",
-    "How To Build A Skin For Your Web App With React And WordPress",
-    "Speaking remotely at WordCamp US",
-    "Why you should render React on the server side",
-  ],
-  Experiences: [
-    {
-      Company: "Insytful",
-      Position: "Partner",
-      Duration: "February 2019 - Present (6 years 2 months)",
-      Location: "Colombo, Sri Lanka",
-      Responsibilities: [
-        "Led development of modern experiences using WordPress for eCommerce, technology, and media companies",
-        "Collaborated with industry leaders like Human Made, LearnDash, and Simplur",
-        "Achieved increased user engagement and revenue growth through strategic website design and functionality enhancements",
-      ],
-    },
-    {
-      Company: "Awesome Motive, Inc.",
-      Position: "Product Developer",
-      Duration: "September 2022 - December 2024 (2 years 4 months)",
-      Location: "Florida, United States",
-      Responsibilities: [
-        "Rebuilt OptinMonster.com from scratch using a Block Theme and custom blocks",
-        "Developed new features and fixed bugs on the OptinMonster product using React, Vue, and PHP",
-      ],
-    },
-    {
-      Company: "XWP",
-      Position: "Senior Engineer",
-      Duration: "January 2022 - August 2022 (8 months)",
-      Location: "Melbourne, Victoria, Australia",
-      Responsibilities: [
-        "Worked on the frontend of the GIC Singapore Careers site using Gutenberg",
-        "Built part of the frontend for a React-based extension that powered a Twitch US partnership with Amazon",
-      ],
-    },
-    {
-      Company: "rtCamp",
-      Position: "Senior React Engineer",
-      Duration: "May 2019 - January 2022 (2 years 9 months)",
-      Location: "Atlanta, Georgia, United States",
-      Responsibilities: [
-        "Worked for popular media brands from PMC using WordPress VIP",
-        "Led the development of modern experiences on top of WordPress using GraphQL, Gutenberg, WooCommerce, and Next.js",
-        "Worked on meta tasks like updating documentation, hiring, and writing on the company blog",
-      ],
-    },
-    {
-      Company: "Capbase",
-      Position: "Software Engineer",
-      Duration: "April 2019 - October 2019 (7 months)",
-      Location: "San Francisco, California, United States",
-      Responsibilities: [
-        "Worked on the frontend using React, Flow, and Sass",
-        "Learned about React Hooks, including useReducer",
-        "Worked with Cognito and DynamoDB from the AWS stack",
-      ],
-    },
-    {
-      Company: "Laccadive IO",
-      Position: "Co-Founder",
-      Duration: "March 2016 - February 2019 (3 years)",
-      Location: "Colombo, Sri Lanka",
-      Responsibilities: [
-        "Developed solutions using WordPress, React, and other technologies for clients in the Middle East and the Indian subcontinent",
-        "Completed projects for government organizations, sports organizations, adventure parks, and legal tech education and publication",
-      ],
-    },
-    {
-      Company: "Rezgateway",
-      Position: "Software Development Intern",
-      Duration: "July 2015 - November 2015 (5 months)",
-      Location: "Colombo, Sri Lanka",
-      Responsibilities: [
-        "Worked on Bonotel, the company's flagship project",
-        "Tasks included bug fixes and new feature implementation",
-        "Learned about the Agile/Scrum software development methodology",
-      ],
-    },
-  ],
-  Education: [
-    {
-      Institution: "University of Plymouth",
-      Degree: "Bachelor's Degree in Software Engineering",
-      Duration: "2013 - 2016",
-    },
-    {
-      Institution: "Cisco Networking Academy",
-      Certification: "CCNA Routing and Switching in Computer Networking",
-      Duration: "2013 - 2014",
-    },
-    {
-      Institution: "Minhal International Boys' School",
-      Degree:
-        "Advanced Levels in Mathematics, Business Studies, Accounting",
-      Duration: "January 2004 - June 2013",
-    },
-  ],
-};
-
 const ImportResume = ({ onImportComplete }) => {
-  const [status, setStatus] = useState({ type: "success",
-    message: `PDF processed successfully! Click "Import Resume" to continue.`, });
-  const [pdfText] = useState(sampeStructuredData);
+  const [status, setStatus] = useState({ type: null, message: "" });
+  const [pdfText, setPdfText] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -205,10 +73,11 @@ const ImportResume = ({ onImportComplete }) => {
 
       if (response.success) {
         console.log("Server response:", response);
+        setPdfText(response.structured);
 
         // Store the structured data for later use
         if (typeof window !== "undefined") {
-          window.lastParsedResume = response;
+          window.lastParsedResume = response.structured;
         }
 
         const aiMessage = response.aiProcessed ? " (AI-enhanced parsing)" : "";
@@ -282,28 +151,9 @@ const ImportResume = ({ onImportComplete }) => {
       setStatus({ type: "error", message: "No PDF content to import." });
       return;
     }
-
-    // Use the structured data from the server if available
-    if (typeof window !== "undefined" && window.lastParsedResume) {
-      if (window.lastParsedResume.blocks) {
-        console.log(
-          "Using AI-generated blocks from server:",
-          window.lastParsedResume.blocks
-        );
-        // Use the pre-structured blocks from the server (AI or basic parsing)
-        onImportComplete(createBlocksFromStructuredData(pdfText));
-        return;
-      } else if (window.lastParsedResume.structured) {
-        console.log("Using structured data from server");
-        // Create blocks from structured data
-        onImportComplete(createBlocksFromStructuredData(pdfText));
-        return;
-      }
-    }
-
-    console.log("Falling back to client-side parsing");
-    // Fallback to client-side parsing if server didn't provide structured data
-    onImportComplete(createBlocksFromStructuredData(pdfText));
+    const resumeData = createBlocksFromStructuredData( pdfText );
+    console.log("Created blocks from client-side parsing:", resumeData);
+    onImportComplete(resumeData);
   };
 
   // Helper function to create blocks from structured data

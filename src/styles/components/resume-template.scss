@@ -120,10 +120,51 @@
   }
 
   &__education-details {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
 
     &:last-child {
       margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
     }
+  }
+
+  &__education-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  &__degree {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  &__institution-name {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 15px;
+  }
+
+  &__education-duration {
+    font-style: italic;
+    color: #666;
+    text-align: right;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-left: 16px;
+  }
+
+  &__education-description {
+    color: #4a5568;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-top: 8px;
   }
 } 
