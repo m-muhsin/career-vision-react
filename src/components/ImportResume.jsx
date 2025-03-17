@@ -652,14 +652,19 @@ const ImportResume = ({ onImportComplete }) => {
                     name: "core/group",
                     isValid: true,
                     attributes: {
+                      orientation: "horizontal",
+                      className: "job-listing__company-row flex-row",
+                      display: "flex",
+                      justifyContent: "space-between",
                       style: {
-                        display: "flex",
-                        justifyContent: "space-between",
                         spacing: {
                           margin: {
-                            bottom: "10px"
+                            bottom: "5px"
+
                           }
-                        }
+                        },
+                        display: "flex",
+                        justifyContent: "space-between",
                       }
                     },
                     innerBlocks: [
