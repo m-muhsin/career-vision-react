@@ -123,7 +123,7 @@ const Header = ({
             </g>
           </g>
         </svg>
-        <span className="header__brand">CareerVision</span>
+        <span className="header__brand">Career Vision</span>
       </a>
 
       <div className="header__actions-container">

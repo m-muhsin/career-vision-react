@@ -19,8 +19,17 @@ const contentStyles = [
   // Add A4 paper styling and system font stack
   {
     css: `
+
+      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+      /* Apply Open Sans to the editor iframe and wrapper */
+      body.block-editor-iframe__body,
+      .editor-styles-wrapper,
+      .editor-styles-wrapper * {
+        font-family: 'Open Sans', sans-serif !important;
+      }
+
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        font-family: 'Open Sans', sans-serif;
         font-size: 16px;
         line-height: 1.5;
         background-color: #f0f0f0;

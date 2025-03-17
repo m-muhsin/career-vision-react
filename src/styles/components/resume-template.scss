@@ -2,6 +2,7 @@
 .resume-template {
   font-size: 12px;
   line-height: 1.2;
+  font-family: 'Open Sans', sans-serif;
 
   &__container {
     max-width: 800px;
@@ -25,7 +26,7 @@
     margin-bottom: 4px;
     line-height: 1.1;
     color: var(--primary-color);
-    font-family: var(--font-family-heading);
+    font-family: 'Open Sans', sans-serif;
   }
 
   &__contact-info {
@@ -154,7 +155,7 @@
     cursor: pointer;
     display: inline-block;
     margin-top: 16px;
-    font-family: var(--font-family-heading);
+    font-family: 'Open Sans', sans-serif;
   }
 
   ul {
