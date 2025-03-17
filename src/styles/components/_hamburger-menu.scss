@@ -1,11 +1,12 @@
-
 .hamburger-menu {
   position: relative;
   display: none;
 
   &__icon {
     fill: currentColor;
-    color: white;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
   }
 
   @media (max-width: 768px) {
@@ -54,21 +55,58 @@
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 8px;
-    min-width: 160px;
+    min-width: 200px;
     z-index: 1000;
+  }
 
-    button {
-      width: 100%;
-      padding: 8px 16px;
-      text-align: left;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      color: #333;
+  &__item {
+    width: 100%;
+    padding: 10px 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    color: #1e293b;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
 
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--export {
+      color: #05889a;
       &:hover {
-        background-color: #f5f5f5;
+        background-color: rgba(5, 136, 154, 0.1);
+      }
+    }
+
+    &--new {
+      color: #3aba60;
+      &:hover {
+        background-color: rgba(58, 186, 96, 0.1);
+      }
+    }
+
+    &--import {
+      color: #0077b5;
+      &:hover {
+        background-color: rgba(0, 119, 181, 0.1);
       }
     }
   }
