@@ -1,6 +1,6 @@
 
 run = "npm run dev"
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "web"]
 
 [deployment]
 build = "npm run build"
@@ -15,8 +15,8 @@ author = 15173664
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
+task = "workflow.run"
+args = "Run"
 
 [[ports]]
 localPort = 5173
@@ -27,3 +27,6 @@ exposeLocalhost = true
 localPort = 5174
 externalPort = 3001
 exposeLocalhost = true
+
+[nix]
+channel = "stable-24_05"

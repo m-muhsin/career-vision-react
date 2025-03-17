@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import HamburgerMenu from './HamburgerMenu';
 
 const Header = ({
   hasUndo,
@@ -127,7 +128,7 @@ const Header = ({
 
       <div className="header__actions-container">
         {isEditingMode && (
-          <>
+          <div className="header__edit-actions">
             <button
               className={`header__icon-button ${!hasUndo ? "header__icon-button--disabled" : ""}`}
               onClick={hasUndo ? handleUndo : undefined}
@@ -155,59 +156,74 @@ const Header = ({
                 />
               </svg>
             </button>
-          </>
+          </div>
         )}
 
-        <button
-          className="header__download-button"
-          onClick={handlePrint}
-          disabled={isPrinting}
-          title="Export PDF"
-        >
-          <svg className="header__button-icon" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"
-            />
-          </svg>
-          Export PDF
-        </button>
+        <div className="header__actions">
+          <div className="header__desktop-actions">
+            <button
+              className="header__download-button"
+              onClick={handlePrint}
+              disabled={isPrinting}
+              title="Export PDF"
+            >
+              <svg className="header__button-icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"
+                />
+              </svg>
+              Export PDF
+            </button>
 
-        <button
-          className="header__new-button"
-          onClick={() => {
-            if (
-              confirm(
-                "Create a new resume? All unsaved changes will be lost."
-              )
-            ) {
-              window.location.href = window.location.pathname;
-            }
-          }}
-          title="New Resume"
-        >
-          <svg className="header__button-icon" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-            />
-          </svg>
-          New
-        </button>
+            <button
+              className="header__new-button"
+              onClick={() => {
+                if (
+                  confirm(
+                    "Create a new resume? All unsaved changes will be lost."
+                  )
+                ) {
+                  window.location.href = window.location.pathname;
+                }
+              }}
+              title="New Resume"
+            >
+              <svg className="header__button-icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                />
+              </svg>
+              New
+            </button>
 
-        <button
-          className="header__import-button"
-          onClick={() => toggleEditMode(false)}
-          title="Import Resume"
-        >
-          <svg className="header__button-icon" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,19.5V17.5H9.5V19.5H13.5M13.5,16.5V14.5H9.5V16.5H13.5M18,20H6V4H13V9H18"
-            />
-          </svg>
-          Import
-        </button>
+            <button
+              className="header__import-button"
+              onClick={() => toggleEditMode(false)}
+              title="Import Resume"
+            >
+              <svg className="header__button-icon" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,19.5V17.5H9.5V19.5H13.5M13.5,16.5V14.5H9.5V16.5H13.5M18,20H6V4H13V9H18"
+                />
+              </svg>
+              Import
+            </button>
+          </div>
+
+          <HamburgerMenu
+            onPrint={handlePrint}
+            onToggleEditMode={toggleEditMode}
+            isEditingMode={isEditingMode}
+            onNew={() => {
+              if (confirm("Create a new resume? All unsaved changes will be lost.")) {
+                window.location.href = window.location.pathname;
+              }
+            }}
+          />
+        </div>
       </div>
     </header>
   );
