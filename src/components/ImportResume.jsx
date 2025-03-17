@@ -348,33 +348,144 @@ const ImportResume = ({ onImportComplete }) => {
           },
         },
         {
-          clientId: "contact-info",
-          name: "core/paragraph",
+          clientId: "contact-info-row",
+          name: "core/group",
           isValid: true,
           attributes: {
-            content: `
-              ${structured.Contact.Location} | 
-              <a href="mailto:${structured.Contact.Email}">${structured.Contact.Email}</a> | 
-              <a href="${structured.Contact.LinkedIn}" target="_blank">${structured.Contact.LinkedIn}</a> | 
-              <a href="https://${structured.Contact.PersonalWebsite}" target="_blank">${structured.Contact.PersonalWebsite}</a>
-            `,
-            align: "center",
-            fontSize: "small",
+            orientation: "horizontal",
+            className: "contact-info-row flex-row is-layout-flow wp-block-group-is-layout-flow",
           },
-          innerBlocks: [],
+          innerBlocks: [
+            {
+              clientId: "location-column",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: structured.Contact.Location,
+                align: "center",
+                fontSize: "small",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#2c3e50",
+              },
+              style: {
+                typography: {
+                  fontWeight: "400",
+                  fontSize: "small",
+                },
+              },
+            },
+            {
+              clientId: "separator-1",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: "|",
+                align: "center",
+                fontSize: "small",
+                className: "contact-info-separator",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#cbd5e1",
+              },
+            },
+            {
+              clientId: "email-column",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: `<a href="mailto:${structured.Contact.Email}">${structured.Contact.Email}</a>`,
+                align: "center",
+                fontSize: "small",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#2c3e50",
+              },
+              style: {
+                typography: {
+                  fontWeight: "400",
+                  fontSize: "small",
+                },
+              },
+            },
+            {
+              clientId: "separator-2",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: "|",
+                align: "center",
+                fontSize: "small",
+                className: "contact-info-separator",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#cbd5e1",
+              },
+            },
+            {
+              clientId: "linkedin-column",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: `<a href="${structured.Contact.LinkedIn}" target="_blank">${structured.Contact.LinkedIn}</a>`,
+                align: "center",
+                fontSize: "small",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#2c3e50",
+              },
+              style: {
+                typography: {
+                  fontWeight: "400",
+                  fontSize: "small",
+                },
+              },
+            },
+            {
+              clientId: "separator-3",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: "|",
+                align: "center",
+                fontSize: "small",
+                className: "contact-info-separator",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#cbd5e1",
+              },
+            },
+            {
+              clientId: "website-column",
+              name: "core/paragraph",
+              isValid: true,
+              attributes: {
+                content: `<a href="https://${structured.Contact.PersonalWebsite}" target="_blank">${structured.Contact.PersonalWebsite}</a>`,
+                align: "center",
+                fontSize: "small",
+              },
+              innerBlocks: [],
+              color: {
+                text: "#2c3e50",
+              },
+              style: {
+                typography: {
+                  fontWeight: "400",
+                  fontSize: "small",
+                },
+              },
+            },
+          ],
           spacing: {
             margin: {
               top: "0",
               bottom: "0.5em",
-            },
-          },
-          color: {
-            text: "#2c3e50",
-          },
-          style: {
-            typography: {
-              fontWeight: "400",
-              fontSize: "small",
             },
           },
         },
