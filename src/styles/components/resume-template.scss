@@ -91,21 +91,39 @@
     font-family: var(--font-family-heading);
   }
   
-  &__experience-company-row {
+  &__experience-company-row,
+  &__education-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
   }
   
-  &__company-name {
+  &__company-name,
+  &__institution-name {
     font-weight: 600;
     color: var(--primary-color);
   }
   
-  &__company-location {
+  &__company-location,
+  &__education-duration {
     font-style: italic;
     color: #666;
     text-align: right;
+  }
+
+  &__degree {
+    font-weight: 600;
+    font-size: 16px;
+    color: #2c3e50;
+    margin-bottom: 4px;
+  }
+
+  &__education-details {
+    margin-bottom: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 } 

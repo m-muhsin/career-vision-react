@@ -752,28 +752,112 @@ const ImportResume = ({ onImportComplete }) => {
         },
         {
           clientId: "education-list",
-          name: "core/list",
+          name: "core/group",
           isValid: true,
           attributes: {},
           innerBlocks: [
             {
-              clientId: "education-item",
-              name: "core/list-item",
+              clientId: "education-items",
+              name: "core/group",
               isValid: true,
               attributes: {},
-              innerBlocks: [
-                ...Object.entries(structured.Education[0]).map(([key, value]) => ({
-                  clientId: `education-${key.toLowerCase()}`,
-                  name: "core/paragraph",
-                  isValid: true,
-                  attributes: {
-                    content: value,
+              innerBlocks: structured.Education.map((education, index) => ({
+                clientId: `education-item-${index}`,
+                name: "core/group",
+                isValid: true,
+                attributes: {},
+                innerBlocks: [
+                  {
+                    clientId: `education-institution-row-${index}`,
+                    name: "core/group",
+                    isValid: true,
+                    attributes: {
+                      orientation: "horizontal",
+                      className: "job-listing__company-row flex-row",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      style: {
+                        spacing: {
+                          margin: {
+                            bottom: "2px"
+                          }
+                        },
+                        display: "flex",
+                      }
+                    },
+                    innerBlocks: [
+                      {
+                        clientId: `education-institution-${index}`,
+                        name: "core/paragraph",
+                        isValid: true,
+                        attributes: {
+                          content: education.Institution,
+                          className: "job-listing__company-name",
+                          style: {
+                            typography: {
+                              fontWeight: "600"
+                            },
+                            color: {
+                              text: "var(--primary-color)"
+                            }
+                          }
+                        },
+                        innerBlocks: [],
+                      },
+                      {
+                        clientId: `education-duration-${index}`,
+                        name: "core/paragraph",
+                        isValid: true,
+                        attributes: {
+                          content: education.Duration,
+                          className: "job-listing__duration",
+                          style: {
+                            spacing: {
+                              margin: {
+                                top: "0",
+                                bottom: "5px"
+                              }
+                            },
+                            typography: {
+                              fontStyle: "italic",
+                              fontSize: "14px"
+                            },
+                            color: {
+                              text: "#666"
+                            }
+                          }
+                        },
+                        innerBlocks: [],
+                      },
+                    ],
                   },
-                  innerBlocks: [
-
-                  ],
-                })),
-              ],
+                  {
+                    clientId: `education-degree-${index}`,
+                    name: "core/paragraph",
+                    isValid: true,
+                    attributes: {
+                      content: education.Degree || education.Certification,
+                      className: "resume-template__degree",
+                      style: {
+                        typography: {
+                          fontWeight: "500",
+                          fontSize: "15px"
+                        },
+                        color: {
+                          text: "#4a5568"
+                        },
+                        spacing: {
+                          margin: {
+                            top: "0",
+                            bottom: "20px"
+                          }
+                        }
+                      }
+                    },
+                    innerBlocks: [],
+                  },
+                ],
+              })),
             },
           ],
         },

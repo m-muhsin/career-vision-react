@@ -173,8 +173,11 @@ const contentStyles = [
       
       /* Job title row flex layout */
       .job-listing__title-row,
+      .education-listing__row,
       div[class*="job-listing__title-row"],
-      .wp-block-group.job-listing__title-row {
+      div[class*="education-listing__row"],
+      .wp-block-group.job-listing__title-row,
+      .wp-block-group.education-listing__row {
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
@@ -183,7 +186,9 @@ const contentStyles = [
       
       /* Fix for title row layout in Gutenberg editor */
       .job-listing__title-row > .block-editor-inner-blocks > .block-editor-block-list__layout,
-      div[class*="job-listing__title-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout {
+      .education-listing__row > .block-editor-inner-blocks > .block-editor-block-list__layout,
+      div[class*="job-listing__title-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout,
+      div[class*="education-listing__row"] > .block-editor-inner-blocks > .block-editor-block-list__layout {
         display: flex !important;
         width: 100% !important;
         justify-content: space-between !important;
@@ -324,6 +329,36 @@ const contentStyles = [
         .contact-info-row .wp-block-paragraph {
           font-size: 13px !important;
         }
+      }
+
+      /* Education degree styling */
+      .education-listing__degree {
+        font-weight: 600 !important;
+        font-size: 16px !important;
+        color: #2c3e50 !important;
+        margin-bottom: 4px !important;
+      }
+
+      /* Education institution styling */
+      .education-listing__institution {
+        font-weight: 600 !important;
+        color: var(--primary-color) !important;
+      }
+
+      /* Education duration styling */
+      .education-listing__duration {
+        font-style: italic !important;
+        color: #666 !important;
+        text-align: right !important;
+      }
+
+      /* Education details container */
+      .education-listing__details {
+        margin-bottom: 20px !important;
+      }
+
+      .education-listing__details:last-child {
+        margin-bottom: 0 !important;
       }
     `,
   },
