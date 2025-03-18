@@ -4,9 +4,8 @@ import blockEditorContentStyles from "@wordpress/block-editor/build-style/conten
 import blocksStyles from "@wordpress/block-library/build-style/style.css?raw";
 import blocksEditorStyles from "@wordpress/block-library/build-style/editor.css?raw";
 
-import '@wordpress/components/build-style/style.css';
-import '@wordpress/block-editor/build-style/style.css';
-
+import "@wordpress/components/build-style/style.css";
+import "@wordpress/block-editor/build-style/style.css";
 
 const contentStyles = [
   { css: componentsStyles },
@@ -25,11 +24,11 @@ const contentStyles = [
       body.block-editor-iframe__body,
       .editor-styles-wrapper,
       .editor-styles-wrapper * {
-        font-family: 'Open Sans', sans-serif !important;
+        font-family: var(--font-primary) !important;
       }
-
+  
       body {
-        font-family: 'Open Sans', sans-serif;
+        font-family: var(--font-primary) !important;
         font-size: 16px;
         line-height: 1.5;
         background-color: #f0f0f0;

@@ -11,19 +11,19 @@ const fonts = [
     name: 'Roboto',
     value: 'Roboto',
     description: 'Neutral, contemporary, easy-to-read',
-    importUrl: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap'
+    importUrl: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap'
   },
   {
     name: 'Open Sans',
     value: 'Open Sans',
     description: 'Clean, professional, web-friendly',
-    importUrl: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap'
+    importUrl: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;700&display=swap'
   },
   {
     name: 'Lato',
     value: 'Lato',
     description: 'Stylish, readable, versatile',
-    importUrl: 'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'
+    importUrl: 'https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&display=swap'
   },
   {
     name: 'Montserrat',

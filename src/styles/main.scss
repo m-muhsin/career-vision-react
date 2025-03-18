@@ -4,7 +4,8 @@
 @use 'components/resume-builder';
 @use 'components/resume-template';
 @use 'components/hamburger-menu';
-@import 'components/_font-selector';
+@use 'components/_font-selector';
+@use 'components/_secondary-header';
 
 /* Header responsive styles */
 .header__desktop-actions {

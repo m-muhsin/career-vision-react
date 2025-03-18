@@ -561,29 +561,39 @@ export default function Editor() {
   };
 
   const [currentFont, setCurrentFont] = useState({
-    name: 'Open Sans',
-    value: 'Open Sans',
-    description: 'Clean, professional, web-friendly',
-    importUrl: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap'
+    name: "Open Sans",
+    value: "Open Sans",
+    description: "Clean, professional, web-friendly",
+    importUrl:
+      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap",
   });
 
   // Handle font change
   const handleFontChange = (font) => {
     setCurrentFont(font);
-    
+
     // Update the font in the iframe
     const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
     if (editorIframe) {
-      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
-      
+      const iframeDocument =
+        editorIframe.contentDocument || editorIframe.contentWindow.document;
+
       // Update CSS variables
       const root = iframeDocument.documentElement;
-      root.style.setProperty('--font-primary', `'${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`);
-      
+      root.style.setProperty(
+        "--font-primary",
+        `'${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
+      );
+
       // Update font family for all elements
-      const styleElement = iframeDocument.createElement('style');
+      const styleElement = iframeDocument.createElement("style");
       styleElement.textContent = `
-        body.block-editor-iframe__body,
+      :root {
+        --font-family-body: '${currentFont.value}';
+        --font-family-heading: '${currentFont.value}';
+      }
+      
+      body.block-editor-iframe__body,
         .editor-styles-wrapper,
         .editor-styles-wrapper * {
           font-family: '${currentFont.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
@@ -598,14 +608,16 @@ export default function Editor() {
           font-family: '${currentFont.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
         }
       `;
-      
+
       // Remove any existing font style element
-      const existingStyle = iframeDocument.getElementById('dynamic-font-styles');
+      const existingStyle = iframeDocument.getElementById(
+        "dynamic-font-styles"
+      );
       if (existingStyle) {
         existingStyle.remove();
       }
-      
-      styleElement.id = 'dynamic-font-styles';
+
+      styleElement.id = "dynamic-font-styles";
       iframeDocument.head.appendChild(styleElement);
     }
   };
