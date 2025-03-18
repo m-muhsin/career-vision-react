@@ -564,66 +564,74 @@ export default function Editor() {
     name: "Open Sans",
     value: "Open Sans",
     description: "Clean, professional, web-friendly",
-    importUrl: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap"
+    importUrl: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&family=Inter:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lato:wght@400;700&family=Montserrat:wght@400;500;700&display=swap"
   });
 
   // Handle font change
-  const handleFontChange = (font) => {
+  const handleFontChange = async (font) => {
     setCurrentFont(font);
 
-    // Update the font in the iframe
-    const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
-    if (editorIframe) {
-      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
+    try {
+      // Wait for all fonts to load
+      await document.fonts.ready;
 
-      // Update CSS variables
-      const root = iframeDocument.documentElement;
-      root.style.setProperty(
-        "--font-primary",
-        `'${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
-      );
+      // Update the font in the iframe
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe) {
+        const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
 
-      // Update font family for all elements
-      const styleElement = iframeDocument.createElement("style");
-      styleElement.textContent = `
-      :root {
-        --font-family-body: '${font.value}';
-        --font-family-heading: '${font.value}';
-      }
-      
-      body.block-editor-iframe__body,
-        .editor-styles-wrapper,
-        .editor-styles-wrapper * {
-          font-family: '${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        // Update CSS variables
+        const root = iframeDocument.documentElement;
+        root.style.setProperty("--font-primary", `'${font.value}'`);
+
+        // Update font family for all elements
+        const styleElement = iframeDocument.createElement("style");
+        styleElement.textContent = `
+        :root {
+          --font-family-body: '${font.value}';
+          --font-family-heading: '${font.value}';
         }
         
-        .editor-styles-wrapper h1,
-        .editor-styles-wrapper h2,
-        .editor-styles-wrapper h3,
-        .editor-styles-wrapper h4,
-        .editor-styles-wrapper h5,
-        .editor-styles-wrapper h6 {
-          font-family: '${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        body.block-editor-iframe__body,
+          .editor-styles-wrapper,
+          .editor-styles-wrapper * {
+            font-family: '${font.value}' !important;
+          }
+          
+          .editor-styles-wrapper h1,
+          .editor-styles-wrapper h2,
+          .editor-styles-wrapper h3,
+          .editor-styles-wrapper h4,
+          .editor-styles-wrapper h5,
+          .editor-styles-wrapper h6 {
+            font-family: '${font.value}' !important;
+          }
+        `;
+
+        // Remove any existing font style element
+        const existingStyle = iframeDocument.getElementById("dynamic-font-styles");
+        if (existingStyle) {
+          existingStyle.remove();
         }
-      `;
 
-      // Remove any existing font style element
-      const existingStyle = iframeDocument.getElementById("dynamic-font-styles");
-      if (existingStyle) {
-        existingStyle.remove();
+        styleElement.id = "dynamic-font-styles";
+        iframeDocument.head.appendChild(styleElement);
+        console.log("Font changed to:", font.value);
       }
-
-      styleElement.id = "dynamic-font-styles";
-      iframeDocument.head.appendChild(styleElement);
+    } catch (error) {
+      console.error("Error loading fonts:", error);
     }
   };
 
   // Apply initial font when iframe is ready
   useEffect(() => {
-    const applyInitialFont = () => {
+    const applyInitialFont = async () => {
       const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
       if (editorIframe && editorIframe.contentDocument) {
+        await document.fonts.ready;
         handleFontChange(currentFont);
+        // Clear the interval once font is applied
+        clearInterval(intervalId);
       }
     };
 
@@ -633,7 +641,7 @@ export default function Editor() {
     // Set up an interval to check for iframe and apply font
     const intervalId = setInterval(applyInitialFont, 100);
 
-    // Clean up interval after 5 seconds or when iframe is found
+    // Clean up interval after 5 seconds
     const timeoutId = setTimeout(() => {
       clearInterval(intervalId);
     }, 5000);
@@ -642,7 +650,7 @@ export default function Editor() {
       clearInterval(intervalId);
       clearTimeout(timeoutId);
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   return (
     <div className="app__container">

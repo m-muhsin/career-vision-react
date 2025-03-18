@@ -19,7 +19,7 @@ const contentStyles = [
   {
     css: `
 
-      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&family=Inter:wght@400;500;700&family=Roboto:wght@400;500;700&family=Lato:wght@400;700&family=Montserrat:wght@400;500;700&family=Lato:wght@400;700&family=Montserrat:wght@400;500;700&display=swap');
       /* Apply Open Sans to the editor iframe and wrapper */
       body.block-editor-iframe__body,
       .editor-styles-wrapper,
