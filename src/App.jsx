@@ -74,13 +74,62 @@ export default function Editor() {
   };
 
   // Handle imported resume data and prepare it for the block editor
-  const handleImportComplete = (importedBlocks) => {
+  const handleImportComplete = async (importedBlocks) => {
     // Process imported blocks to ensure consistent styling
     const processedBlocks = processImportedBlocks(importedBlocks);
 
     setBlocks(processedBlocks);
     updateHistoryOnBlocksChange(processedBlocks);
     setIsEditingMode(true); // Switch to editor mode after import
+
+    // Wait for both fonts and iframe to be ready
+    await document.fonts.ready;
+    
+    // Wait for a short delay to ensure blocks are rendered
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Apply font styles
+    const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+    if (editorIframe) {
+      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
+      
+      // Update CSS variables
+      const root = iframeDocument.documentElement;
+      root.style.setProperty("--font-primary", `'${currentFont.value}'`);
+
+      // Update font family for all elements
+      const styleElement = iframeDocument.createElement("style");
+      styleElement.textContent = `
+      :root {
+        --font-family-body: '${currentFont.value}';
+        --font-family-heading: '${currentFont.value}';
+      }
+      
+      body.block-editor-iframe__body,
+        .editor-styles-wrapper,
+        .editor-styles-wrapper * {
+          font-family: '${currentFont.value}' !important;
+        }
+        
+        .editor-styles-wrapper h1,
+        .editor-styles-wrapper h2,
+        .editor-styles-wrapper h3,
+        .editor-styles-wrapper h4,
+        .editor-styles-wrapper h5,
+        .editor-styles-wrapper h6 {
+          font-family: '${currentFont.value}' !important;
+        }
+      `;
+
+      // Remove any existing font style element
+      const existingStyle = iframeDocument.getElementById("dynamic-font-styles");
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+
+      styleElement.id = "dynamic-font-styles";
+      iframeDocument.head.appendChild(styleElement);
+    }
   };
 
   // Process imported blocks to ensure proper styling

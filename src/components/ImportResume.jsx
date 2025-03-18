@@ -736,7 +736,7 @@ const ImportResume = ({ onImportComplete }) => {
 
   return (
     <div className="import-resume__container">
-      <h2 className="import-resume__title">Import Your LinkedIn Profile</h2>
+      <h2 className="import-resume__title">Import Your Current CV or LinkedIn Profile</h2>
 
       <div className="import-resume__instructions">
         <h3>How to Export Your LinkedIn Profile</h3>

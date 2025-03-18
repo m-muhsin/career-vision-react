@@ -54,10 +54,10 @@ const ResumeBuilder = ({ onImportComplete }) => {
   return (
     <div className="resume-builder__container">
       <div className="resume-builder__content">
-        <h1 className="resume-builder__title">Transform Your LinkedIn Profile into a Professional Resume</h1>
+        <h1 className="resume-builder__title">Transform Your Current CV!</h1>
         <p className="resume-builder__subtitle">
           {step === 'import' 
-            ? 'Import your LinkedIn profile PDF and let us create a beautifully formatted resume in seconds'
+            ? 'Import your Current CV or LinkedIn profile PDF and let us create a beautifully formatted resume in seconds'
             : 'Your resume has been created! You can continue customizing it to make it perfect.'}
         </p>
         
