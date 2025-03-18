@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import HamburgerMenu from './HamburgerMenu';
+import FontSelector from './FontSelector';
+import '../styles/components/header.scss';
+import '../styles/components/_font-selector.scss';
 
 const Header = ({
   hasUndo,
@@ -10,8 +13,16 @@ const Header = ({
   handlePrint,
   toggleEditMode,
   isEditingMode,
+  onFontChange
 }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentFont, setCurrentFont] = useState({
+    name: 'Open Sans',
+    value: 'Open Sans',
+    description: 'Clean, professional, web-friendly',
+    importUrl: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap'
+  });
 
   // Effect to detect scrolling in the iframe
   useEffect(() => {
@@ -46,6 +57,11 @@ const Header = ({
       }
     };
   }, []);
+
+  const handleFontChange = (font) => {
+    setCurrentFont(font);
+    onFontChange(font);
+  };
 
   return (
     <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
@@ -224,6 +240,11 @@ const Header = ({
             }}
           />
         </div>
+
+        <FontSelector 
+          currentFont={currentFont} 
+          onFontChange={handleFontChange}
+        />
       </div>
     </header>
   );
