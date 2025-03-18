@@ -22,7 +22,7 @@ const Header = ({
     value: "Open Sans",
     description: "Clean, professional, web-friendly",
     importUrl:
-      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap",
+      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap",
   });
 
   // Effect to detect scrolling in the iframe

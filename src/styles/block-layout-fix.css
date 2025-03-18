@@ -22,7 +22,7 @@
 
 /* Company name and location styles */
 .job-listing__company-name {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--primary-color, #069CAF);
   margin: 0;
 }

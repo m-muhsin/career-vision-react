@@ -564,8 +564,7 @@ export default function Editor() {
     name: "Open Sans",
     value: "Open Sans",
     description: "Clean, professional, web-friendly",
-    importUrl:
-      "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap",
+    importUrl: "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap"
   });
 
   // Handle font change
@@ -575,8 +574,7 @@ export default function Editor() {
     // Update the font in the iframe
     const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
     if (editorIframe) {
-      const iframeDocument =
-        editorIframe.contentDocument || editorIframe.contentWindow.document;
+      const iframeDocument = editorIframe.contentDocument || editorIframe.contentWindow.document;
 
       // Update CSS variables
       const root = iframeDocument.documentElement;
@@ -589,14 +587,14 @@ export default function Editor() {
       const styleElement = iframeDocument.createElement("style");
       styleElement.textContent = `
       :root {
-        --font-family-body: '${currentFont.value}';
-        --font-family-heading: '${currentFont.value}';
+        --font-family-body: '${font.value}';
+        --font-family-heading: '${font.value}';
       }
       
       body.block-editor-iframe__body,
         .editor-styles-wrapper,
         .editor-styles-wrapper * {
-          font-family: '${currentFont.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+          font-family: '${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
         }
         
         .editor-styles-wrapper h1,
@@ -605,14 +603,12 @@ export default function Editor() {
         .editor-styles-wrapper h4,
         .editor-styles-wrapper h5,
         .editor-styles-wrapper h6 {
-          font-family: '${currentFont.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+          font-family: '${font.value}', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
         }
       `;
 
       // Remove any existing font style element
-      const existingStyle = iframeDocument.getElementById(
-        "dynamic-font-styles"
-      );
+      const existingStyle = iframeDocument.getElementById("dynamic-font-styles");
       if (existingStyle) {
         existingStyle.remove();
       }
@@ -621,6 +617,32 @@ export default function Editor() {
       iframeDocument.head.appendChild(styleElement);
     }
   };
+
+  // Apply initial font when iframe is ready
+  useEffect(() => {
+    const applyInitialFont = () => {
+      const editorIframe = document.querySelector('iframe[name="editor-canvas"]');
+      if (editorIframe && editorIframe.contentDocument) {
+        handleFontChange(currentFont);
+      }
+    };
+
+    // Try to apply font immediately
+    applyInitialFont();
+
+    // Set up an interval to check for iframe and apply font
+    const intervalId = setInterval(applyInitialFont, 100);
+
+    // Clean up interval after 5 seconds or when iframe is found
+    const timeoutId = setTimeout(() => {
+      clearInterval(intervalId);
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className="app__container">

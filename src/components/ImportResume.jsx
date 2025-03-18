@@ -499,7 +499,7 @@ const createBlocksFromStructuredData = (structured = {}) => {
                         className: "job-listing__company-name",
                         style: {
                           typography: {
-                            fontWeight: "600"
+                            fontWeight: "700"
                           },
                           color: {
                             text: "var(--primary-color)"

@@ -19,7 +19,7 @@ const contentStyles = [
   {
     css: `
 
-      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;700&display=swap');
       /* Apply Open Sans to the editor iframe and wrapper */
       body.block-editor-iframe__body,
       .editor-styles-wrapper,
@@ -60,7 +60,7 @@ const contentStyles = [
       /* Headings */
       h1, h2, h3, h4, h5, h6 {
         margin-top: 0;
-        font-weight: 600;
+        font-weight: 700;
       }
       
       h1 {
@@ -70,7 +70,7 @@ const contentStyles = [
       }
       
       h2 {
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
         font-size: 18px;
         color: #2c3e50;
@@ -79,7 +79,7 @@ const contentStyles = [
       }
       
       h3 {
-        font-weight: 600;
+        font-weight: 700;
         font-size: 16px;
         margin-bottom: 0.2em;
       }
@@ -362,14 +362,14 @@ const contentStyles = [
 
       .education-listing__degree {
         font-size: 17px !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
         color: var(--primary-color) !important;
         margin-bottom: 6px !important;
         line-height: 1.4 !important;
       }
 
       .education-listing__institution {
-        font-weight: 600 !important;
+        font-weight: 700 !important;
         color: #2c3e50 !important;
         font-size: 15px !important;
       }

@@ -22,11 +22,6 @@
   font-weight: 700 !important;
 }
 
-[style*="font-weight: 600"],
-[style*="font-weight:600"] {
-  font-weight: 600 !important;
-}
-
 [style*="font-size: 14px"],
 [style*="font-size:14px"] {
   font-size: 14px !important;
