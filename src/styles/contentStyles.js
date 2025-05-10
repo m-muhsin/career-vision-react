@@ -40,16 +40,31 @@ const contentStyles = [
         background-color: white;
         width: 794px !important;
         min-height: 1123px !important;
-        margin: 20px auto;
+        margin: 20px auto 60px auto;
         padding: 15px;
         box-sizing: border-box;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         border: 1px solid #e0e0e0;
       }
-      
+
       /* Block editor container */
       .block-editor-block-list__layout {
         max-width: calc(794px - (2 * 15px)) !important; /* Derive max-width from A4 width minus padding */
+      }
+      
+      @media (max-width: 834px) {
+        .wp-block-post-content,
+        .editor-styles-wrapper {
+          width: calc(100% - 40px) !important;
+          margin: 20px auto 80px !important;
+          min-height: auto !important;
+          padding: 15px;
+          transform: scale(1) !important;
+          overflow-x: hidden !important;
+        }
+        .block-editor-block-list__layout {
+          max-width: 100% !important;
+        }
       }
 
       /* Text styling */
@@ -336,6 +351,28 @@ const contentStyles = [
         
         .contact-info-row .wp-block-paragraph {
           font-size: 13px !important;
+        }
+        
+        .education-listing__row > .block-editor-inner-blocks > .block-editor-block-list__layout {
+          flex-wrap: wrap !important;
+        }
+        
+        .education-listing__row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child {
+          text-align: left !important;
+          margin-top: 5px !important;
+          min-width: 100% !important;
+        }
+        
+        .job-listing__company-row > .block-editor-inner-blocks > .block-editor-block-list__layout,
+        div[class*="job-listing__company-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout {
+          flex-wrap: wrap !important;
+        }
+        
+        .job-listing__company-row > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child,
+        div[class*="job-listing__company-row"] > .block-editor-inner-blocks > .block-editor-block-list__layout > div:last-child {
+          text-align: left !important;
+          margin-top: 5px !important;
+          min-width: 100% !important;
         }
       }
 

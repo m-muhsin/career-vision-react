@@ -734,7 +734,7 @@ export default function Editor() {
         </div>
       ) : (
         /* Resume Builder */
-        <div className="app__editor-container" style={{ padding: "20px" }}>
+        <div className="app__editor-container" >
           <ResumeBuilder onImportComplete={handleImportComplete} />
         </div>
       )}
