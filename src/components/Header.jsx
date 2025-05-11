@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import HamburgerMenu from "./HamburgerMenu";
-import FontSelector from "./FontSelector";
+import logo from "../assets/icon.svg";
 import SecondaryHeader from "./SecondaryHeader";
 import "../styles/components/header.scss";
 import "../styles/components/_font-selector.scss";
@@ -76,89 +76,11 @@ const Header = ({
     <>
       <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
         <a href="https://careervision.io" className="header__logo-container">
-          <svg
-            viewBox="0 0 500 500"
+          <img
+            src={logo}
+            alt="Career Vision Logo"
             className="header__logo"
-            aria-hidden="true"
-          >
-            <g
-              id="root"
-              stroke="none"
-              strokeWidth="1"
-              fill="none"
-              fillRule="evenodd"
-            >
-              <g id="shape" transform="translate(125, 125)">
-                <g id="left">
-                  <path
-                    d="M125 0c-69.036 0 -125 55.964 -125 125c0 69.036 55.964 125 125 125"
-                    fill="#069CAF"
-                    opacity=".5"
-                  ></path>
-                  <path
-                    d="M125 25c-55.228 0 -100 44.772 -100 100c0 55.228 44.772 100 100 100"
-                    fill="#069CAF"
-                    opacity=".6"
-                  ></path>
-                  <path
-                    d="M125 45c-44.183 0 -80 35.817 -80 80c0 44.183 35.817 80 80 80"
-                    fill="#069CAF"
-                    opacity=".7"
-                  ></path>
-                  <path
-                    d="M125 61c-35.346 0 -64 28.654 -64 64c0 35.346 28.654 64 64 64"
-                    fill="#069CAF"
-                    opacity=".8"
-                  ></path>
-                  <path
-                    d="M125 74c-28.167 0 -51 22.833 -51 51c0 28.167 22.833 51 51 51"
-                    fill="#FFF"
-                    opacity=".5"
-                  ></path>
-                  <path
-                    d="M125 100c-14.36 0 -26 11.417 -26 25.5c0 14.083 11.64 25.5 26 25.5"
-                    fill="#FFF"
-                    opacity=".5"
-                  ></path>
-                </g>
-                <g
-                  id="right"
-                  transform="translate(187.500000, 125.000000) scale(-1, 1) translate(-187.500000, -125.000000) translate(125.000000, 0.000000)"
-                >
-                  <path
-                    d="M125 0c-69.036 0 -125 55.964 -125 125c0 69.036 55.964 125 125 125"
-                    fill="#FFFFFF"
-                    opacity=".5"
-                  ></path>
-                  <path
-                    d="M125 25c-55.228 0 -100 44.772 -100 100c0 55.228 44.772 100 100 100"
-                    fill="#FFFFFF"
-                    opacity=".6"
-                  ></path>
-                  <path
-                    d="M125 45c-44.183 0 -80 35.817 -80 80c0 44.183 35.817 80 80 80"
-                    fill="#FFFFFF"
-                    opacity=".7"
-                  ></path>
-                  <path
-                    d="M125 61c-35.346 0 -64 28.654 -64 64c0 35.346 28.654 64 64 64"
-                    fill="#FFFFFF"
-                    opacity=".8"
-                  ></path>
-                  <path
-                    d="M125 74c-28.167 0 -51 22.833 -51 51c0 28.167 22.833 51 51 51"
-                    fill="#FFF"
-                    opacity=".5"
-                  ></path>
-                  <path
-                    d="M125 100c-14.36 0 -26 11.417 -26 25.5c0 14.083 11.64 25.5 26 25.5"
-                    fill="#FFF"
-                    opacity=".5"
-                  ></path>
-                </g>
-              </g>
-            </g>
-          </svg>
+          />
           <span className="header__brand">Career Vision</span>
         </a>
 
